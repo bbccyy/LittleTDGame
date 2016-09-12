@@ -124,22 +124,24 @@ function getData(){
   // console.log(str);
 
   var vectorQue = parseQue( outputQueue );
+  var vectorInnerQue = [];
   drawOutline(cx, vectorQue);
-
+  var vectorInnerQue = [];
   for(var idx=0; idx<innerLines.length; idx++){
     var vq = parseQue(innerLines[idx]);
+    vectorInnerQue.push(vq);
     console.log(innerLines[idx]);
     console.log(vq);
     drawOutline(cx, vq);
   }
 
-  console.log(getCentrePoint([1,1],[-1,-1],[-1,1]));
+  //console.log(getCentrePoint([1,1],[-1,-1],[-1,1]));
   //console.log(naiveLeftRight([0,0],[1,2],[-2,-2]));
 
   //drawOutline(cx, vectorQue);
-  cdt(outputQueue, innerLines);
+  cdt(vectorQue, vectorInnerQue, cx);
 
-  drawTriangleOutline(cx);
+  //drawTriangleOutline(cx);
 
 }
 </script>
