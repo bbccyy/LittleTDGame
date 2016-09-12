@@ -26,15 +26,15 @@ function isOnLeft(e, r) {
   var qrx = q[0] - r[0];
   var qry = q[1] - r[1];
   var res = prx * qry - pry * qrx;
-  res = (res-0).toFixed(5);
+  res = Number((res-0).toFixed(5));
   if(res < 0) return true;
   else return false;
 }
 
 function isInCircle(circleV, p){
   var dis = Math.sqrt((p[0]-circleV[0])*(p[0]-circleV[0]) + (p[1]-circleV[1])*(p[1]-circleV[1]));
-  dis = dis.toFixed(5);
-  var r = circleV[2].toFixed(5);
+  dis = Number(dis.toFixed(5));
+  var r = Number(circleV[2].toFixed(5));
   if(dis < r) return 1;
   else if(dis == r) return 0;
   else return -1;
@@ -70,18 +70,23 @@ function cdt(outLine, innerLines, cx){
         leftPointPool.push(point);
     }
     for(var idx=0; idx<leftPointPool.length; idx++){
-      var point = leftPointPool[idx];
-      var tmpTheOne = [point];
-      var tmpCircleV = getCentrePoint(curEdge[0], curEdge[1], point);
+      var pt = leftPointPool[idx];
+      var tmpTheOne = [pt];
+      var tmpCircleV = getCentrePoint(curEdge[0], curEdge[1], pt);
       for(var i=0; i<leftPointPool.length; i++){
-        var p = leftPointPool[idx];
-        if(p == point) continue;
-        if(isInCircle(circleV, p)==1){  // in circle
+        var p = leftPointPool[i];
+        if(p == pt) continue;
+        //console.log(isInCircle(tmpCircleV, p));
+        //console.log(isInCircle(tmpCircleV, p)==1);
+        if(isInCircle(tmpCircleV, p)==1){  // in circle
           tmpTheOne = null;
+          //console.log(curEdge + " & " + pt + " contains point " + p);
+          //console.log(tmpCircleV);
+          //console.log(isInCircle(tmpCircleV, p));
           break;
-        }else if(isInCircle(circleV, p)==0){  // on circle
+        }else if(isInCircle(tmpCircleV, p)==0){  // on circle
           tmpTheOne.push(point);
-          //console.log("==> Same Circle <==");
+          console.log("==> Same Circle <==");
         }
       }
       if(tmpTheOne != null && (circleV == null || circleV[2] > tmpCircleV[2])){
@@ -98,27 +103,27 @@ function cdt(outLine, innerLines, cx){
     var Line2start = theOne[0];
     var Line2end   = curEdge[1];
     //'rgb(100, 100, 0)'
-    if(hashEdge[[Line1end, Line1start]]!=undefined || hashEdge[[Line1start, Line1end]]!=undefined){
+    if(hashEdge[[Line1end, Line1start]]!=undefined){
       delete hashEdge[[Line1end, Line1start]];
-      delete hashEdge[[Line1start, Line1end]];
+      //delete hashEdge[[Line1start, Line1end]];
       console.log("delete line!");
-      drawOneSet(cx, [[Line1end, Line1start]], 'rgb(0, 0, 0)');
+      //drawOneSet(cx, [[Line1end, Line1start]], 'rgb(0, 0, 0)');
     }else{
       hashEdge[[Line1start, Line1end]] = [Line1start, Line1end];
       console.log("insert line!");
-      drawOneSet(cx, [[Line1start, Line1end]]);
+      //drawOneSet(cx, [[Line1start, Line1end]]);
     }
-    if(hashEdge[[Line2end, Line2start]]!=undefined || hashEdge[[Line2start, Line2end]]!=undefined){
+    if(hashEdge[[Line2end, Line2start]]!=undefined){
       delete hashEdge[[Line2end, Line2start]];
-      delete hashEdge[[Line2start, Line2end]];
+      //delete hashEdge[[Line2start, Line2end]];
       console.log("delete line!");
-      drawOneSet(cx, [[Line2end, Line2start]], 'rgb(0, 0, 0)');
+      //drawOneSet(cx, [[Line2end, Line2start]], 'rgb(0, 0, 0)');
     }else{
       hashEdge[[Line2start, Line2end]] = [Line2start, Line2end];
       console.log("insert line!");
-      drawOneSet(cx, [[Line2start, Line2end]]);
+      //drawOneSet(cx, [[Line2start, Line2end]]);
     }
-    //drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]]);
+    drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]]);
     //processTriangle(curEdge, [Line1start, Line1end], [Line2start, Line2end]);
   }
 
