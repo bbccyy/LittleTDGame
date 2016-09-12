@@ -44,6 +44,7 @@ function buildEdgeMap( hash, que ){
   for(var idx=0; idx<que.length-1; idx++){
     hash[[que[idx],que[idx+1]]] = [que[idx],que[idx+1]];
     Boundary[[que[idx],que[idx+1]]] = [que[idx],que[idx+1]];
+    Boundary[[que[idx+1],que[idx]]] = [que[idx+1],que[idx]];
   }
 }
 
@@ -59,7 +60,7 @@ function cdt(outLine, innerLines, cx){
   var limit = 500;
   while(limit > 0 && Object.keys(hashEdge).length > 0){
     limit--;
-    console.log(Object.keys(hashEdge).length);
+    //console.log(Object.keys(hashEdge).length);
     var key = Object.keys(hashEdge)[0];
     var curEdge = hashEdge[key];
     delete hashEdge[key];
@@ -78,15 +79,15 @@ function cdt(outLine, innerLines, cx){
         if(p == pt) continue;
         //console.log(isInCircle(tmpCircleV, p));
         //console.log(isInCircle(tmpCircleV, p)==1);
-        if(isInCircle(tmpCircleV, p)==1){  // in circle
+        var inCircleRes = isInCircle(tmpCircleV, p);
+        if(inCircleRes==1){  // in circle
           tmpTheOne = null;
           //console.log(curEdge + " & " + pt + " contains point " + p);
           //console.log(tmpCircleV);
           //console.log(isInCircle(tmpCircleV, p));
           break;
-        }else if(isInCircle(tmpCircleV, p)==0){  // on circle
+        }else if(inCircleRes==0){  // on circle
           tmpTheOne.push(point);
-          console.log("==> Same Circle <==");
         }
       }
       if(tmpTheOne != null && (circleV == null || circleV[2] > tmpCircleV[2])){
@@ -94,10 +95,15 @@ function cdt(outLine, innerLines, cx){
         circleV = tmpCircleV;
       }
     }
-    console.log(hashEdge);
+    //console.log(hashEdge);
 
-    console.log(curEdge);
-    console.log(theOne);
+    //console.log(curEdge);
+    //console.log(theOne);
+    if(theOne.length > 1){
+      console.log("==> Same Circle <==");
+      console.log(theOne);
+      console.log(curEdge);
+    }
     var Line1start = curEdge[0];
     var Line1end   = theOne[0];
     var Line2start = theOne[0];
@@ -106,25 +112,25 @@ function cdt(outLine, innerLines, cx){
     if(hashEdge[[Line1end, Line1start]]!=undefined){
       delete hashEdge[[Line1end, Line1start]];
       //delete hashEdge[[Line1start, Line1end]];
-      console.log("delete line!");
+      //console.log("delete line!");
       //drawOneSet(cx, [[Line1end, Line1start]], 'rgb(0, 0, 0)');
     }else{
       hashEdge[[Line1start, Line1end]] = [Line1start, Line1end];
-      console.log("insert line!");
+      //console.log("insert line!");
       //drawOneSet(cx, [[Line1start, Line1end]]);
     }
     if(hashEdge[[Line2end, Line2start]]!=undefined){
       delete hashEdge[[Line2end, Line2start]];
       //delete hashEdge[[Line2start, Line2end]];
-      console.log("delete line!");
+      //console.log("delete line!");
       //drawOneSet(cx, [[Line2end, Line2start]], 'rgb(0, 0, 0)');
     }else{
       hashEdge[[Line2start, Line2end]] = [Line2start, Line2end];
-      console.log("insert line!");
+      //console.log("insert line!");
       //drawOneSet(cx, [[Line2start, Line2end]]);
     }
     drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]]);
-    //processTriangle(curEdge, [Line1start, Line1end], [Line2start, Line2end]);
+    processTriangle(curEdge, [Line1start, Line1end], [Line2start, Line2end]);
   }
 
 }
@@ -165,9 +171,12 @@ function processTriangle(e1, e2, e3){
   TriPool.push(triangle);
   for(var idx=0; idx<innerEdge.length; idx++){
     var edge = innerEdge[idx]
-    Edge4Tri[edge] = triangle;
-    edge = reverseEdge(edge);
-    Edge4Tri[edge] = triangle;
+    if(Edge4Tri[edge]==undefined){
+      Edge4Tri[edge] = [];
+      Edge4Tri[reverseEdge(edge)] = [];
+    }
+    Edge4Tri[edge].push(triangle);
+    Edge4Tri[reverseEdge(edge)].push(triangle);
   }
 }
 

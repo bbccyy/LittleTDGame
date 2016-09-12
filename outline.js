@@ -76,8 +76,16 @@ function parseQue( que ){
   for(var idx=0; idx<que.length; idx++){
     curP = que[idx];
     if(curP[2] == firstP[2]){
-      lastP = curP;
       ctSame = ctSame + 1;
+      if(ctSame > 20){
+        res.push([lastP[0], lastP[1]]);
+        firstP = curP;
+        lastP = curP;
+        ctSame = 0;
+        ctDif = 0;
+      }else{
+        lastP = curP;
+      }
     }
     else{
       ctDif = ctDif + 1;

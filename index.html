@@ -75,6 +75,22 @@ c.addEventListener('mouseout', onmouseout, false);
 
 setupCanvas();
 
+function preDraw(){
+  cx.beginPath();
+  cx.fillStyle = 'rgb(0, 0, 0)';
+  cx.moveTo(0,0);
+  cx.lineTo(0,50);
+  cx.lineTo(50,0);
+  cx.fill();
+
+  cx.moveTo(c.width,c.height);
+  cx.lineTo(c.width-50,c.height);
+  cx.lineTo(c.width,c.height-50);
+  cx.fill();
+}
+
+preDraw();
+
 function Create2DArray(rows, columns) {
   var arr = [];
   for (var i=0;i<rows;i++) {
@@ -91,7 +107,7 @@ map.columns = c.width;
 map.rows = c.height;
 function getData(){
   var data = cx.getImageData(0,0,c.width,c.height).data;
-  console.log(data);
+  //console.log(data);
   for(var i = 1; i<c.height-1; i++){
     for(var j = 1; j<c.width-1; j++){
       var idx = i*4*c.width + j*4;
@@ -130,8 +146,8 @@ function getData(){
   for(var idx=0; idx<innerLines.length; idx++){
     var vq = parseQue(innerLines[idx]);
     vectorInnerQue.push(vq);
-    console.log(innerLines[idx]);
-    console.log(vq);
+    //console.log(innerLines[idx]);
+    //console.log(vq);
     drawOutline(cx, vq);
   }
 
@@ -141,8 +157,13 @@ function getData(){
   //drawOutline(cx, vectorQue);
   cdt(vectorQue, vectorInnerQue, cx);
 
+  // var Boundary = {};
+  // var Edge4Tri = {};
+  // var TriPool = [];
   //drawTriangleOutline(cx);
-
+  console.log(Edge4Tri);
+  console.log(TriPool);
+  console.log(Boundary);
 }
 </script>
 </body>
