@@ -36,8 +36,17 @@ function checkCross(table, r, c, dir){
 function findInnerLine(table){
   var outputs = [];
   var curQue = [];
+  var isOutIsland = false;
   for(var row=1; row<table.rows-1; row++){
     for(var column=1; column<table.columns-1; column++){
+      if(table[row][column]==0 && table[row][column+1]==1) {
+        isOutIsland=true;
+        continue;
+      }
+      if(isOutIsland && table[row][column]==1 && table[row][column+1]==0) {
+        isOutIsland=false;
+        continue;
+      }
       if(isStartable(table, row, column, curQue)){
         findPath(table, row-1, column+1, curQue);
         outputs.push(curQue);
