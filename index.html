@@ -28,9 +28,12 @@ var cx = c.getContext('2d');
 var mousedown = false;
 var oldx = null;
 var oldy = null;
+var height = 500;
+var width = 500;
+var Restriction = [[[100,0],[0,100]],[[width-100,height],[width,height-100]]];
 function setupCanvas() {
-  c.height = 500;
-  c.width = 500;
+  c.height = height;
+  c.width = width;
   cx.lineWidth = 25;
   cx.lineCap = 'round';
   cx.strokeStyle = 'rgb(0, 0, 0)';
@@ -54,18 +57,18 @@ function onmouseout(ev){
 function onmousemove(ev) {
   var x = ev.clientX;
   var y = ev.clientY;
-  if (mousedown) {
+  if (mousedown && ok2Draw(x,y,Restriction)) {
     paint(x, y);
   }
 }
 function paint(x, y) {
-  cx.beginPath();
   if (oldx > 0 && oldy > 0) {
+    cx.beginPath();
     cx.moveTo(oldx, oldy);
+    cx.lineTo(x, y);
+    cx.stroke();
+    cx.closePath();
   }
-  cx.lineTo(x, y);
-  cx.stroke();
-  cx.closePath();
   oldx = x;
   oldy = y;
 }
@@ -78,16 +81,24 @@ setupCanvas();
 
 function preDraw(){
   cx.beginPath();
-  cx.fillStyle = 'rgb(0, 0, 0)';
+  cx.strokeStyle = 'rgb(0, 0, 0)';
+  cx.lineWidth = 30;
   cx.moveTo(0,0);
-  cx.lineTo(0,50);
-  cx.lineTo(50,0);
-  cx.fill();
+  cx.lineTo(60,60);
+  cx.stroke();
 
   cx.moveTo(c.width,c.height);
-  cx.lineTo(c.width-50,c.height);
-  cx.lineTo(c.width,c.height-50);
-  cx.fill();
+  cx.lineTo(c.width-60,c.height-60);
+  cx.stroke();
+  cx.closePath();
+}
+
+//isOnLeft(e, r)  true --> left
+function ok2Draw(x, y, lines){  // lines --> [lineUpLeft, lineDownRight]
+    for(var i=0; i<lines.length; i++){
+      if(!isOnLeft(lines[i],[x,y])) return false;
+    }
+    return true;
 }
 
 preDraw();
@@ -156,6 +167,7 @@ function getData(){
   //console.log(naiveLeftRight([0,0],[1,2],[-2,-2]));
 
   //drawOutline(cx, vectorQue);
+  /*pslg to cdt*/
   cdt(vectorQue, vectorInnerQue, cx);
 
   // var Boundary = {};
