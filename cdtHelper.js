@@ -75,8 +75,9 @@ function cdt(outLine, innerLines, cx){
       var tmpTheOne = [pt];
       var tmpCircleV = getCentrePoint(curEdge[0], curEdge[1], pt);
       for(var i=0; i<leftPointPool.length; i++){
+        if(i == idx) continue;
         var p = leftPointPool[i];
-        if(p == pt) continue;
+        //if(p == pt) continue;
         //console.log(isInCircle(tmpCircleV, p));
         //console.log(isInCircle(tmpCircleV, p)==1);
         var inCircleRes = isInCircle(tmpCircleV, p);
@@ -87,7 +88,8 @@ function cdt(outLine, innerLines, cx){
           //console.log(isInCircle(tmpCircleV, p));
           break;
         }else if(inCircleRes==0){  // on circle
-          tmpTheOne.push(point);
+          tmpTheOne.push(p);
+          //console.log("curEdge: " + curEdge + " pt: " + pt + " inCircleOne: " + p);
         }
       }
       if(tmpTheOne != null && (circleV == null || circleV[2] > tmpCircleV[2])){
@@ -103,15 +105,17 @@ function cdt(outLine, innerLines, cx){
       console.log("==> Same Circle <==");
       console.log(theOne);
       console.log(curEdge);
+      resolveCircleProblem(curEdge, theOne, hashEdge, cx)
+      continue;
     }
     var Line1start = curEdge[0];
     var Line1end   = theOne[0];
     var Line2start = theOne[0];
     var Line2end   = curEdge[1];
     //'rgb(100, 100, 0)'
-    if(hashEdge[[Line1end, Line1start]]!=undefined){
+    if(hashEdge[[Line1end, Line1start]]!=undefined || hashEdge[[Line1start, Line1end]]!=undefined){
       delete hashEdge[[Line1end, Line1start]];
-      //delete hashEdge[[Line1start, Line1end]];
+      delete hashEdge[[Line1start, Line1end]];
       //console.log("delete line!");
       //drawOneSet(cx, [[Line1end, Line1start]], 'rgb(0, 0, 0)');
     }else{
@@ -119,9 +123,9 @@ function cdt(outLine, innerLines, cx){
       //console.log("insert line!");
       //drawOneSet(cx, [[Line1start, Line1end]]);
     }
-    if(hashEdge[[Line2end, Line2start]]!=undefined){
+    if(hashEdge[[Line2end, Line2start]]!=undefined || hashEdge[[Line2start, Line2end]]!=undefined){
       delete hashEdge[[Line2end, Line2start]];
-      //delete hashEdge[[Line2start, Line2end]];
+      delete hashEdge[[Line2start, Line2end]];
       //console.log("delete line!");
       //drawOneSet(cx, [[Line2end, Line2start]], 'rgb(0, 0, 0)');
     }else{
@@ -129,7 +133,7 @@ function cdt(outLine, innerLines, cx){
       //console.log("insert line!");
       //drawOneSet(cx, [[Line2start, Line2end]]);
     }
-    drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]]);
+    drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]], 'rgb(255, 255, 255)');
     processTriangle(curEdge, [Line1start, Line1end], [Line2start, Line2end]);
   }
 
@@ -178,6 +182,7 @@ function processTriangle(e1, e2, e3){
     Edge4Tri[edge].push(triangle);
     Edge4Tri[reverseEdge(edge)].push(triangle);
   }
+  return triangle;
 }
 
 function Tri(innerEdge, outerEdge, feature){
@@ -219,6 +224,40 @@ function Tri(innerEdge, outerEdge, feature){
   }
 }
 
+function resolveCircleProblem(curEdge, theOnes, hashEdge, cx){
+  var directEdges = [], circleTri = [];
+  for(var idx=0; idx<theOnes.length; idx++){
+    directEdges.push([curEdge[0], theOnes[idx], getAngle(curEdge, [curEdge[0], theOnes[idx]])]);
+  }
+  directEdges.sort(function(a,b){
+    return b[2] - a[2];
+  });
+  directEdges.push([curEdge[0], curEdge[1], 0]);
+  for(var idx=0; idx<directEdges.length-1; idx++){
+    var e1 = [directEdges[idx][1], curEdge[0]];
+    var e2 = [directEdges[idx+1][1], directEdges[idx][1]];
+    var e3 = [curEdge[0], directEdges[idx+1][1]];
+    var tri = processTriangle(e1, e2, e3);
+    console.log("in circle get a tri:");
+    console.log(tri);
+    for(var i=0; i<tri.Outer.length; i++){
+      delete hashEdge[tri.Outer[i]];
+      drawOneSet(cx, [tri.Outer[i]] , 'rgb(255, 255, 255)');
+    }
+    for(var j=0; j<tri.Inner.length; j++){
+      var p1 = tri.Inner[j][0];
+      var p2 = tri.Inner[j][1];
+      if(hashEdge[[p1, p2]]!=undefined || hashEdge[[p2, p1]]!=undefined){
+        delete hashEdge[[p1, p2]];
+        delete hashEdge[[p2, p1]];
+      }else{
+        hashEdge[[p1, p2]] = [p1, p2];
+      }
+      drawOneSet(cx, [[p1, p2]] , 'rgb(0, 0, 255)');
+    }
+  }
+}
+
 function getMiddle( e ){
   var mx = (e[0][0] + e[1][0]) / 2;
   var my = (e[0][1] + e[1][1]) / 2;
@@ -235,7 +274,7 @@ function getGeoCentre( p, e ){
   return res;
 }
 
-function drawOneSet(cx, e , color='rgb(0, 0, 255)'){
+function drawOneSet(cx, e , color){
   cx.lineWidth = 1;
   cx.lineCap = 'round';
   cx.strokeStyle = color;
