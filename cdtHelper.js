@@ -1,7 +1,8 @@
-var Boundary = {};
-var Edge4Tri = {};
-var TriPool = [];
-var terminalTriPool = [];
+var Boundary = {};        // all boundary edges arranged in discover order (outer: anti-clockwise,  inner: clockwise)
+var Edge4Tri = {};        // key: edge.toString,   value = [tri1, tri2]
+var TriPool = [];         // all unique triangles here, including trimed ones
+var terminalTriPool = []; // to trim terminal tri
+var startTriangle = null; // should be up leftmost triangle
 
 function getCentrePoint(x1, x2, x3){
   var a=2*(x2[0]-x1[0]);
@@ -161,6 +162,11 @@ function processTriangle(e1, e2, e3){
   }else if(ct == 2){
     triangle = new Tri(innerEdge, outerEdge, 'T');
     triangle.processTerminal();
+    if(pointEq(triangle.value['T'], [1,1])){
+      startTriangle = triangle;
+      console.log("start triangle:")
+      console.log(triangle);
+    }
     terminalTriPool.push(triangle);
   }else{
     console.log("too many terminal edges!");
@@ -184,7 +190,10 @@ function Tri(innerEdge, outerEdge, feature){
   this.Feature = feature;
   this.isVisited = false;
   this.value = {};
-
+  this.area = computeTriAreaByEdges(innerEdge.concat(outerEdge));
+  this.toString = function(){
+    return this.Inner + ' ' + this.Outer;  // used when compare two triangles
+  }
   // first delete input edge because it eventually turned into a terminal edge
   // remove the input edge from this.Inner array
   // add it to this.Outer
@@ -224,12 +233,7 @@ function Tri(innerEdge, outerEdge, feature){
 
   this.processJunction = function(){
     this.value = {};
-    var tp = this.Inner[0][0];   // choose first inner edge's first point as a terminal point
-    var edge = null;
-    if(this.Inner[1][0]==tp || this.Inner[1][1] ==tp) // get that terminal point's opposit edge
-      edge = this.Inner[2];
-    else edge = this.Inner[1];
-    var centre = getGeoCentre(tp, edge);  // to compute geocentre
+    var centre = getGeoCentre(this.Inner);  // to compute geocentre
     var mid1 = getMiddle(this.Inner[0]);
     var mid2 = getMiddle(this.Inner[1]);
     var mid3 = getMiddle(this.Inner[2]);
@@ -333,10 +337,35 @@ function reverseEdge( e ){
   return [e[1],  e[0]];
 }
 
-function getGeoCentre( p, e ){
-  var m = getMiddle( e );
+// compute the geo centre from a given triangle's all edges
+function getGeoCentre( allEdges ){
+  var p = allEdges[0][0];   // choose first inner edge's first point as a terminal point
+  var edge = null;
+  if(pointEq(allEdges[1][0],p) || pointEq(allEdges[1][1],p)) // get that terminal point's opposit edge
+    edge = allEdges[2];
+  else edge = allEdges[1];
+  var m = getMiddle( edge );
   var res = [(p[0]-m[0])/3 + m[0], (p[1]-m[1])/3 + m[1]];
   return res;
+}
+
+//compute the area from a given triangle's all edges
+function computeTriAreaByEdges(allEdges){
+  var x1 = allEdges[0][0][0];
+  var y1 = allEdges[0][0][1];
+  var x2 = allEdges[0][1][0];
+  var y2 = allEdges[0][1][1];
+  var x3 = 0;
+  var y3 = 0;
+  if(pointEq(allEdges[0][0], allEdges[1][0]) || pointEq(allEdges[0][1], allEdges[1][0])){
+    x3 = allEdges[1][1][0];
+    y3 = allEdges[1][1][1];
+  }else{
+    x3 = allEdges[1][0][0];
+    y3 = allEdges[1][0][1];
+  }
+  // cross product: AXB = |A||B|sin0 where |B|sin0 is the height of quadrangle
+  return Math.abs((x2-x1)*(y3-y1) - (x3-x1)*(y2-y1)) / 2;
 }
 
 function drawOneSet(cx, e , color){
