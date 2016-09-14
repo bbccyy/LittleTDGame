@@ -10,6 +10,11 @@ function pointEq(p1, p2){
   return p1[0]==p2[0] && p1[1] == p2[1];
 }
 
+function edgeEq(e1, e2){
+  return (pointEq(e1[0], e2[0]) && pointEq(e1[1], e2[1])) ||
+          (pointEq(e1[0], e2[1]) && pointEq(e1[1], e2[0]));
+}
+
 function getAngle(e1, e2){
   var ps, p1, p2;
   // console.log(e1);

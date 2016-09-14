@@ -1,6 +1,7 @@
 var Boundary = {};
 var Edge4Tri = {};
 var TriPool = [];
+var terminalTriPool = [];
 
 function getCentrePoint(x1, x2, x3){
   var a=2*(x2[0]-x1[0]);
@@ -57,10 +58,9 @@ function cdt(outLine, innerLines, cx){
     buildEdgeMap(hashEdge, innerLines[idx]);
     pointPool = pointPool.concat(innerLines[idx].slice(0,innerLines[idx].length-1));
   }
-  var limit = 500;
+  var limit = 1000;
   while(limit > 0 && Object.keys(hashEdge).length > 0){
     limit--;
-    //console.log(Object.keys(hashEdge).length);
     var key = Object.keys(hashEdge)[0];
     var curEdge = hashEdge[key];
     delete hashEdge[key];
@@ -77,19 +77,12 @@ function cdt(outLine, innerLines, cx){
       for(var i=0; i<leftPointPool.length; i++){
         if(i == idx) continue;
         var p = leftPointPool[i];
-        //if(p == pt) continue;
-        //console.log(isInCircle(tmpCircleV, p));
-        //console.log(isInCircle(tmpCircleV, p)==1);
         var inCircleRes = isInCircle(tmpCircleV, p);
         if(inCircleRes==1){  // in circle
           tmpTheOne = null;
-          //console.log(curEdge + " & " + pt + " contains point " + p);
-          //console.log(tmpCircleV);
-          //console.log(isInCircle(tmpCircleV, p));
           break;
         }else if(inCircleRes==0){  // on circle
           tmpTheOne.push(p);
-          //console.log("curEdge: " + curEdge + " pt: " + pt + " inCircleOne: " + p);
         }
       }
       if(tmpTheOne != null && (circleV == null || circleV[2] > tmpCircleV[2])){
@@ -97,10 +90,6 @@ function cdt(outLine, innerLines, cx){
         circleV = tmpCircleV;
       }
     }
-    //console.log(hashEdge);
-
-    //console.log(curEdge);
-    //console.log(theOne);
     if(theOne.length > 1){
       console.log("==> Same Circle <==");
       console.log(theOne);
@@ -165,10 +154,14 @@ function processTriangle(e1, e2, e3){
   }
   if(ct == 0){
     triangle = new Tri(innerEdge, outerEdge, 'J');
+    triangle.processJunction();
   }else if(ct == 1){
     triangle = new Tri(innerEdge, outerEdge, 'L');
+    triangle.processLinker();
   }else if(ct == 2){
     triangle = new Tri(innerEdge, outerEdge, 'T');
+    triangle.processTerminal();
+    terminalTriPool.push(triangle);
   }else{
     console.log("too many terminal edges!");
   }
@@ -191,36 +184,107 @@ function Tri(innerEdge, outerEdge, feature){
   this.Feature = feature;
   this.isVisited = false;
   this.value = {};
-  if(feature == 'T'){  // 'T' for terminal
+
+  // first delete input edge because it eventually turned into a terminal edge
+  // remove the input edge from this.Inner array
+  // add it to this.Outer
+  // modify feature based on current Inner and Outer edge numbers
+  // do post work -->
+  this.changeFeature = function ( e ){
+    for(var idx=0; idx<this.Inner.length; idx++){
+      if(edgeEq(e, this.Inner[idx])){
+        this.Outer.push(this.Inner[idx]);
+        this.Inner.splice(idx,1);
+        break;
+      }
+    }
+    if(this.Outer.length == 1){
+      this.Feature = 'L';
+      this.processLinker();
+    }else if(this.Outer.length == 2){
+      this.Feature = 'T';
+      //do sth about value
+      this.processTerminal();
+      //don't forget to put this tri into terminalTriPool
+    }else{
+      console.log("In changeFeature function: too many terminal edges!");
+    }
+  };
+
+  this.processTerminal = function(){
+    this.value = {};
     var tp = null, mid = null;
-    if(outerEdge[0][0] == outerEdge[1][0] || outerEdge[0][0] == outerEdge[1][1])
-      tp = outerEdge[0][0];
-    else tp = outerEdge[0][1];
-    this.value['T'] = tp;
-    this.value['M'] = [getMiddle( innerEdge[0] ), innerEdge[0]];
-  }else if(feature == 'J'){ // 'J' for junction
-    var tp = innerEdge[0][0];
+    if(this.Outer[0][0] == this.Outer[1][0] || this.Outer[0][0] == this.Outer[1][1])
+      tp = this.Outer[0][0];
+    else tp = this.Outer[0][1];
+    this.value['T'] = tp;   //terminal point
+    this.value['M'] = getMiddle( this.Inner[0] );  //middle point on Inner edge
+    this.value['A'] = getAngle( this.Outer[0], this.Outer[1] );  // get angle of two outer edge
+  };
+
+  this.processJunction = function(){
+    this.value = {};
+    var tp = this.Inner[0][0];   // choose first inner edge's first point as a terminal point
     var edge = null;
-    if(innerEdge[1][0]==tp || innerEdge[1][1] ==tp)
-      edge = innerEdge[2];
-    else edge = innerEdge[1];
-    var centre = getGeoCentre(tp, edge);
-    var mid1 = getMiddle(innerEdge[0]);
-    var mid2 = getMiddle(innerEdge[1]);
-    var mid3 = getMiddle(innerEdge[2]);
-    this.value[innerEdge[0]] = [centre, mid2, innerEdge[1], mid3, innerEdge[2]];
-    this.value[reverseEdge(innerEdge[0])] = [centre, mid2, innerEdge[1], mid3, innerEdge[2]];
-    this.value[innerEdge[1]] = [centre, mid1, innerEdge[0], mid3, innerEdge[2]];
-    this.value[reverseEdge(innerEdge[1])] = [centre, mid1, innerEdge[0], mid3, innerEdge[2]];
-    this.value[innerEdge[2]] = [centre, mid1, innerEdge[0], mid2, innerEdge[1]];
-    this.value[reverseEdge(innerEdge[2])] = [centre, mid1, innerEdge[0], mid2, innerEdge[1]];
-  }else{ // 'L' for link
-    var mid1 = getMiddle(innerEdge[0]);
-    var mid2 = getMiddle(innerEdge[1]);
-    this.value[innerEdge[0]] = [mid2, innerEdge[1]];
-    this.value[reverseEdge(innerEdge[0])] = [mid2, innerEdge[1]];
-    this.value[innerEdge[1]] = [mid1, innerEdge[0]];
-    this.value[reverseEdge(innerEdge[1])] = [mid1, innerEdge[0]];
+    if(this.Inner[1][0]==tp || this.Inner[1][1] ==tp) // get that terminal point's opposit edge
+      edge = this.Inner[2];
+    else edge = this.Inner[1];
+    var centre = getGeoCentre(tp, edge);  // to compute geocentre
+    var mid1 = getMiddle(this.Inner[0]);
+    var mid2 = getMiddle(this.Inner[1]);
+    var mid3 = getMiddle(this.Inner[2]);
+    // key = inner edge,   value = [geocentre point,  two other inner edge's Middle point and edge itself]
+    this.value[this.Inner[0]] = [centre, mid2, this.Inner[1], mid3, this.Inner[2]];
+    this.value[reverseEdge(this.Inner[0])] = [centre, mid2, this.Inner[1], mid3, this.Inner[2]];
+    this.value[this.Inner[1]] = [centre, mid1, innerEdge[0], mid3, innerEdge[2]];
+    this.value[reverseEdge(this.Inner[1])] = [centre, mid1, this.Inner[0], mid3, this.Inner[2]];
+    this.value[this.Inner[2]] = [centre, mid1, this.Inner[0], mid2, this.Inner[1]];
+    this.value[reverseEdge(this.Inner[2])] = [centre, mid1, this.Inner[0], mid2, this.Inner[1]];
+  };
+
+  this.processLinker = function(){
+    this.value = {};
+    var mid1 = getMiddle(this.Inner[0]);
+    var mid2 = getMiddle(this.Inner[1]);
+    // key = inner edge,   value = [the other inner edge's Middle point and edge itself]
+    this.value[this.Inner[0]] = [mid2, this.Inner[1]];
+    this.value[reverseEdge(this.Inner[0])] = [mid2, this.Inner[1]];
+    this.value[this.Inner[1]] = [mid1, this.Inner[0]];
+    this.value[reverseEdge(this.Inner[1])] = [mid1, this.Inner[0]];
+  };
+
+}
+
+//terminalTriPool = [tri1, tri2, tri3...]
+//Edge4Tri = {}  --> key: edge.toString, value = [tri1, tri2]
+//reverseEdge
+function trimRedundantTerminalTriangle(){
+  while(terminalTriPool.length > 0){
+    var curTri = terminalTriPool.shift();
+    if(curTri.value['A'] < 100) continue;
+    drawTriangleOutline(cx, curTri);
+    var terminalInnerEdge = curTri.Inner[0];
+    var edgeRelatedTriPool = Edge4Tri[terminalInnerEdge];
+    var relatedTri = null;
+    if(edgeRelatedTriPool[0]==curTri){
+      relatedTri = edgeRelatedTriPool[1];
+      //edgeRelatedTriPool.splice(0,1);   --> no need to pop out this terminal tri, will eventually delete this key!
+      //Edge4Tri[reverseEdge(terminalInnerEdge)].splice(0,1);
+    }else{
+      relatedTri = edgeRelatedTriPool[0];
+      //edgeRelatedTriPool.splice(1,1);
+      //Edge4Tri[reverseEdge(terminalInnerEdge)].splice(1,1);
+    }
+    console.log("trim this bad triangle!");
+    console.log(curTri);
+    relatedTri.changeFeature(terminalInnerEdge);  // now this tri is nolonger it's origin feature!
+    if(relatedTri.Feature == 'T'){
+      console.log("add new terminal tri");
+      console.log(relatedTri);
+      terminalTriPool.push(relatedTri);
+    }
+    delete Edge4Tri[terminalInnerEdge];
+    delete Edge4Tri[reverseEdge(terminalInnerEdge)];
   }
 }
 
@@ -258,6 +322,7 @@ function resolveCircleProblem(curEdge, theOnes, hashEdge, cx){
   }
 }
 
+// get middle point of an edge
 function getMiddle( e ){
   var mx = (e[0][0] + e[1][0]) / 2;
   var my = (e[0][1] + e[1][1]) / 2;
@@ -286,26 +351,23 @@ function drawOneSet(cx, e , color){
   }
 }
 
-function drawTriangleOutline(cx){
-  cx.lineWidth = 1;
+function drawTriangleOutline(cx, triangle){
+  cx.lineWidth = 2;
   cx.lineCap = 'round';
-  cx.strokeStyle = 'rgb(0, 0, 255)';
+  cx.strokeStyle = 'rgb(75,0,130)';
 
-  for(var idx=0; idx<TriPool.length; idx++){
-    triangle = TriPool[idx];
-    for(var i=0; i<triangle.Inner.length; i++){
-      var edge = triangle.Inner[i];
-      cx.beginPath();
-      cx.moveTo(edge[0][0], edge[0][1]);
-      cx.lineTo(edge[1][0], edge[1][1]);
-      cx.stroke();
-    }
-    for(var j=0; j<triangle.Outer.length; j++){
-      var edge = triangle.Outer[j];
-      cx.beginPath();
-      cx.moveTo(edge[0][0], edge[0][1]);
-      cx.lineTo(edge[1][0], edge[1][1]);
-      cx.stroke();
-    }
+  for(var i=0; i<triangle.Inner.length; i++){
+    var edge = triangle.Inner[i];
+    cx.beginPath();
+    cx.moveTo(edge[0][0], edge[0][1]);
+    cx.lineTo(edge[1][0], edge[1][1]);
+    cx.stroke();
+  }
+  for(var j=0; j<triangle.Outer.length; j++){
+    var edge = triangle.Outer[j];
+    cx.beginPath();
+    cx.moveTo(edge[0][0], edge[0][1]);
+    cx.lineTo(edge[1][0], edge[1][1]);
+    cx.stroke();
   }
 }
