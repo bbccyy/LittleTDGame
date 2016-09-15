@@ -194,6 +194,7 @@ function Tri(innerEdge, outerEdge, feature){
   this.toString = function(){
     return this.Inner + ' ' + this.Outer;  // used when compare two triangles
   }
+  this.position = null;
   // first delete input edge because it eventually turned into a terminal edge
   // remove the input edge from this.Inner array
   // add it to this.Outer
@@ -229,6 +230,7 @@ function Tri(innerEdge, outerEdge, feature){
     this.value['T'] = tp;   //terminal point
     this.value['M'] = getMiddle( this.Inner[0] );  //middle point on Inner edge
     this.value['A'] = getAngle( this.Outer[0], this.Outer[1] );  // get angle of two outer edge
+    this.position = tp;
   };
 
   this.processJunction = function(){
@@ -244,6 +246,7 @@ function Tri(innerEdge, outerEdge, feature){
     this.value[reverseEdge(this.Inner[1])] = [centre, mid1, this.Inner[0], mid3, this.Inner[2]];
     this.value[this.Inner[2]] = [centre, mid1, this.Inner[0], mid2, this.Inner[1]];
     this.value[reverseEdge(this.Inner[2])] = [centre, mid1, this.Inner[0], mid2, this.Inner[1]];
+    this.position = centre;
   };
 
   this.processLinker = function(){
@@ -255,6 +258,8 @@ function Tri(innerEdge, outerEdge, feature){
     this.value[reverseEdge(this.Inner[0])] = [mid2, this.Inner[1]];
     this.value[this.Inner[1]] = [mid1, this.Inner[0]];
     this.value[reverseEdge(this.Inner[1])] = [mid1, this.Inner[0]];
+
+    this.position = mid1;
   };
 
 }

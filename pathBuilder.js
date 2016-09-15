@@ -32,36 +32,99 @@ function buildPath( Edge4Tri ){
     console.log("failed to find start Triangle");
     return;
   }
-  var queue = [], depth = 0, size = 0, curNode = null, edge = null;
-  var startNode = new Node(startTriangle.value['T'], startTriangle, null, 'TS');
+  var queue = [], depth = 0, size = 0, curNode = null, edges = null;
+  var startNode = new Node(startTriangle.position, startTriangle, null, null, 'TS');
   queue.push(startNode);
   while(queue.length > 0){
     size = queue.length;
     while(size > 0){
       size--;
+      var tmpHashTable = {};
       curNode = queue.shift();
+      curNode.depth = depth;
       if(curNode.Feature == 'TS'){
-        edge = curNode.tirangle.Inner[0];
+        edges = [curNode.triangle.Inner[0]];  //'T' node only has one available edge
       }else if(curNode.Feature == 'J'){
-        // if a J node find a single path to itself, then this J node should be treated as a Terminal node
+        var jVal = curNode.triangle.value[curNode.parentEdge];
+        edges = [jVal[2], jVal[4]];
       }else{
         console.log("Function<buildPath>: do not push 'T' feature node into queue");
       }
+
+      for(var idx=0; idx<edges.length; idx++){   // 1 or 2 times
+        var res = singlePath( curNode.triangle , edges[idx] );  // res = [path, tri, tri-edge]
+        var path = res[0];
+        var childTri = res[1];
+        var childTriEdge = res[2];
+
+        if(childTri == curNode.triangle){
+          // if a J node find a single path to itself, then this J node should be treated as a Terminal node
+          // in the above case, set Feature to 'TJ'
+          curNode.Feature = 'TJ';
+          curNode.children.push(curNode);
+          curNode.children.push(curNode);
+          curNode.pathToChildren.push(path);
+          curNode.pathToChildren.push(copyReversePath(path));
+          // targetReachable = false;
+          break;  // break for loop to inner while loop
+        }else if(childTri.Feature == 'T'){
+          var childNode = Node( childTri.position , childTri, curNode, childTriEdge, 'T' );
+          curNode.children.push(childNode);
+          curNode.pathToChildren.push(path);
+          childNode.pathToParent = copyReversePath(path);  //mutually connect to each other
+          childTri.isVisited = true;
+          childNode.depth = depth+1;
+        }else{  // must be 'J'
+          if(childTri.isVisited){
+            // two node on the same level will see each other, therefore no need to add to queue
+            // also no need to add each other to parent
+            // beside, it's possible a J node has two on-same-layer child nodes
+            var sameLayerNode = tmpHashTable[childTri];
+            if( sameLayerNode == undefined ){
+              tmpHashTable[curNode.triangle] = curNode;
+              continue;
+            }
+            curNode.children.push(sameLayerNode);
+            curNode.pathToChildren.push(path);
+            sameLayerNode.children.push(curNode);
+            sameLayerNode.pathToChildren.push(copyReversePath(path));
+          }else{
+            // normal case, need to push to queue
+            // parent could be TS could be J
+            // childTri is unvisited
+            // childTri is not a terminal
+            // childTri is not a terminal Junction
+            // so childTri must be junction
+            var childNode = Node( childTri.position , childTri, curNode, childTriEdge, 'J' );
+            curNode.children.push(childNode);
+            curNode.pathToChildren.push(path);
+            childNode.pathToParent = copyReversePath(path);  //mutually connect to each other
+            childTri.isVisited = true;
+            queue.push(childNode);
+          }
+        }
+
+        curNode.children = []; // a list of object [node1, node2]
+        this.pathToChildren = [];
+      }
     }
+    depth++;
   }
 
 }
 
 // weight + children.length --> probability  --> children[idx] & pathToChildren[idx]
-function Node( p , tri, parentnode, feature ){
-  this.position = p;  // p = [x, y]
+function Node( position , tri, parentnode, parentEdge, feature ){
+  this.position = position;  // p = [x, y]
   this.tirangle = tri;
-  this.parentnode = parentnode;
   this.toString = function(){return this.position.toString();}  // we can use Node as key in hashtable
   this.weight = -1;  // this node and all its sub notes' accumulated weight, used to compute probability
-  this.probabiltiy = [];  // prob = [[0,0.25],[0.25,0.625],[0.625,1]]   random number drops in which slot, choose that direction!
+  this.probabiltiy = [];  // prob = [[0,0.25],[0.25,1]]   random number drops in which slot, choose that direction!
 
-  this.children = []; // a list of object {next_node_entity,  pathObject, weight}
+  this.parentnode = parentnode;  // parent node
+  this.pathToParent = [];   // [[point, speed], [point, speed], ...]
+  this.parentEdge = parentEdge;  // the edge in this node/tri that associate with its parent node
+  this.children = []; // a list of object [node1, node2]
   this.pathToChildren = [];  // [  [[point, speed], [point, speed], ...],      [ ... ]  ]
 
   this.targetReachable = false;  // indicate this node or any node in its subtree is a target terminal
@@ -75,32 +138,25 @@ function Node( p , tri, parentnode, feature ){
 // get the entile single path from node to node
 function singlePath( tri , e ){
   var path = [], cur = [];
-  if(tri.Feature=='T'){
-    cur = [tri.value['T'], speedMapping(tri.area)];
-  }else if(tri.Feature=='J'){
-    cur = [tri.value[e][0], speedMapping(tri.area)];
+  if(tri.Feature=='T' || tri.Feature=='J'){
+    cur = [tri.position, speedMapping(tri.area)];
   }else{
     console.log("can not create single path starting from linker triangle");
     return null;
   }
   path.push(cur);
-  tri.isVisited = true;
   do{
     tri = Edge4Tri[e][0]==tri ? Edge4Tri[e][1] : Edge4Tri[e][0];
-    tri.isVisited = true;
     cur = [getMiddle(e), speedMapping(tri.area)];
     path.push(cur);
-    if(tri.Feature == 'T'){
-      cur = [tri.value['T'], speedMapping(tri.area)];
-      path.push(cur);
-    }else if(tri.Feature == 'J'){
-      cur = [tri.value[e][0], speedMapping(tri.area)];
+    if(tri.Feature=='T' || tri.Feature=='J'){
+      cur = [tri.position, speedMapping(tri.area)];
       path.push(cur);
     }else{
       e = tri.value[e][1];
     }
   }while(tri.Feature == 'L');
-  return [path, tri];
+  return [path, tri, e];
 }
 
 function copyReversePath( path ){
