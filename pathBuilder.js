@@ -27,7 +27,7 @@
 // this.value[this.Inner[1]] = [mid1, this.Inner[0]];
 // this.value[reverseEdge(this.Inner[1])] = [mid1, this.Inner[0]];
 
-function buildPath( Edge4Tri ){
+function buildPath(){
   if(startTriangle == null){
     console.log("failed to find start Triangle");
     return;
@@ -77,7 +77,7 @@ function buildPath( Edge4Tri ){
           break;  // break for loop to inner while loop
         }else if(childTri.Feature == 'T'){
           // a terminal node will not have two parents
-          var childNode = Node( childTri.position , childTri, curNode, childTriEdge, 'T' );
+          var childNode = new Node( childTri.position , childTri, curNode, childTriEdge, 'T' );
           curNode.children.push(childNode);
           curNode.pathToChildren.push(path);
           childNode.pathToParent.push(copyReversePath(path));  //mutually connect to each other
@@ -117,7 +117,7 @@ function buildPath( Edge4Tri ){
             // childTri is not a terminal
             // childTri is not a terminal Junction
             // so childTri must be junction
-            var childNode = Node( childTri.position , childTri, curNode, childTriEdge, 'J' );
+            var childNode = new Node( childTri.position , childTri, curNode, childTriEdge, 'J' );
             curNode.children.push(childNode);
             curNode.pathToChildren.push(path);
             childNode.pathToParent.push(copyReversePath(path));  //mutually connect to each other
@@ -176,7 +176,23 @@ function singlePath( tri , e ){
       e = tri.value[e][1];
     }
   }while(tri.Feature == 'L');
+  drawArray(cx, path, 'rgb(255,255,102)');
   return [path, tri, e];
+}
+
+function drawArray(cx, arr , color){
+  cx.lineWidth = 1;
+  cx.lineCap = 'round';
+  cx.strokeStyle = color;
+  cx.beginPath();
+  for(var idx=0; idx<arr.length; idx++){
+    if(idx==0){
+      cx.moveTo(arr[idx][0][0], arr[idx][0][1]);
+      continue;
+    }
+    cx.lineTo(arr[idx][0][0], arr[idx][0][1]);
+    cx.stroke();
+  }
 }
 
 function copyReversePath( path ){
