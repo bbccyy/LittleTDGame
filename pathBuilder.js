@@ -37,16 +37,24 @@ function buildPath( Edge4Tri ){
   queue.push(startNode);
   while(queue.length > 0){
     size = queue.length;
+    var tmpHashTable = {}; //eliminate creating duplicate node for the same junction triangle
     while(size > 0){
       size--;
-      var tmpHashTable = {};
       curNode = queue.shift();
       curNode.depth = depth;
       if(curNode.Feature == 'TS'){
         edges = [curNode.triangle.Inner[0]];  //'T' node only has one available edge
-      }else if(curNode.Feature == 'J'){
+      }else if(curNode.Feature == 'J' && curNode.parentEdge.length == 1){
         var jVal = curNode.triangle.value[curNode.parentEdge];
         edges = [jVal[2], jVal[4]];
+      }else if(curNode.Feature == 'J' && curNode.parentEdge.length > 1){
+        //a node with two parents
+        for(var i=0; i<curNode.triangle.Inner.length; i++){
+          if(!(curNode.triangle.Inner[i] in curNode.parentEdge)){
+            edges = [curNode.triangle.Inner[i]];
+            break;
+          }
+        }
       }else{
         console.log("Function<buildPath>: do not push 'T' feature node into queue");
       }
@@ -68,14 +76,28 @@ function buildPath( Edge4Tri ){
           // targetReachable = false;
           break;  // break for loop to inner while loop
         }else if(childTri.Feature == 'T'){
+          // a terminal node will not have two parents
           var childNode = Node( childTri.position , childTri, curNode, childTriEdge, 'T' );
           curNode.children.push(childNode);
           curNode.pathToChildren.push(path);
-          childNode.pathToParent = copyReversePath(path);  //mutually connect to each other
+          childNode.pathToParent.push(copyReversePath(path));  //mutually connect to each other
           childTri.isVisited = true;
           childNode.depth = depth+1;
         }else{  // must be 'J'
-          if(childTri.isVisited){
+          if(tmpHashTable[childTri] != undefined){
+            // find a tri/node that discovered in current layer/while loop
+            // previously discovered node, so neight create a same one, nor push it into the queue
+            // a node can has two parents
+            // a node can has two same or different parents
+            var childNode = tmpHashTable[childTri];
+            curNode.children.push(childNode);
+            curNode.pathToChildren.push(path);
+            childNode.pathToParent.push(copyReversePath(path));
+            childNode.parentnode.push(curNode);
+            childNode.parentEdge.push(childTriEdge);
+          }else if(childTri.isVisited){
+            // also already be discovered, but must not be discovered in this layer
+            // so this one is a node on the same layer
             // two node on the same level will see each other, therefore no need to add to queue
             // also no need to add each other to parent
             // beside, it's possible a J node has two on-same-layer child nodes
@@ -98,32 +120,30 @@ function buildPath( Edge4Tri ){
             var childNode = Node( childTri.position , childTri, curNode, childTriEdge, 'J' );
             curNode.children.push(childNode);
             curNode.pathToChildren.push(path);
-            childNode.pathToParent = copyReversePath(path);  //mutually connect to each other
+            childNode.pathToParent.push(copyReversePath(path));  //mutually connect to each other
             childTri.isVisited = true;
             queue.push(childNode);
+            tmpHashTable[childTri] = childNode;
           }
         }
-
-        curNode.children = []; // a list of object [node1, node2]
-        this.pathToChildren = [];
-      }
-    }
+      }  // end of for loop:  explore a node's branch
+    } // end of inner while loop:  node on the same layer
     depth++;
-  }
-
+  } // enf of outer while loop: all nodes should be discovered
+  return startNode;
 }
 
 // weight + children.length --> probability  --> children[idx] & pathToChildren[idx]
 function Node( position , tri, parentnode, parentEdge, feature ){
   this.position = position;  // p = [x, y]
-  this.tirangle = tri;
+  this.triangle = tri;  // the super tishen standing behand this node
   this.toString = function(){return this.position.toString();}  // we can use Node as key in hashtable
   this.weight = -1;  // this node and all its sub notes' accumulated weight, used to compute probability
   this.probabiltiy = [];  // prob = [[0,0.25],[0.25,1]]   random number drops in which slot, choose that direction!
 
-  this.parentnode = parentnode;  // parent node
+  this.parentnode = [parentnode];  // parent node
   this.pathToParent = [];   // [[point, speed], [point, speed], ...]
-  this.parentEdge = parentEdge;  // the edge in this node/tri that associate with its parent node
+  this.parentEdge = [parentEdge];  // the edge in this node/tri that associate with its parent node
   this.children = []; // a list of object [node1, node2]
   this.pathToChildren = [];  // [  [[point, speed], [point, speed], ...],      [ ... ]  ]
 
