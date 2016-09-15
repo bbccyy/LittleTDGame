@@ -50,10 +50,10 @@ function buildPath(){
       }else if(curNode.Feature == 'J' && curNode.parentEdge.length > 1){
         //a node with two parents
         for(var i=0; i<curNode.triangle.Inner.length; i++){
-          if(!(curNode.triangle.Inner[i] in curNode.parentEdge)){
-            edges = [curNode.triangle.Inner[i]];
-            break;
-          }
+          if(edgeEq(curNode.triangle.Inner[i], curNode.parentEdge[0]) ||
+            edgeEq(curNode.triangle.Inner[i], curNode.parentEdge[1])) continue;
+          edges = [curNode.triangle.Inner[i]];
+          break;
         }
       }else{
         console.log("Function<buildPath>: do not push 'T' feature node into queue");
