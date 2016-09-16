@@ -4,28 +4,7 @@
 // var terminalTriPool = []; // to trim terminal tri
 // var startTriangle = null; // should be up leftmost triangle
 
-// Tri --> all field data
-// this.Inner = innerEdge;
-// this.Outer = outerEdge;
-// this.Feature = feature;
-// this.isVisited = false;
-// this.value = {};
-// this.area = computeTriAreaByEdges(innerEdge.concat(outerEdge));
-
-// J
-// key = inner edge,   value = [geocentre point,  two other inner edge's Middle point and edge itself]
-// this.value[this.Inner[0]] = [centre, mid2, this.Inner[1], mid3, this.Inner[2]];
-// this.value[reverseEdge(this.Inner[0])] = [centre, mid2, this.Inner[1], mid3, this.Inner[2]];
-// T
-// this.value['T'] = tp;   //terminal point
-// this.value['M'] = getMiddle( this.Inner[0] );  //middle point on Inner edge
-// this.value['A'] = getAngle( this.Outer[0], this.Outer[1] );  // get angle of two outer edge
-// L
-// key = inner edge,   value = [the other inner edge's Middle point and edge itself]
-// this.value[this.Inner[0]] = [mid2, this.Inner[1]];
-// this.value[reverseEdge(this.Inner[0])] = [mid2, this.Inner[1]];
-// this.value[this.Inner[1]] = [mid1, this.Inner[0]];
-// this.value[reverseEdge(this.Inner[1])] = [mid1, this.Inner[0]];
+var terminalNodePool = [];  // global variable, [target-terminal,  terminal1, terminal2, ... ]
 
 function buildPath(){
   if(startTriangle == null){
@@ -47,7 +26,7 @@ function buildPath(){
       }else if(curNode.Feature == 'J' && curNode.parentEdge.length == 1){
         var jVal = curNode.triangle.value[curNode.parentEdge];
         edges = [jVal[2], jVal[4]];
-      }else if(curNode.Feature == 'J' && curNode.parentEdge.length > 1){
+      }else if(curNode.Feature == 'J' && curNode.parentEdge.length == 2){
         //a node with two parents
         for(var i=0; i<curNode.triangle.Inner.length; i++){
           if(edgeEq(curNode.triangle.Inner[i], curNode.parentEdge[0]) ||
@@ -55,6 +34,11 @@ function buildPath(){
           edges = [curNode.triangle.Inner[i]];
           break;
         }
+      }else if(curNode.Feature == 'J' && curNode.parentEdge.length == 3){
+        // in case a Junction node has Three parents  --> weird, but real
+        curNode.Feature == 'TJ'  // this node is equivlent to a Terminal, so treat it just as 'TJ'
+        recordTerminal(curNode);
+        continue;
       }else{
         console.log("Function<buildPath>: do not push 'T' feature node into queue");
       }
@@ -69,11 +53,11 @@ function buildPath(){
           // if a J node find a single path to itself, then this J node should be treated as a Terminal node
           // in the above case, set Feature to 'TJ'
           curNode.Feature = 'TJ';
-          curNode.children.push(curNode);
-          curNode.children.push(curNode);
-          curNode.pathToChildren.push(path);
-          curNode.pathToChildren.push(copyReversePath(path));
-          // targetReachable = false;
+          curNode.fellow.push(curNode);   // put itself to its fellows, because every node always has 20% chance to direct visit a fellow
+          curNode.fellow.push(curNode);
+          curNode.pathToFellow.push(path);
+          curNode.pathToFellow.push(copyReversePath(path));
+          recordTerminal(curNode);
           break;  // break for loop to inner while loop
         }else if(childTri.Feature == 'T'){
           // a terminal node will not have two parents
@@ -83,12 +67,13 @@ function buildPath(){
           childNode.pathToParent.push(copyReversePath(path));  //mutually connect to each other
           childTri.isVisited = true;
           childNode.depth = depth+1;
+          recordTerminal(childNode);
         }else{  // must be 'J'
           if(tmpHashTable[childTri] != undefined){
             // find a tri/node that discovered in current layer/while loop
             // previously discovered node, so neight create a same one, nor push it into the queue
-            // a node can has two parents
-            // a node can has two same or different parents
+            // a node can has two or three parents
+            // a node can has same or different parents
             var childNode = tmpHashTable[childTri];
             curNode.children.push(childNode);
             curNode.pathToChildren.push(path);
@@ -100,29 +85,39 @@ function buildPath(){
             // so this one is a node on the same layer
             // two node on the same level will see each other, therefore no need to add to queue
             // also no need to add each other to parent
-            // beside, it's possible a J node has two on-same-layer child nodes
+            // beside, it's possible a J node has two on-same-layer fellow nodes
+            // even more crazy, a J node's two fellows may be the same (one node, two fellow paths)
             var sameLayerNode = tmpHashTable[childTri];
             if( sameLayerNode == undefined ){
               tmpHashTable[curNode.triangle] = curNode;
               continue;
             }
-            curNode.children.push(sameLayerNode);
-            curNode.pathToChildren.push(path);
-            sameLayerNode.children.push(curNode);
-            sameLayerNode.pathToChildren.push(copyReversePath(path));
+            curNode.fellow.push(sameLayerNode);
+            curNode.pathToFellow.push(path);
+            sameLayerNode.fellow.push(curNode);
+            sameLayerNode.pathToFellow.push(copyReversePath(path));
+            if(curNode.fellow.length==2){
+              curNode.Feature = 'TJ';
+              // do something to process terminal
+              recordTerminal(curNode);
+            }
+            if(sameLayerNode.fellow.length==2){
+              sameLayerNode.Feature = 'TJ';
+              recordTerminal(sameLayerNode);
+            }
           }else{
             // normal case, need to push to queue
             // parent could be TS could be J
             // childTri is unvisited
             // childTri is not a terminal
-            // childTri is not a terminal Junction
+            // childTri is not a terminal Junction YET (we don't know if it will be later)
             // so childTri must be junction
             var childNode = new Node( childTri.position , childTri, curNode, childTriEdge, 'J' );
             curNode.children.push(childNode);
             curNode.pathToChildren.push(path);
             childNode.pathToParent.push(copyReversePath(path));  //mutually connect to each other
-            childTri.isVisited = true;
             queue.push(childNode);
+            childTri.isVisited = true;
             tmpHashTable[childTri] = childNode;
           }
         }
@@ -136,21 +131,40 @@ function buildPath(){
 // weight + children.length --> probability  --> children[idx] & pathToChildren[idx]
 function Node( position , tri, parentnode, parentEdge, feature ){
   this.position = position;  // p = [x, y]
+  this.Feature = feature;  // 'T' for terminal, 'J' for junction, 'TA' for target terminal, 'TS' for start terminal
+  this.depth = 0;  // use BFS to set depth for each nodes
+  this.weight = 0;  // this node and all its sub notes' accumulated weight, used to compute probability
+  this.reachable = {};  //{key = T-Node :   value = -1, 0 or 1} where -1:false, 0:indirect true,  1:true
+
   this.triangle = tri;  // the super tishen standing behand this node
-  this.toString = function(){return this.position.toString();}  // we can use Node as key in hashtable
-  this.weight = -1;  // this node and all its sub notes' accumulated weight, used to compute probability
-  this.probabiltiy = [];  // prob = [[0,0.25],[0.25,1]]   random number drops in which slot, choose that direction!
+  this.parentEdge = [parentEdge];  // the edge in this node/tri that associate with its parent node
+
+  //this.probabiltiy = [];  // prob = [[0,0.25],[0.25,1]]   random number drops in which slot, choose that direction!
 
   this.parentnode = [parentnode];  // parent node
   this.pathToParent = [];   // [[point, speed], [point, speed], ...]
-  this.parentEdge = [parentEdge];  // the edge in this node/tri that associate with its parent node
+
+  this.fellow = [];    // fellow node, only direct connected same-layer node can be fellow node
+  this.pathToFellow = [];
+
   this.children = []; // a list of object [node1, node2]
   this.pathToChildren = [];  // [  [[point, speed], [point, speed], ...],      [ ... ]  ]
 
-  this.targetReachable = false;  // indicate this node or any node in its subtree is a target terminal
-  this.terminalReachable = {};  // {key = T-Node :   value = true or false}
-  this.Feature = feature;  // 'T' for terminal, 'J' for junction, 'TA' for target terminal, 'TS' for start terminal
-  this.depth = -1;  // use BFS to set depth for each nodes
+  this.toString = function(){return this.position.toString();}  // we can use Node as key in hashtable
+  // if this node has lived direct nodes, return 1
+  // if has indirect nodes return 0;
+  // else return -1;
+  this.worthToVisit = function(){
+    if(typeof liveTerminalPool === 'undefined') return true;
+    var res = -1;
+    for(var i=0; i<liveTerminalPool.length; i++){
+      if(this.reachable[liveTerminalPool[i]] == 0)
+        res = 0;
+      else if(this.reachable[liveTerminalPool[i]] == 1)
+        return 1;
+    }
+    return res;
+  }
 
 }
 
@@ -192,6 +206,21 @@ function drawArray(cx, arr , color){
     }
     cx.lineTo(arr[idx][0][0], arr[idx][0][1]);
     cx.stroke();
+  }
+}
+
+// var TerminalNodes = [node1, node2, ... ]
+// var terminalNodePool = [] --> global variable: [target-terminal,  terminal1, terminal2, ... ]
+// var Restriction = [[[100,0],[0,100]],[[width-100,height],[width,height-100]]]
+// isOnLeft(e, r)
+function recordTerminal( node ){
+  if(!isOnLeft([[width-50,height],[width,height-50]], node.position)){
+    terminalNodePool.unshift(node);
+    node.Feature = 'TA';
+    console.log("find TA:");
+    console.log(node);
+  }else{
+    terminalNodePool.push(node);
   }
 }
 

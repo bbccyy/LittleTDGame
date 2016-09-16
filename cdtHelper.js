@@ -17,8 +17,8 @@ function getCentrePoint(x1, x2, x3){
   return [x, y, r];
 }
 
-// res > 0 --> left
-// res < 0 --> right
+// res < 0 --> left
+// res > 0 --> right
 function isOnLeft(e, r) {
   var p = e[0];
   var q = e[1];
