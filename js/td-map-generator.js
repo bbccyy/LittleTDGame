@@ -126,7 +126,7 @@ _TD.loading.push(function(TD){
         TD.rawMapData = _this.history[_this.index].data;
         TD.path = new TD.createPath(TD.rawMapData);
         console.log(TD.path);
-        new TD.path.cdt(TD.path.pathOutline[0], TD.path.pathOutline[1]);
+        //new TD.path.cdt(TD.path.pathOutline[0], TD.path.pathOutline[1]);
       },
 
       preDraw : function(){

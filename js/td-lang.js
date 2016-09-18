@@ -49,6 +49,21 @@ _TD.loading.push(function(TD){
       }
     },
 
+    drawArray : function(cx, arr , color){
+      cx.lineWidth = 1;
+      cx.lineCap = 'round';
+      cx.strokeStyle = color;
+      cx.beginPath();
+      for(var idx=0; idx<arr.length; idx++){
+        if(idx==0){
+          cx.moveTo(arr[idx][0][0], arr[idx][0][1]);
+          continue;
+        }
+        cx.lineTo(arr[idx][0][0], arr[idx][0][1]);
+        cx.stroke();
+      }
+    },
+
     drawOutline : function(cx, que){
       cx.lineWidth = 2;
       cx.lineCap = 'round';
@@ -99,6 +114,18 @@ _TD.loading.push(function(TD){
       var y=(d*c-a*f)/(b*d-e*a);
       var r=Math.sqrt((x-x1[0])*(x-x1[0])+(y-x1[1])*(y-x1[1]));
       return [x, y, r];
+    },
+
+    // compute the geo centre from a given triangle's all edges
+    getGeoCentre : function( allEdges ){
+      var p = allEdges[0][0];   // choose first inner edge's first point as a terminal point
+      var edge = null;
+      if(this.pointEq(allEdges[1][0],p) || this.pointEq(allEdges[1][1],p)) // get that terminal point's opposit edge
+        edge = allEdges[2];
+      else edge = allEdges[1];
+      var m = this.getMiddle( edge );
+      var res = [(p[0]-m[0])/3 + m[0], (p[1]-m[1])/3 + m[1]];
+      return res;
     },
 
     getMiddle : function( e ){

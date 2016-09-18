@@ -42,41 +42,6 @@ window.onload = function () {
 		//document.getElementById("td-board").style.display = "block";
 };
 
-// var c = document.querySelector('canvas');
-// var cx = c.getContext('2d');
-//
-// var mousedown = false;
-// var oldx = null;
-// var oldy = null;
-//
-// var height = 500;
-// var width = 500;
-//
-// var Restriction = [[[100,0],[0,100]],[[width-100,height],[width,height-100]]];
-//
-// var terminalNodePool = [];  // global variable, [target-terminal,  terminal1, terminal2, ... ]
-// var liveTerminalPool = [];  // [terminalNode1, terminalNode2, ...]  only store terminal that yet been distroyed
-// var deadTerminalPool = [];
-
-
-
-function Create2DArray(rows, columns) {
-  var arr = [];
-  for (var i=0;i<rows;i++) {
-    var arr2 = [];
-    for(var j=0;j<columns; j++){
-      arr2[j] = 0;
-    }
-     arr[i] = arr2;
-  }
-  return arr;
-}
-// var map = Create2DArray(500, 500);
-// map.columns = 500;
-// map.rows = 500;
-
-
-
 function getData(){
   var data = cx.getImageData(0,0,c.width,c.height).data;
   //console.log(data);

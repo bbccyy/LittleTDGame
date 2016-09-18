@@ -3,6 +3,8 @@ var _TD = {
 	init: function () {
     var i, TD = {
       version : "0.0.1",
+			root : null,
+			terminalNodePool : [],
       init: function () {
 				var canvas = document.getElementById('td-canvas');
 				var redoBody = document.getElementById('redo');

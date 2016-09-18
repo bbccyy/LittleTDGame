@@ -416,41 +416,6 @@ _TD.loading.push(function(TD){
 
       },// end of Tri
 
-
-      //terminalTriPool = [tri1, tri2, tri3...]
-      //Edge4Tri = {}  --> key: edge.toString, value = [tri1, tri2]
-      //reverseEdge
-      trimRedundantTerminalTriangle : function(){
-        while(terminalTriPool.length > 0){
-          var curTri = terminalTriPool.shift();
-          if(curTri.value['A'] < 100) continue;
-          //drawTriangleOutline(cx, curTri);
-          var terminalInnerEdge = curTri.Inner[0];
-          var edgeRelatedTriPool = Edge4Tri[terminalInnerEdge];
-          var relatedTri = null;
-          if(edgeRelatedTriPool[0]==curTri){
-            relatedTri = edgeRelatedTriPool[1];
-            //edgeRelatedTriPool.splice(0,1);   --> no need to pop out this terminal tri, will eventually delete this key!
-            //Edge4Tri[reverseEdge(terminalInnerEdge)].splice(0,1);
-          }else{
-            relatedTri = edgeRelatedTriPool[0];
-            //edgeRelatedTriPool.splice(1,1);
-            //Edge4Tri[reverseEdge(terminalInnerEdge)].splice(1,1);
-          }
-          console.log("trim this bad triangle!");
-          console.log(curTri);
-          relatedTri.changeFeature(terminalInnerEdge);  // now this tri is nolonger it's origin feature!
-          if(relatedTri.Feature == 'T'){
-            console.log("add new terminal tri");
-            console.log(relatedTri);
-            terminalTriPool.push(relatedTri);
-          }
-          delete Edge4Tri[terminalInnerEdge];
-          delete Edge4Tri[TD.lang.reverseEdge(terminalInnerEdge)];
-        }
-      },
-
-
       resolveCircleProblem : function(curEdge, theOnes, hashEdge, cx){
         var directEdges = [], circleTri = [];
         for(var idx=0; idx<theOnes.length; idx++){
@@ -483,14 +448,332 @@ _TD.loading.push(function(TD){
             //TD.lang.drawOneSet(cx, [[p1, p2]] , 'rgb(0, 0, 255)');
           }
         }
+      } // end of resolveCircleProblem
+
+    }; // end of cdt prototype
+
+
+    //terminalTriPool = [tri1, tri2, tri3...]
+    //Edge4Tri = {}  --> key: edge.toString, value = [tri1, tri2]
+    //reverseEdge
+    this.trimRedundantTerminalTriangle = function(){
+      while(terminalTriPool.length > 0){
+        var curTri = terminalTriPool.shift();
+        if(curTri.value['A'] < 100) continue;
+        //drawTriangleOutline(cx, curTri);
+        var terminalInnerEdge = curTri.Inner[0];
+        var edgeRelatedTriPool = Edge4Tri[terminalInnerEdge];
+        var relatedTri = null;
+        if(edgeRelatedTriPool[0]==curTri){
+          relatedTri = edgeRelatedTriPool[1];
+          //edgeRelatedTriPool.splice(0,1);   --> no need to pop out this terminal tri, will eventually delete this key!
+          //Edge4Tri[reverseEdge(terminalInnerEdge)].splice(0,1);
+        }else{
+          relatedTri = edgeRelatedTriPool[0];
+          //edgeRelatedTriPool.splice(1,1);
+          //Edge4Tri[reverseEdge(terminalInnerEdge)].splice(1,1);
+        }
+        console.log("trim this bad triangle!");
+        console.log(curTri);
+        relatedTri.changeFeature(terminalInnerEdge);  // now this tri is nolonger it's origin feature!
+        if(relatedTri.Feature == 'T'){
+          console.log("add new terminal tri");
+          console.log(relatedTri);
+          terminalTriPool.push(relatedTri);
+        }
+        delete Edge4Tri[terminalInnerEdge];
+        delete Edge4Tri[TD.lang.reverseEdge(terminalInnerEdge)];
+      }
+    };
+
+
+    this.buildPath = function( startTriangle ){
+      if(startTriangle == null){
+        console.log("failed to find start Triangle");
+        return;
+      }
+      var queue = [], depth = 0, size = 0, curNode = null, edges = null;
+      var startNode = new this.Node(startTriangle.position, startTriangle, null, null, 'TS');
+      queue.push(startNode);
+      while(queue.length > 0){
+        size = queue.length;
+        var tmpHashTable = {}; //eliminate creating duplicate node for the same junction triangle
+        while(size > 0){
+          size--;
+          curNode = queue.shift();
+          curNode.depth = depth;
+          if(curNode.Feature == 'TS'){
+            edges = [curNode.triangle.Inner[0]];  //'T' node only has one available edge
+          }else if(curNode.Feature == 'J' && curNode.parentEdge.length == 1){
+            var jVal = curNode.triangle.value[curNode.parentEdge];
+            edges = [jVal[2], jVal[4]];
+          }else if(curNode.Feature == 'J' && curNode.parentEdge.length == 2){
+            //a node with two parents
+            for(var i=0; i<curNode.triangle.Inner.length; i++){
+              if(TD.lang.edgeEq(curNode.triangle.Inner[i], curNode.parentEdge[0]) ||
+                TD.lang.edgeEq(curNode.triangle.Inner[i], curNode.parentEdge[1])) continue;
+              edges = [curNode.triangle.Inner[i]];
+              break;
+            }
+          }else if(curNode.Feature == 'J' && curNode.parentEdge.length == 3){
+            // in case a Junction node has Three parents  --> weird, but real
+            curNode.Feature == 'TJ'  // this node is equivlent to a Terminal, so treat it just as 'TJ'
+            this.recordTerminal(curNode);
+            continue;
+          }else{
+            console.log("Function<buildPath>: do not push 'T' feature node into queue");
+          }
+
+          for(var idx=0; idx<edges.length; idx++){   // 1 or 2 times
+            var res = this.singlePath( curNode.triangle , edges[idx] );  // res = [path, tri, tri-edge]
+            var path = res[0];
+            var childTri = res[1];
+            var childTriEdge = res[2];
+
+            if(childTri == curNode.triangle){
+              // if a J node find a single path to itself, then this J node should be treated as a Terminal node
+              // in the above case, set Feature to 'TJ'
+              curNode.Feature = 'TJ';
+              curNode.fellow.push(curNode);   // put itself to its fellows, because every node always has 20% chance to direct visit a fellow
+              curNode.fellow.push(curNode);
+              curNode.pathToFellow.push(path);
+              curNode.pathToFellow.push(this.copyReversePath(path));
+              this.recordTerminal(curNode);
+              break;  // break for loop to inner while loop
+            }else if(childTri.Feature == 'T'){
+              // a terminal node will not have two parents
+              var childNode = new this.Node( childTri.position , childTri, curNode, childTriEdge, 'T' );
+              curNode.children.push(childNode);
+              curNode.pathToChildren.push(path);
+              childNode.pathToParent.push(this.copyReversePath(path));  //mutually connect to each other
+              childTri.isVisited = true;
+              childNode.depth = depth+1;
+              this.recordTerminal(childNode);
+            }else{  // must be 'J'
+              if(tmpHashTable[childTri] != undefined){
+                // find a tri/node that discovered in current layer/while loop
+                // previously discovered node, so neight create a same one, nor push it into the queue
+                // a node can has two or three parents
+                // a node can has same or different parents
+                var childNode = tmpHashTable[childTri];
+                curNode.children.push(childNode);
+                curNode.pathToChildren.push(path);
+                childNode.pathToParent.push(this.copyReversePath(path));
+                childNode.parentnode.push(curNode);
+                childNode.parentEdge.push(childTriEdge);
+              }else if(childTri.isVisited){
+                // also already be discovered, but must not be discovered in this layer
+                // so this one is a node on the same layer
+                // two node on the same level will see each other, therefore no need to add to queue
+                // also no need to add each other to parent
+                // beside, it's possible a J node has two on-same-layer fellow nodes
+                // even more crazy, a J node's two fellows may be the same (one node, two fellow paths)
+                var sameLayerNode = tmpHashTable[childTri];
+                if( sameLayerNode == undefined ){
+                  tmpHashTable[curNode.triangle] = curNode;
+                  continue;
+                }
+                curNode.fellow.push(sameLayerNode);
+                curNode.pathToFellow.push(path);
+                sameLayerNode.fellow.push(curNode);
+                sameLayerNode.pathToFellow.push(this.copyReversePath(path));
+                if(curNode.fellow.length==2){
+                  curNode.Feature = 'TJ';
+                  // do something to process terminal
+                  recordTerminal(curNode);
+                }
+                if(sameLayerNode.fellow.length==2){
+                  sameLayerNode.Feature = 'TJ';
+                  this.recordTerminal(sameLayerNode);
+                }
+              }else{
+                // normal case, need to push to queue
+                // parent could be TS could be J
+                // childTri is unvisited
+                // childTri is not a terminal
+                // childTri is not a terminal Junction YET (we don't know if it will be later)
+                // so childTri must be junction
+                var childNode = new this.Node( childTri.position , childTri, curNode, childTriEdge, 'J' );
+                curNode.children.push(childNode);
+                curNode.pathToChildren.push(path);
+                childNode.pathToParent.push(this.copyReversePath(path));  //mutually connect to each other
+                queue.push(childNode);
+                childTri.isVisited = true;
+                tmpHashTable[childTri] = childNode;
+              }
+            }
+          }  // end of for loop:  explore a node's branch
+        } // end of inner while loop:  node on the same layer
+        depth++;
+      } // enf of outer while loop: all nodes should be discovered
+      return startNode;
+    };
+
+
+    this.buildPath.prototype = {
+
+      Node : function( position , tri, parentnode, parentEdge, feature ){
+        this.position = position;  // p = [x, y]
+        this.Feature = feature;  // 'T' for terminal, 'J' for junction, 'TA' for target terminal, 'TS' for start terminal
+        this.depth = 0;  // use BFS to set depth for each nodes
+        this.weight = 0;  // this node and all its sub notes' accumulated weight, used to compute probability
+        this.reachable = {};  //{key = T-Node :   value = -1, 0 or 1} where -1:false, 0:indirect true,  1:true
+
+        this.triangle = tri;  // the super tishen standing behand this node
+        this.parentEdge = [parentEdge];  // the edge in this node/tri that associate with its parent node
+
+        //this.probabiltiy = [];  // prob = [[0,0.25],[0.25,1]]   random number drops in which slot, choose that direction!
+
+        this.parentnode = [parentnode];  // parent node
+        this.pathToParent = [];   // [[point, speed], [point, speed], ...]
+
+        this.fellow = [];    // fellow node, only direct connected same-layer node can be fellow node
+        this.pathToFellow = [];
+
+        this.children = []; // a list of object [node1, node2]
+        this.pathToChildren = [];  // [  [[point, speed], [point, speed], ...],      [ ... ]  ]
+
+        this.toString = function(){return this.position.toString();};  // we can use Node as key in hashtable
+        // if this node has lived direct nodes, return 1
+        // if has indirect nodes return 0;
+        // else return -1;
+        this.worthToVisit = function(){
+          if(typeof liveTerminalPool === 'undefined') return true;
+          var res = -1;
+          for(var i=0; i<liveTerminalPool.length; i++){
+            if(this.reachable[liveTerminalPool[i]] == 0)
+              res = 0;
+            else if(this.reachable[liveTerminalPool[i]] == 1)
+              return 1;
+          }
+          return res;
+        }
+      },
+
+      singlePath : function( tri , e ){
+        var path = [], cur = [];
+        if(tri.Feature=='T' || tri.Feature=='J'){
+          cur = [tri.position, TD.cfg.speedMapping(tri.area)];
+        }else{
+          console.log("can not create single path starting from linker triangle");
+          return null;
+        }
+        path.push(cur);
+        do{
+          tri = Edge4Tri[e][0]==tri ? Edge4Tri[e][1] : Edge4Tri[e][0];
+          cur = [TD.lang.getMiddle(e), TD.cfg.speedMapping(tri.area)];
+          path.push(cur);
+          if(tri.Feature=='T' || tri.Feature=='J'){
+            cur = [tri.position, TD.cfg.speedMapping(tri.area)];
+            path.push(cur);
+          }else{
+            e = tri.value[e][1];
+          }
+        }while(tri.Feature == 'L');
+        TD.lang.drawArray(cx, path, 'rgb(255,255,102)');
+        return [path, tri, e];
+      },
+
+      // var terminalNodePool = [] --> global variable: [target-terminal,  terminal1, terminal2, ... ]
+      // var Restriction = [[[100,0],[0,100]],[[width-100,height],[width,height-100]]]
+      // isOnLeft(e, r)
+      recordTerminal : function( node ){
+        if(!TD.lang.isOnLeft(TD.cfg.taRestriction, node.position)){
+          TD.terminalNodePool.unshift(node);
+          node.Feature = 'TA';
+          console.log("find TA:");
+          console.log(node);
+        }else{
+          TD.terminalNodePool.push(node);
+        }
+      },
+
+      copyReversePath : function( path ){
+        var res = [];
+        for(var idx=path.length-1; idx>=0; idx--){
+          res.push(path[idx]);
+        }
+        return res;
+      } // end of copyReversePath
+
+    }; // end of buildPath.prototype
+
+
+    this.setPath = function( terminalNodePool ){
+      for(var idx=0; idx<terminalNodePool.length; idx++){  // for each terminal node do following:
+        var curTerminalNode = terminalNodePool[idx];
+        // first do dfs from each terminal node
+        // only explore parentnode
+        // set all encounter node:  {key = current terminal,   value = 'direct reachable' or 1}
+        // 1  -->  direct reachable
+        var directNodes = [];
+        this.dfs4Node(curTerminalNode, curTerminalNode, ['parentnode'], 1, directNodes);
+        // then for all explored direct reachable nodes
+        // do dfs to both parent and fellow branches
+        // set all non-setted node:  {key = current terminal,   value = 'indirect reachable' or 0}
+        // 0  -->  indirect reachable
+        var indirectNodes = [];
+        for(var i=0; i<directNodes.length; i++){
+          var dirN = directNodes[i];
+          this.dfs4Node(curTerminalNode, dirN, ['parentnode', 'fellow'], 0, []);
+        }
+      }
+    };
+
+
+    // terminalNode -->  key of Node.reachable
+    // curNode  -->  dfs current searching node
+    // branchNames  -->  name of branch:  parentnode or fellow or children
+    // value  -->  1 as direct,  0 as indirect
+    // pool  -->  return all setted nodes during dfs
+    this.dfs4Node = function( terminalNode, curNode, branchNames, value, pool){
+      if(curNode.Feature == 'TS'){  // 'TS' MUST be a Terminal, Must not be any kind of Junction or Linker
+        return;
+      }
+      if(curNode.reachable[terminalNode] == undefined){  // never set a seted value a value
+        curNode.reachable[terminalNode] = value;
+        pool.push(curNode);
       }
 
+      for(var i=0; i<branchNames.length; i++){
+        var list = curNode[branchNames[i]];
+        for(var idx=0; idx<list.length; idx++){
+          if(list[idx].reachable[terminalNode] == undefined)
+            this.dfs4Node( terminalNode, list[idx], branchNames, value, pool);
+        }
+      }
+    };
 
-    } // end of cdt prototype
 
+    // start from 'TS' node
+    // recursively compute weight = [path to children] + [weight of children]
+    // 'TA' worth 10 point
+    // 'T' and 'TJ' 5 point
+    // path to child just count length (# of triangles)
+    this.setWeight = function( node ){
+      if(node.Feature == 'T' || node.Feature == 'TJ'){
+        node.weight = 5;
+        return node.weight;
+      }else if(node.Feature == 'TA'){
+        node.weight = 10;
+        return node.weight;
+      }
+      for(var idx=0; idx<node.children.length; idx++){
+        node.weight += node.pathToChildren[idx].length + this.setWeight( node.children[idx] );
+      }
+      return node.weight;
+    };
 
 
     this.pathOutline = new this.getData(data);
+    new this.cdt(this.pathOutline[0], this.pathOutline[1]);
+    this.trimRedundantTerminalTriangle();
+    TD.root = new this.buildPath(startTriangle);
+    this.setPath(TD.terminalNodePool);
+    this.setWeight( TD.root );
+
+    console.log(TD.root);
+    console.log(TD.terminalNodePool);
   }
 
 
