@@ -24,8 +24,8 @@
 // this.toString = function(){return this.position.toString();}  // we can use Node as key in hashtable
 
 
-var liveTerminalPool = [];  // [terminalNode1, terminalNode2, ...]  only store terminal that yet been distroyed
-var deadTerminalPool = [];
+// var liveTerminalPool = [];  // [terminalNode1, terminalNode2, ...]  only store terminal that yet been distroyed
+// var deadTerminalPool = [];
 
 
 // terminalNode -->  key of Node.reachable
@@ -107,6 +107,7 @@ function strategy( curNode ){
       pool.push(i);
     }
     pool.push('fellow');
+    pool.push('pathToFellow');
     pool.unshift(1);
     idx = pickOne( pool, curNode );
     return [curNode.fellow[idx], curNode.pathToFellow[idx]];
@@ -130,6 +131,7 @@ function strategy( curNode ){
         pool = [];
       }else{
         pool.push('children');
+        pool.push('pathToChildren');
         idx = pickOne( pool, curNode );
         return [curNode.children[idx], curNode.pathToChildren[idx]];
       }
@@ -153,6 +155,7 @@ function strategy( curNode ){
         pool = [];
       }else{
         pool.push('fellow');
+        pool.push('pathToFellow');
         idx = pickOne( pool, curNode );
         return [curNode.fellow[idx], curNode.pathToFellow[idx]];
       }
@@ -173,6 +176,7 @@ function strategy( curNode ){
         }
       }
       pool.push('parentnode');
+      pool.push('pathToParent');
       idx = pickOne( pool, curNode );
       return [curNode.parentnode[idx], curNode.pathToParent[idx]];
     }
@@ -188,15 +192,17 @@ function strategy( curNode ){
 // pick a random based on weight
 // doing well when pool.length < 3
 function pickOne( pool, curNode ){
-  var branchName = pool.pop(), sum = 0, curW = 0;
+  var pathName = pool.pop(), branchName = pool.pop(), sum = 0, curW = 0, pre = 0;
   pool.shift();
   var idx = pool.shift();
-  sum = curNode[branchName][idx].weight;
+  sum = curNode[branchName][idx].weight + curNode[pathName][idx].length;
+  pre = sum;
   for(var i=0; i<pool.length; i++){
-    curW = curNode[branchName][pool[i]].weight
+    curW = curNode[branchName][pool[i]].weight + curNode[pathName][pool[i]].length;
     sum += curW;
     if(Math.random() < (curW / sum)){
-      sum -= curNode[branchName][idx].weight;
+      sum -= pre;
+      pre = sum;
       idx = pool[i];
     }else{
       sum -= curW;
