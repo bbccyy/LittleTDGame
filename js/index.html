@@ -14,6 +14,9 @@
   <script src="td-cfg.js"></script>
   <script src="td-lang.js"></script>
   <script src="td-path.js"></script>
+  <script src="td-monster-strategy.js"></script>
+  <script src="td-monster.js"></script>
+  <script src="td-drawer.js"></script>
   <script src="td-map-generator.js"></script>
   <style type="text/css">
     body {
@@ -23,17 +26,32 @@
     }
     canvas {
       display: block;
-      background: #ccc;
+    }
+    div.relative {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      border: 3px solid #73AD21;
+    }
+    canvas.absolute {
+      position: absolute;
+      display: block;
+      top: 0px;
+      left: 0px;
     }
   </style>
 </head>
 <body>
-  <div id="td-board">
-			<canvas id="td-canvas">Please use IE9 / Chrome / Opera </canvas>
+  <div id="td-board" class="relative">
+			<canvas id="td-canvas" class="absolute"  style="z-index: 0;">
+        Please use IE9 / Chrome / Opera </canvas>
+      <canvas id="td-canvas-1" class="absolute"  style="z-index: 1; pointer-events: none;">
+        Please use IE9 / Chrome / Opera </canvas>
 	</div>
   <button id="submit">submit</button>
   <button id="undo">undo</button>
   <button id="redo">redo</button>
+  <button id="run">run</button>
 <script>
 
 window.onload = function () {
@@ -41,77 +59,6 @@ window.onload = function () {
 		//document.getElementById("td-loading").style.display = "none";
 		//document.getElementById("td-board").style.display = "block";
 };
-
-function getData(){
-  var data = cx.getImageData(0,0,c.width,c.height).data;
-  //console.log(data);
-  for(var i = 1; i<c.height-1; i++){
-    for(var j = 1; j<c.width-1; j++){
-      var idx = i*4*c.width + j*4;
-      map[i][j] = (data[idx]==0 && data[idx+1]==0 && data[idx+2]==0 && data[idx+3]>100)? 1 : 0;
-    }
-  }
-  // var str = "";
-  // for(i=0; i<map.length; i++){
-  //   str += map[i].join(" ") + "\n";
-  // }
-  //console.log(str);
-
-  // var dirC = [[1,0,6],[-1,0,2],[0,1,4],[0,-1,8]];
-  // var dirD = [[-1,-1,1],[-1,1,3],[1,-1,7],[1,1,5]];
-  // var Dir = [dirC, dirD];
-
-  map[1][1] = 2;
-  map[2][1] = 2;
-  var outputQueue = [];
-  outputQueue.push([1,1,6]);
-  outputQueue.push([2,1,6]);
-  findPath(map, 2, 1, outputQueue);
-
-  var innerLines = findInnerLine(map);
-
-  // var str = "";
-  // for(i=0; i<map.length; i++){
-  //   str += map[i].join(" ") + "\n";
-  // }
-  // console.log(str);
-
-  var vectorQue = parseQue( outputQueue );
-  var vectorInnerQue = [];
-  drawOutline(cx, vectorQue);
-  var vectorInnerQue = [];
-  for(var idx=0; idx<innerLines.length; idx++){
-    var vq = parseQue(innerLines[idx]);
-    vectorInnerQue.push(vq);
-    //console.log(innerLines[idx]);
-    //console.log(vq);
-    drawOutline(cx, vq);
-  }
-
-  //console.log(getCentrePoint([1,1],[-1,-1],[-1,1]));
-  //console.log(naiveLeftRight([0,0],[1,2],[-2,-2]));
-
-  //drawOutline(cx, vectorQue);
-  /*pslg to cdt*/
-  cdt(vectorQue, vectorInnerQue, cx);
-  trimRedundantTerminalTriangle();
-
-  var root = buildPath();
-  console.log(root);
-  liveTerminalPool.push(root);
-
-  setReachableFlag( terminalNodePool );
-
-  setWeight( root );
-
-  // var Boundary = {};
-  // var Edge4Tri = {};
-  // var TriPool = [];
-  //drawTriangleOutline(cx);
-  //console.log(Edge4Tri);
-  //console.log(TriPool);
-  //console.log(Boundary);
-}
 </script>
 </body>
 </html>

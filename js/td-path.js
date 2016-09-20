@@ -243,7 +243,7 @@ _TD.loading.push(function(TD){
           //console.log("insert line!");
           //drawOneSet(cx, [[Line2start, Line2end]]);
         }
-        TD.lang.drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]], 'rgb(255, 255, 255)');
+        //TD.lang.drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]], 'rgb(255, 255, 255)');
         this.processTriangle(curEdge, [Line1start, Line1end], [Line2start, Line2end]);
       }
 
@@ -638,12 +638,14 @@ _TD.loading.push(function(TD){
         // if has indirect nodes return 0;
         // else return -1;
         this.worthToVisit = function(){
-          if(typeof liveTerminalPool === 'undefined') return true;
+          if(typeof TD.aliveTerminals === 'undefined') return true;
           var res = -1;
-          for(var i=0; i<liveTerminalPool.length; i++){
-            if(this.reachable[liveTerminalPool[i]] == 0)
+          for(var key in TD.aliveTerminals){
+            if(!TD.aliveTerminals.hasOwnProperty(key))
+              continue;
+            if(this.reachable[key] == 0)
               res = 0;
-            else if(this.reachable[liveTerminalPool[i]] == 1)
+            else if(this.reachable[key] == 1)
               return 1;
           }
           return res;
@@ -772,8 +774,9 @@ _TD.loading.push(function(TD){
     this.setPath(TD.terminalNodePool);
     this.setWeight( TD.root );
 
-    console.log(TD.root);
-    console.log(TD.terminalNodePool);
+    // console.log(TD.root);
+    // console.log(TD.terminalNodePool);
+    TD.start();
   }
 
 

@@ -1,5 +1,14 @@
 
 _TD.loading.push(function(TD){
+
+  // Object.size = function(obj) {
+  //     var size = 0, key;
+  //     for (key in obj) {
+  //         if (obj.hasOwnProperty(key)) size++;
+  //     }
+  //     return size;
+  // };
+
   TD.lang = {
 
     isOnLeft : function(e, r){
@@ -145,6 +154,26 @@ _TD.loading.push(function(TD){
     edgeEq : function(e1, e2){
       return (this.pointEq(e1[0], e2[0]) && this.pointEq(e1[1], e2[1])) ||
               (this.pointEq(e1[0], e2[1]) && this.pointEq(e1[1], e2[0]));
+    },
+
+    isInRange : function(p1, p2, r){
+      var dis = this.getDistance(p1, p2);
+      if( dis <= r) return true;
+      else return false;
+    },
+
+    getDistance : function(p1, p2){
+      return Math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0]) + (p1[1]-p2[1])*(p1[1]-p2[1]));
+    },
+
+    getNextPos : function(c, s, e, speed){
+      var dis = this.getDistance(s, e);
+      if( dis-1 <= speed ) return e;
+      var x = (e[0]-s[0])*speed/dis + c[0];
+      var y = (e[1]-s[1])*speed/dis + c[1];
+      var mag = this.getDistance(s, [x,y]);
+      if(mag >= dis) return e;
+      return [x,y];
     },
 
     getAngle : function(e1, e2){
