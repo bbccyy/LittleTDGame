@@ -25,6 +25,13 @@ _TD.loading.push(function(TD){
       ctx.beginPath();
       ctx.arc(position[0],position[1],3,0,2*Math.PI);
       ctx.fill();
+    },
+
+    Arsenal : {
+      'small' : [10, 3, [1,2,3,4,3]],  //[speed, damge range, exploding style]
+      'middle' : [7, 5, [2,3,4,5,4]],
+      'large' : [5, 10, [4,6,8,10,8]],
+      'layser' : [500, 1]
     }
 
   }

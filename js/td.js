@@ -5,9 +5,10 @@ var _TD = {
       version : "0.0.1",
 			root : null,
 			terminalNodePool : [],
-			buildingsInBattleField : [],
-			eventQueue : [],
-			elementQueue : [],
+			eventQueue : [],  //all moving or exploding events --> monster, bullet and building
+			monsterQueue : [],
+			buildingQueue : [],
+			bulletQueue : [],
 			aliveTerminals : {},
       init: function () {
 				var canvas = document.getElementById('td-canvas');
@@ -36,7 +37,7 @@ var _TD = {
 				for(var idx=0; idx<this.terminalNodePool.length; idx++){
 					this.aliveTerminals[this.terminalNodePool[idx]] = this.terminalNodePool[idx];
 				}
-				this.elementQueue.push(new this.monster(this.root, 10, 3));
+				this.monsterQueue.push(new this.monster(this.root, 10, 3));
 				this.ucx.clearRect(0, 0, this.width, this.height);
 			},
 
@@ -44,7 +45,7 @@ var _TD = {
 				_this = TD;
 				// console.log(_this.root);
 		    // console.log(_this.terminalNodePool);
-				if(_this.elementQueue.length==0){
+				if(_this.monsterQueue.length==0){
 					clearTimeout(_this._st);
 					return;
 				}
@@ -53,12 +54,12 @@ var _TD = {
 					var e = _this.eventQueue.shift();
 					_this.drawer(e);
 				}
-				var size = _this.elementQueue.length;
+				var size = _this.monsterQueue.length;
 				while(size > 0){
 					size--;
-					var el = _this.elementQueue.shift();
+					var el = _this.monsterQueue.shift();
 					if(el.move() == true){
-						_this.elementQueue.push(el);
+						_this.monsterQueue.push(el);
 					}
 				}
 

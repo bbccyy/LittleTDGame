@@ -3,7 +3,7 @@ _TD.loading.push(function(TD){
 
   //TD.eventQueue
   //TD.buildingsInBattleField
-  TD.monster = function( node, range, speed ){
+  TD.monster = function( node, range, speed, live ){
     this.position = node.position;
     this.node = node;
     this.speed = speed;
@@ -12,8 +12,15 @@ _TD.loading.push(function(TD){
     this.to = null;
     this.path = null;
     this.probe = 0;
+    this.alive = true;
+    this.price = 0;     // rewards when finish this monster
+    this.live = live==undefined?100:live;
 
     this.move = function(){
+      if(this.live <= 0) {
+        // can add exploding view later
+        return false;
+      }
       if(this.from == null) return false;
       if(this.to == null){
         var res = TD.strategy(this.from);

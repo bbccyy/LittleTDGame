@@ -176,6 +176,13 @@ _TD.loading.push(function(TD){
       return [x,y];
     },
 
+    getCannon : function(s, e, l){
+      var dis = this.getDistance(s, e);
+      var x = (e[0]-s[0])/dis;
+      var y = (e[1]-s[1])/dis;
+      return [[x*3 + s[0], y*3 + s[1]], [x*(3+l) + s[0], y*(3+l) + s[1]]];
+    },
+
     getAngle : function(e1, e2){
       var ps, p1, p2;
       if(this.pointEq(e1[0], e2[0]) || this.pointEq(e1[0], e2[1])){
