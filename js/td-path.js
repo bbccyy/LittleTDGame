@@ -43,6 +43,7 @@ _TD.loading.push(function(TD){
 
       //vectorQue
       //vectorInnerQue
+      TD.mapData = map;
       return [vectorQue, vectorInnerQue];
     };
 

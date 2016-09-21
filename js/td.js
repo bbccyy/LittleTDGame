@@ -3,6 +3,7 @@ var _TD = {
 	init: function () {
     var i, TD = {
       version : "0.0.1",
+			money : 500,
 			root : null,
 			terminalNodePool : [],
 			eventQueue : [],  //all moving or exploding events --> monster, bullet and building
@@ -15,9 +16,6 @@ var _TD = {
 				var redoBody = document.getElementById('redo');
         var undoBody = document.getElementById('undo');
         var submitBody = document.getElementById('submit');
-				this.uc = document.getElementById('td-canvas-1');
-				this.ucx = this.uc.getContext('2d');
-
 
         this.map = new TD.createMap(canvas, undoBody, redoBody, submitBody);
         console.log("haha1");
@@ -25,9 +23,7 @@ var _TD = {
 
 				// var canvas2 = document.getElementById('td-canvas-1');
 				// var ctx2 = canvas2.getContext('2d');
-				//this.uc.globalAlpha = 0.5;
-				this.uc.width = 500;
-				this.uc.height = 500;
+				//this.uc.globalAlpha = 0.5
 			},
 
 			start : function(){

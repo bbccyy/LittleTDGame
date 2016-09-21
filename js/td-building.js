@@ -7,8 +7,8 @@ _TD.loading.push(function(TD){
   --> set target and create a thread looping on fire function
   --> main thread push the drawable to queue and return
   */
-  TD.building = function( cfg ){
-    this.position = cfg.position;
+  TD.building = function( position, cfg ){
+    this.position = position;
     this.type = cfg.type;
     this.cannonType = cfg.cannonType;  // bullet? layser?
     this.frequency = cfg.frequency;

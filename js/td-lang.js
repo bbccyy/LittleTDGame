@@ -183,6 +183,20 @@ _TD.loading.push(function(TD){
       return [[x*3 + s[0], y*3 + s[1]], [x*(3+l) + s[0], y*(3+l) + s[1]]];
     },
 
+    ableToBuild : function( p, r ){
+      var x = p[0], y = p[1], idx;
+      if(TD.mapData == null) return false;
+      if(TD.mapData[x+r][y] != 0) return false;
+      if(TD.mapData[x-r][y] != 0) return false;
+      if(TD.mapData[x][y+r] != 0) return false;
+      if(TD.mapData[x][y-r] != 0) return false;
+      for(idx=0; idx<TD.buildingQueue.length; idx++){
+        if(this.getDistance(TD.buildingQueue[idx].position, p) <= r)
+          return false;
+      }
+      return true;
+    }
+
     getAngle : function(e1, e2){
       var ps, p1, p2;
       if(this.pointEq(e1[0], e2[0]) || this.pointEq(e1[0], e2[1])){
