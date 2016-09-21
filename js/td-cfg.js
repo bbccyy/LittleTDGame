@@ -35,7 +35,8 @@ _TD.loading.push(function(TD){
       ctx.fill();
     },
 
-    mouse : function ( ctx, cfg ){
+    mouse : function ( ctx, c, cfg ){
+      this.clearAll(ctx, c);
       ctx.beginPath();
       ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
       ctx.fillStyle = 'rgba(225,0,0,0.2)';
@@ -46,6 +47,10 @@ _TD.loading.push(function(TD){
       ctx.lineWidth = 1;
       ctx.strokeStyle = '#003300';
       ctx.stroke();
+    },
+
+    clearAll : function ( ctx, c ){
+      ctx.clearRect(0,0,c.width, c.height);
     },
 
     bullet_small : function( ctx, cfg ){
@@ -82,6 +87,15 @@ _TD.loading.push(function(TD){
         ctx.fillStyle = "origin";
       }
       ctx.fill();
+    },
+
+    bullet_layser : function( ctx, cfg ){
+      ctx.beginPath();
+      ctx.strokeStyle = '#E084B5';
+      ctx.lineWidth = 3;
+      ctx.moveTo(cfg.origin[0], cfg.origin[1]);
+      ctx.lineTo(cfg.position[0], cfg.position[1]);
+      ctx.stroke();
     },
 
     bld1 : function( ctx, cfg ){
@@ -165,22 +179,22 @@ _TD.loading.push(function(TD){
     },
 
     Arsenal : {
-      'small' : {
+      'bullet_small' : {
           speed : 10,
-          damageRange : 3,
+          damageRange : 5,
           exploding : [1,2,3,4,3]
         },
-      'middle' : {
+      'bullet_middle' : {
           speed : 7,
           damageRange : 7,
           exploding : [2,3,4,5,4]
         },
-      'large' : {
+      'bullet_large' : {
           speed : 5,
           damageRange : 15,
           exploding : [4,6,8,10,8]
         },
-      'layser' : {
+      'bullet_layser' : {
           speed : 1000,
           damageRange : 1,
           exploding : null
@@ -190,8 +204,8 @@ _TD.loading.push(function(TD){
     Buildings : {
       'building-1' : {  // cfg
         type : 'building-1',
-        cannonType : 'small',
-        frequency : 100,  //  1 per 100ms
+        cannonType : 'bullet_small',
+        frequency : 200,  //  1 per 100ms
         live : 100,
         price : 100,
         range : 50,
@@ -199,8 +213,8 @@ _TD.loading.push(function(TD){
       },
       'building-2' : {
         type : 'building-2',
-        cannonType : 'middle',
-        frequency : 200,
+        cannonType : 'bullet_middle',
+        frequency : 300,
         live : 100,
         price : 200,
         range : 30,
@@ -208,8 +222,8 @@ _TD.loading.push(function(TD){
       },
       'building-3' : {
         type : 'building-3',
-        cannonType : 'large',
-        frequency : 300,
+        cannonType : 'bullet_large',
+        frequency : 400,
         live : 100,
         price : 300,
         range : 40,
@@ -217,8 +231,8 @@ _TD.loading.push(function(TD){
       },
       'building-4' : {
         type : 'building-4',
-        cannonType : 'layser',
-        frequency : 30,
+        cannonType : 'bullet_layser',
+        frequency : 30,   //render every frame
         live : 100,
         price : 500,
         range : 60,

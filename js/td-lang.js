@@ -186,10 +186,11 @@ _TD.loading.push(function(TD){
     ableToBuild : function( p, r ){
       var x = p[0], y = p[1], idx;
       if(TD.mapData == null) return false;
-      if(TD.mapData[x+r][y] != 0) return false;
-      if(TD.mapData[x-r][y] != 0) return false;
-      if(TD.mapData[x][y+r] != 0) return false;
-      if(TD.mapData[x][y-r] != 0) return false;
+      if(x+r>=TD.cfg.width || x-r<0 || y+r>=TD.cfg.height || y-r<0) return false;
+      if(TD.mapData[y][x+r] != 0) return false;
+      if(TD.mapData[y][x-r] != 0) return false;
+      if(TD.mapData[y+r][x] != 0) return false;
+      if(TD.mapData[y-r][x] != 0) return false;
       for(idx=0; idx<TD.buildingQueue.length; idx++){
         if(this.getDistance(TD.buildingQueue[idx].position, p) <= r)
           return false;

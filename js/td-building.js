@@ -27,14 +27,15 @@ _TD.loading.push(function(TD){
 
     this.controlFire = function(){  // let's make consistent fire as long as find a target
       if(this.fire_st != null){
-        clearTimeout(this.fire_st);
+        clearInterval(this.fire_st);
       }
       if(this.target == null){
         return;
       }
-      this.fire_st = setTimeout(
-        this.fire(this.cannonDir[1],this.target.position, this.damage, this.cannonType),
-        this.frequency);
+      var that = this;
+      this.fire_st = setInterval(
+        function(){ that.fire(that.cannonDir[1],that.target.position, that.damage, that.cannonType); },
+        that.frequency);
     };
 
     this.move = function(){
@@ -50,8 +51,11 @@ _TD.loading.push(function(TD){
       if(this.onClick){
         obj['showRange'] = this.range;
       }
+      if(this.target != tmpTar){
+        this.setTarget(tmpTar);
+      }
       TD.eventQueue.push(obj);
-      this.setTarget(tmpTar);
+      return true;
     };
 
     this.findTarget = function(){  // find the nearest monster if any, or return null

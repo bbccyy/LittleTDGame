@@ -29,11 +29,12 @@ var _TD = {
 			start : function(){
 				this.runner = document.getElementById('run');
 				this.runner.addEventListener('click', TD.step, false);
+				TD.bldCtrl = new TD.buildingController();
 				console.log("haha2");
 				for(var idx=0; idx<this.terminalNodePool.length; idx++){
 					this.aliveTerminals[this.terminalNodePool[idx]] = this.terminalNodePool[idx];
 				}
-				this.monsterQueue.push(new this.monster(this.root, 10, 3));
+				this.monsterQueue.push(new this.monster(this.root, 10, 1));
 				this.ucx.clearRect(0, 0, this.width, this.height);
 			},
 
@@ -50,12 +51,34 @@ var _TD = {
 					var e = _this.eventQueue.shift();
 					_this.drawer(e);
 				}
+
+				//1
 				var size = _this.monsterQueue.length;
 				while(size > 0){
 					size--;
 					var el = _this.monsterQueue.shift();
 					if(el.move() == true){
 						_this.monsterQueue.push(el);
+					}
+				}
+
+				//2
+				size = _this.buildingQueue.length;
+				while(size > 0){
+					size--;
+					var el = _this.buildingQueue.shift();
+					if(el.move() == true){
+						_this.buildingQueue.push(el);
+					}
+				}
+
+				//3
+				size = _this.bulletQueue.length;
+				while(size > 0){
+					size--;
+					var el = _this.bulletQueue.shift();
+					if(el.move() == true){
+						_this.bulletQueue.push(el);
 					}
 				}
 

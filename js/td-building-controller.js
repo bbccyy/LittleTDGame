@@ -11,6 +11,14 @@ _TD.loading.push(function(TD){
     this.bld4 = document.getElementById('building-4');
     this.c = document.getElementById('td-canvas');
 
+    this.bld1.addEventListener('click', this.onClick_building_1, false);
+    this.bld2.addEventListener('click', this.onClick_building_2, false);
+    this.bld3.addEventListener('click', this.onClick_building_3, false);
+    this.bld4.addEventListener('click', this.onClick_building_4, false);
+
+    this.c.addEventListener('mousemove', this.onmouseMove, false);
+    this.c.addEventListener('click', this.onClick, false);
+
   };
 
   TD.buildingController.prototype = {
@@ -18,6 +26,7 @@ _TD.loading.push(function(TD){
     onClick_building_1 : function(ev){
       if(TD.waitingToBuild == 'building-1'){
         TD.waitingToBuild = null;
+        TD.cfg.clearAll(TD.ucx2, TD.uc2);
       }else{
         TD.waitingToBuild = 'building-1';
       }
@@ -26,6 +35,7 @@ _TD.loading.push(function(TD){
     onClick_building_2 : function(ev){
       if(TD.waitingToBuild == 'building-2'){
         TD.waitingToBuild = null;
+        TD.cfg.clearAll(TD.ucx2, TD.uc2);
       }else{
         TD.waitingToBuild = 'building-2';
       }
@@ -34,6 +44,7 @@ _TD.loading.push(function(TD){
     onClick_building_3 : function(ev){
       if(TD.waitingToBuild == 'building-3'){
         TD.waitingToBuild = null;
+        TD.cfg.clearAll(TD.ucx2, TD.uc2);
       }else{
         TD.waitingToBuild = 'building-3';
       }
@@ -42,6 +53,7 @@ _TD.loading.push(function(TD){
     onClick_building_4 : function(ev){
       if(TD.waitingToBuild == 'building-4'){
         TD.waitingToBuild = null;
+        TD.cfg.clearAll(TD.ucx2, TD.uc2);
       }else{
         TD.waitingToBuild = 'building-4';
       }
@@ -70,7 +82,11 @@ _TD.loading.push(function(TD){
         if(TD.money >= cfg.price){
           TD.money -= cfg.price;
           TD.waitingToBuild = null;
+          TD.cfg.clearAll(TD.ucx2, TD.uc2); // clear the view of upper layer
           var bld = new TD.building([x,y], cfg);
+          cfg['cannon'] = bld.cannonDir;
+          cfg['position'] = bld.position;
+          TD.drawer(cfg);
           TD.buildingQueue.push(bld);
         }
       }

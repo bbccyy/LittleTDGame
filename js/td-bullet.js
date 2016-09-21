@@ -15,10 +15,19 @@ _TD.loading.push(function(TD){
     this.index = 0;  //exploding frame index
 
     this.move = function(){
-      if(pointEq(this.target, this.position)==true){
+      if(this.type == 'bullet_layser'){
+        var obj = {
+          position : this.target,
+          origin : this.origin,
+          type : this.type
+        };
+        TD.eventQueue.push(obj);
+        return false;
+      }
+      if(TD.lang.pointEq(this.target, this.position)==true){
         if(this.index < this.exploding.length){
           var obj = {
-            position : nextPosition,
+            position : this.position,
             type : this.type,
             exploding : this.exploding[this.index]
           };
@@ -30,11 +39,12 @@ _TD.loading.push(function(TD){
         }
       }
       var nextPosition = TD.lang.getNextPos(this.position, this.origin, this.target, this.speed);
+      this.position = nextPosition;
       var obj = {
         position : nextPosition,
         type : this.type
       };
-      if(pointEq(this.target, this.position)==true){
+      if(TD.lang.pointEq(this.target, this.position)==true){
         this.makeDamage();
         obj['exploding'] = this.exploding[this.index];
         this.index++;
@@ -48,7 +58,7 @@ _TD.loading.push(function(TD){
       for(idx=0; idx<TD.monsterQueue.length; idx++){
         ms = TD.monsterQueue[idx];
         if(TD.lang.getDistance(this.target, ms.position) <= this.range){
-          this.live -= this.damage;
+          ms.live -= this.damage;
         }
       }
     };

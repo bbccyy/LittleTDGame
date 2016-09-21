@@ -7,7 +7,7 @@ _TD.loading.push(function(TD){
   TD.uc = document.getElementById('td-canvas-1');
   TD.ucx = TD.uc.getContext('2d');
   TD.uc2 = document.getElementById('td-canvas-2');
-  TD.ucx2 = TD.uc.getContext('2d');
+  TD.ucx2 = TD.uc2.getContext('2d');
   TD.mapData = null;  // bit map, consist of 0,1 and 2s
 
   TD.createMap = function ( canvasBody, undoBody, redoBody, submitBody ){

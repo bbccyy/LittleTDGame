@@ -5,7 +5,7 @@ _TD.loading.push(function(TD){
       TD.cfg.monster(TD.ucx, obj.position);
     }
     else if(obj.type == 'mouse'){
-      TD.cfg.mouse(TD.ucx2, obj);
+      TD.cfg.mouse(TD.ucx2, TD.uc2, obj);
     }
     else if(obj.type == 'building-1'){
       TD.cfg.bld1(TD.ucx, obj);
@@ -18,6 +18,18 @@ _TD.loading.push(function(TD){
     }
     else if(obj.type == 'building-4'){
       TD.cfg.bld4(TD.ucx, obj);
+    }
+    else if(obj.type == 'bullet_small'){
+      TD.cfg.bullet_small(TD.ucx, obj);
+    }
+    else if(obj.type == 'bullet_middle'){
+      TD.cfg.bullet_middle(TD.ucx, obj);
+    }
+    else if(obj.type == 'bullet_large'){
+      TD.cfg.bullet_large(TD.ucx, obj);
+    }
+    else if(obj.type == 'bullet_layser'){
+      TD.cfg.bullet_layser(TD.ucx, obj);
     }
   }
 
