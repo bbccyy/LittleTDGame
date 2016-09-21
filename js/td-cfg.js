@@ -14,7 +14,13 @@ _TD.loading.push(function(TD){
 
     Dir : [[[1,0,6],[-1,0,2],[0,1,4],[0,-1,8]], [[-1,-1,1],[-1,1,3],[1,-1,7],[1,1,5]]],
 
-    buildingR : 5,
+    buildingR : 10,
+
+    bulletSize1 : 2,
+
+    bulletSize2 : 3,
+
+    bulletSize3 : 4,
 
     speedMapping : function( area ){
       if(area <= 350) return 1;
@@ -25,15 +31,160 @@ _TD.loading.push(function(TD){
     monster : function( ctx, position ){
       ctx.fillStyle = "green";
       ctx.beginPath();
-      ctx.arc(position[0],position[1],3,0,2*Math.PI);
+      ctx.arc(position[0],position[1],5,0,2*Math.PI);
       ctx.fill();
     },
 
+    mouse : function ( ctx, cfg ){
+      ctx.beginPath();
+      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      ctx.fillStyle = 'rgba(225,0,0,0.2)';
+      if(cfg.buildable == true){
+        ctx.fillStyle = 'rgba(0,255,0,0.2)';
+      }
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
+    },
+
+    bullet_small : function( ctx, cfg ){
+      ctx.beginPath();
+      if(cfg.exploding == undefined){
+        ctx.arc(cfg.position[0], cfg.position[1], this.bulletSize1, 0, 2*Math.PI, false);
+        ctx.fillStyle = "blue";
+      }else{
+        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        ctx.fillStyle = "origin";
+      }
+      ctx.fill();
+    },
+
+    bullet_middle : function( ctx, cfg ){
+      ctx.beginPath();
+      if(cfg.exploding == undefined){
+        ctx.arc(cfg.position[0], cfg.position[1], this.bulletSize2, 0, 2*Math.PI, false);
+        ctx.fillStyle = "#40CF8E";
+      }else{
+        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        ctx.fillStyle = "origin";
+      }
+      ctx.fill();
+    },
+
+    bullet_large : function( ctx, cfg ){
+      ctx.beginPath();
+      if(cfg.exploding == undefined){
+        ctx.arc(cfg.position[0], cfg.position[1], this.bulletSize3, 0, 2*Math.PI, false);
+        ctx.fillStyle = "#AB4F80";
+      }else{
+        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        ctx.fillStyle = "origin";
+      }
+      ctx.fill();
+    },
+
+    bld1 : function( ctx, cfg ){
+      ctx.beginPath();
+      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      ctx.fillStyle = "blue";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      ctx.stroke();
+      if(cfg.showRange != undefined){
+        var range = cfg.showRange;
+        ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    },
+
+    bld2 : function( ctx, cfg ){
+      ctx.beginPath();
+      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      ctx.fillStyle = "red";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      ctx.stroke();
+      if(cfg.showRange != undefined){
+        var range = cfg.showRange;
+        ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    },
+
+    bld3 : function( ctx, cfg ){
+      ctx.beginPath();
+      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      ctx.fillStyle = "brown";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      ctx.stroke();
+      if(cfg.showRange != undefined){
+        var range = cfg.showRange;
+        ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    },
+
+    bld4 : function( ctx, cfg ){
+      ctx.beginPath();
+      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      ctx.fillStyle = "purple";
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
+      ctx.lineWidth = 2;
+      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      ctx.stroke();
+      if(cfg.showRange != undefined){
+        var range = cfg.showRange;
+        ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    },
+
     Arsenal : {
-      'small' : [10, 3, [1,2,3,4,3]],  //[speed, damge range, exploding style]
-      'middle' : [7, 5, [2,3,4,5,4]],
-      'large' : [5, 10, [4,6,8,10,8]],
-      'layser' : [500, 1]
+      'small' : {
+          speed : 10,
+          damageRange : 3,
+          exploding : [1,2,3,4,3]
+        },
+      'middle' : {
+          speed : 7,
+          damageRange : 7,
+          exploding : [2,3,4,5,4]
+        },
+      'large' : {
+          speed : 5,
+          damageRange : 15,
+          exploding : [4,6,8,10,8]
+        },
+      'layser' : {
+          speed : 1000,
+          damageRange : 1,
+          exploding : null
+        }
     },
 
     Buildings : {

@@ -3,6 +3,7 @@ _TD.loading.push(function(TD){
 
   TD.waitingToBuild = null;
 
+  //before using buildingController, new it
   TD.buildingController = function(){
     this.bld1 = document.getElementById('building-1');
     this.bld2 = document.getElementById('building-2');

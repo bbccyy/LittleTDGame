@@ -195,7 +195,7 @@ _TD.loading.push(function(TD){
           return false;
       }
       return true;
-    }
+    },
 
     getAngle : function(e1, e2){
       var ps, p1, p2;

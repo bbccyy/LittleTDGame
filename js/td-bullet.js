@@ -9,10 +9,10 @@ _TD.loading.push(function(TD){
     this.target = cfg.end;
     this.type = cfg.type;
     this.damage = cfg.damage;
-    this.speed = TD.cfg.Arsenal[this.type][0];  //bullet speed
-    this.range = TD.cfg.Arsenal[this.type][1];
-    this.exploding = TD.cfg.Arsenal[this.type][2];
-    this.index = 0;
+    this.speed = TD.cfg.Arsenal[this.type].speed;  //bullet speed
+    this.range = TD.cfg.Arsenal[this.type].damageRange;
+    this.exploding = TD.cfg.Arsenal[this.type].exploding;  // exploding style
+    this.index = 0;  //exploding frame index
 
     this.move = function(){
       if(pointEq(this.target, this.position)==true){

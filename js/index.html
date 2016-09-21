@@ -39,6 +39,11 @@
       top: 0px;
       left: 0px;
     }
+    td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
   </style>
 </head>
 <body>
@@ -47,13 +52,31 @@
         Please use IE9 / Chrome / Opera </canvas>
       <canvas id="td-canvas-1" class="absolute"  style="z-index: 1; pointer-events: none;">
         Please use IE9 / Chrome / Opera </canvas>
-        <canvas id="td-canvas-2" class="absolute"  style="z-index: 2; pointer-events: none;">
-          Please use IE9 / Chrome / Opera </canvas>
+      <canvas id="td-canvas-2" class="absolute"  style="z-index: 2; pointer-events: none;">
+        Please use IE9 / Chrome / Opera </canvas>
 	</div>
   <button id="submit">submit</button>
   <button id="undo">undo</button>
   <button id="redo">redo</button>
   <button id="run">run</button>
+  <table>
+    <tr>
+      <td id='building-1'>Building-1</td>
+      <td>small bullet</td>
+    </tr>
+    <tr>
+      <td id='building-2'>Building-2</td>
+      <td>middle bullet</td>
+    </tr>
+    <tr>
+      <td id='building-3'>Building-3</td>
+      <td>large bullet</td>
+    </tr>
+    <tr>
+      <td id='building-4'>Building-4</td>
+      <td>layser</td>
+    </tr>
+  </table>
 <script>
 
 window.onload = function () {
