@@ -12,6 +12,7 @@ _TD.loading.push(function(TD){
     this.attackRange = cfg.range;
     this.damage = cfg.damage;
     this.live = cfg.live();
+    this.maxLive = cfg.live();
     this.price = cfg.price();
 
     this.from = node;
@@ -36,6 +37,8 @@ _TD.loading.push(function(TD){
       }
       if(TD.lang.pointEq(this.position, this.to.position) || this.probe==this.path.length){
         if(this.to.Feature == 'TA'){
+          this.alive = false;  // make sure blood bar will eventually disappear at this moment
+          this.live = -1;
           return false;
         }else{
           this.from = this.to;

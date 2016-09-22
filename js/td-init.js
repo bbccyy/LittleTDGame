@@ -12,6 +12,7 @@ _TD.loading.push(function(TD){
   TD.monsterQueue = [];
   TD.buildingQueue = [];
   TD.bulletQueue = [];
+  TD.bloodBarQueue = [];
   TD.aliveTerminals = {};
 
   TD.rawMapData = null;
@@ -30,5 +31,5 @@ _TD.loading.push(function(TD){
 
   TD.moneyElement = document.getElementById('money');
 
-
+  
 });

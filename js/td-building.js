@@ -15,6 +15,7 @@ _TD.loading.push(function(TD){
     this.level = 0;  // building level, upgradable, Level is binding with building View.
 
     this.live = cfg.live;
+    this.maxLive = cfg.live;
     this.frequency = cfg.frequency;  // fire frequency
     this.range = cfg.range;   // fire range
     this.damage = cfg.damage;   // weapon damage
@@ -27,7 +28,8 @@ _TD.loading.push(function(TD){
       this.level++;
       this.damage *= up.damage;
       this.range  *= up.range;
-      this.live   *= up.live;
+      this.maxLive   *= up.live;
+      this.live = this.maxLive;  // immediately refresh the live of building to max
       this.frequency *= up.frequency;
       return true;
     };

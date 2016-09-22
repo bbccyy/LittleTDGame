@@ -47,6 +47,8 @@ var _TD = {
 					// won't stop the main thread, but after 6s, another thread will run bulidNextWave
 					// then monsterQueue will have something new
 					TD.waitingForNextWave = true;  // prevent create multiple setTimeout thread
+					TD.lang.levelUp();
+					TD.wave++;
 					setTimeout(TD.buildNextWave , 3000);
 				}
 				else{  // not waiting for next wave OR  still has alive monsters in queue
@@ -84,6 +86,16 @@ var _TD = {
 						var el = _this.bulletQueue.shift();
 						if(el.move() == true){
 							_this.bulletQueue.push(el);
+						}
+					}
+
+					//4
+					size = _this.bloodBarQueue.length;
+					while(size > 0){
+						size--;
+						var el = _this.bloodBarQueue.shift();
+						if(el.move() == true){
+							_this.bloodBarQueue.push(el);
 						}
 					}
 

@@ -7,6 +7,9 @@ _TD.loading.push(function(TD){
     else if(obj.type == 'mouse'){
       TD.cfg.mouse(TD.ucx2, TD.uc2, obj);
     }
+    else if(obj.type == 'bar'){
+      TD.cfg.bar(TD.ucx, obj);
+    }
     else if(obj.type == 'building-1'){
       TD.cfg.bld1(TD.ucx, obj);
     }

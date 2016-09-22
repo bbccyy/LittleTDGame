@@ -16,6 +16,8 @@ _TD.loading.push(function(TD){
 
     buildingR : 10,    // show how large the building is on map
 
+    monsterR : 10,    // the max radius of a monster could be
+
     bulletSize1 : 2,   // the size of bullet, radius of bullet
 
     bulletSize2 : 3,
@@ -55,6 +57,23 @@ _TD.loading.push(function(TD){
 
     clearAll : function ( ctx, c ){
       ctx.clearRect(0,0,c.width, c.height);
+    },
+
+    bar : function ( ctx, cfg ){
+      var posOut = cfg.position, posIn = cfg.positionIn;
+      ctx.beginPath();
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 5;
+      ctx.moveTo(posOut[0][0],posOut[0][1]);
+      ctx.lineTo(posOut[1][0],posOut[1][1]);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.strokeStyle = "lightgreen";
+      ctx.lineWidth = 3;
+      ctx.moveTo(posIn[0][0],posIn[0][1]);
+      ctx.lineTo(posIn[1][0],posIn[1][1]);
+      ctx.stroke();
     },
 
     bullet_small : function( ctx, cfg ){

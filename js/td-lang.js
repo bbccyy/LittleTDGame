@@ -215,6 +215,23 @@ _TD.loading.push(function(TD){
       return mst;
     },
 
+    levelUp : function(){   // modify monsters' feature to increase difficulty
+      if(TD.wave == 0) return;
+      var rate = 1.2;
+      if(TD.wave % 10 == 0){
+        rate = 1.5;
+      }
+      TD.cfg.monster_1_base_live = parseInt(TD.cfg.monster_1_base_live * rate);
+      TD.cfg.monster_2_base_live = parseInt(TD.cfg.monster_2_base_live * rate);
+      TD.cfg.monster_3_base_live = parseInt(TD.cfg.monster_3_base_live * rate);
+      TD.cfg.monster_4_base_live = parseInt(TD.cfg.monster_4_base_live * rate);
+
+      TD.cfg.monster_1_base_price = parseInt(TD.cfg.monster_1_base_price * rate);
+      TD.cfg.monster_2_base_price = parseInt(TD.cfg.monster_2_base_price * rate);
+      TD.cfg.monster_3_base_price = parseInt(TD.cfg.monster_3_base_price * rate);
+      TD.cfg.monster_4_base_price = parseInt(TD.cfg.monster_4_base_price * rate);
+    },
+    
     getBuilding : function ( p, r ){
       var x = p[0], y = p[1], idx;
       for(idx=0; idx<TD.buildingQueue.length; idx++){

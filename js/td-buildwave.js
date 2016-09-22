@@ -16,6 +16,8 @@ _TD.loading.push(function(TD){
         loop--;
         var mst = TD.lang.getRandomMonster();
         TD.monsterQueue.push(mst);
+        var bar = new TD.bloodBar(mst);
+        TD.bloodBarQueue.push(bar);
       }
       _st = setTimeout( function(){createMave();} , 1000);
     };
