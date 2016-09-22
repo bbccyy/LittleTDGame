@@ -10,15 +10,36 @@ _TD.loading.push(function(TD){
   TD.building = function( position, cfg ){
     this.position = position;
     this.type = cfg.type;
-    this.cannonType = cfg.cannonType;  // bullet? layser?
-    this.frequency = cfg.frequency;
-    this.live = cfg.live;
-    this.range = cfg.range;
-    this.damage = cfg.damage;
-    this.onClick = false; // set to true if current building is selected by user's mouse
-    this.target = null;  // building's target monster
+
     this.price = cfg.price;
-    this.cannonDir = TD.lang.getCannon(this.position, [this.position[0]-10,this.position[1]],5); //default cannon direction
+    this.level = 0;  // building level, upgradable, Level is binding with building View.
+
+    this.live = cfg.live;
+    this.frequency = cfg.frequency;  // fire frequency
+    this.range = cfg.range;   // fire range
+    this.damage = cfg.damage;   // weapon damage
+    this.upgrade = function(){
+      if(this.level == TD.cfg.maxLevel) return false;
+      var up = TD.cfg.upgradeMapping[this.type][this.level];
+      if(TD.money < up.price) return false;
+      TD.money -= up.price;
+      this.price += up.price;
+      this.level++;
+      this.damage *= up.damage;
+      this.range  *= up.range;
+      this.live   *= up.live;
+      this.frequency *= up.frequency;
+      return true;
+    };
+
+    this.onClick = false; // set to true if current building is selected by user's mouse
+    this.remove = false;  // if true, then remove it from queue
+    this.target = null;  // building's target monster
+
+    this.cannonLen = cfg.cannonLen;
+    this.cannonType = cfg.cannonType;  // bullet? layser?
+    this.cannonDir = TD.lang.getCannon(this.position, [this.position[0]-10,this.position[1]],this.cannonLen); //default cannon direction
+
     this.fire_st = null;
     this.setTarget = function( tar ){
       this.target = tar;
@@ -39,9 +60,13 @@ _TD.loading.push(function(TD){
     };
 
     this.move = function(){
+      if(this.remove == true) {       // this building has been removed
+        clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
+        return false;
+      }
       var tmpTar = this.findTarget();
       if(tmpTar != null){
-        this.cannonDir = TD.lang.getCannon(this.position, tmpTar.position, 5);
+        this.cannonDir = TD.lang.getCannon(this.position, tmpTar.position, this.cannonLen);
       }
       var obj = {
         position : this.position,

@@ -21,6 +21,7 @@ _TD.loading.push(function(TD){
           origin : this.origin,
           type : this.type
         };
+        this.makeDamage();
         TD.eventQueue.push(obj);
         return false;
       }

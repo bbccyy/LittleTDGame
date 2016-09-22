@@ -1,12 +1,12 @@
 _TD.loading.push(function(TD){
   TD.cfg = {
-    height : 500,
+    height : 500,   // main canvas size
 
     width : 500,
 
-    Restriction : [[[100,0],[0,100]],[[500-100, 500],[500, 500-100]]],
+    Restriction : [[[100,0],[0,100]],[[500-100, 500],[500, 500-100]]],   //  use to check user's stroke if out of boundary
 
-    taRestriction : [[450,500],[500,450]],
+    taRestriction : [[450,500],[500,450]],   // use to find which one the our final target
 
     dirC : [[1,0,6],[-1,0,2],[0,1,4],[0,-1,8]],
 
@@ -14,13 +14,15 @@ _TD.loading.push(function(TD){
 
     Dir : [[[1,0,6],[-1,0,2],[0,1,4],[0,-1,8]], [[-1,-1,1],[-1,1,3],[1,-1,7],[1,1,5]]],
 
-    buildingR : 10,
+    buildingR : 10,    // show how large the building is on map
 
-    bulletSize1 : 2,
+    bulletSize1 : 2,   // the size of bullet, radius of bullet
 
     bulletSize2 : 3,
 
     bulletSize3 : 4,
+
+    maxLevel : 3,
 
     speedMapping : function( area ){
       if(area <= 350) return 1;
@@ -103,17 +105,20 @@ _TD.loading.push(function(TD){
       ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
       ctx.fillStyle = "blue";
       ctx.fill();
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 0.5;
       ctx.strokeStyle = '#003300';
       ctx.stroke();
+      ctx.beginPath();
       ctx.lineWidth = 2;
       ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
       ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
       ctx.stroke();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
+        ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'grey';
         ctx.stroke();
       }
     },
@@ -132,8 +137,10 @@ _TD.loading.push(function(TD){
       ctx.stroke();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
+        ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'grey';
         ctx.stroke();
       }
     },
@@ -152,8 +159,10 @@ _TD.loading.push(function(TD){
       ctx.stroke();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
+        ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'grey';
         ctx.stroke();
       }
     },
@@ -172,8 +181,10 @@ _TD.loading.push(function(TD){
       ctx.stroke();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
+        ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'grey';
         ctx.stroke();
       }
     },
@@ -185,12 +196,12 @@ _TD.loading.push(function(TD){
           exploding : [1,2,3,4,3]
         },
       'bullet_middle' : {
-          speed : 7,
+          speed : 8,
           damageRange : 7,
           exploding : [2,3,4,5,4]
         },
       'bullet_large' : {
-          speed : 5,
+          speed : 7,
           damageRange : 15,
           exploding : [4,6,8,10,8]
         },
@@ -205,29 +216,32 @@ _TD.loading.push(function(TD){
       'building-1' : {  // cfg
         type : 'building-1',
         cannonType : 'bullet_small',
-        frequency : 200,  //  1 per 100ms
+        frequency : 300,  //  1 per 100ms
         live : 100,
         price : 100,
         range : 50,
-        damage : 10
+        damage : 10,
+        cannonLen : 10
       },
       'building-2' : {
         type : 'building-2',
         cannonType : 'bullet_middle',
-        frequency : 300,
+        frequency : 400,
         live : 100,
         price : 200,
         range : 30,
-        damage : 20
+        damage : 20,
+        cannonLen : 12
       },
       'building-3' : {
         type : 'building-3',
         cannonType : 'bullet_large',
-        frequency : 400,
+        frequency : 500,
         live : 100,
         price : 300,
         range : 40,
-        damage : 50
+        damage : 50,
+        cannonLen : 15
       },
       'building-4' : {
         type : 'building-4',
@@ -236,8 +250,107 @@ _TD.loading.push(function(TD){
         live : 100,
         price : 500,
         range : 60,
-        damage : 30
+        damage : 5,
+        cannonLen : 5
       }
+    },
+
+    upgradeMapping : {
+      'building-1' : [
+        {
+          'damage' : 1.5,  // increase to 150%
+          'frequency' : 0.8,
+          'range' : 1.2,
+          'live' : 2,
+          'price' : 200   // +$200
+        },
+        {
+          'damage' : 1.9,  // increase 190%
+          'frequency' : 0.7,
+          'range' : 1.5,
+          'live' : 3,
+          'price' : 500
+        },
+        {
+          'damage' : 2.5,  // increase 250%
+          'frequency' : 0.6,
+          'range' : 1.7,
+          'live' : 4,
+          'price' : 2000
+        }
+      ],
+
+      'building-2' : [
+        {
+          'damage' : 1.5,  // increase 150%
+          'frequency' : 0.8,
+          'range' : 1.2,
+          'live' : 2,
+          'price' : 400
+        },
+        {
+          'damage' : 2,  // increase 200%
+          'frequency' : 0.8,
+          'range' : 1.5,
+          'live' : 3,
+          'price' : 800
+        },
+        {
+          'damage' : 3,  // increase 300%
+          'frequency' : 0.7,
+          'range' : 2,
+          'live' : 4,
+          'price' : 3500
+        }
+      ],
+
+      'building-3' : [
+        {
+          'damage' : 1.7,  // increase 170%
+          'frequency' : 0.8,
+          'range' : 1.2,
+          'live' : 2,
+          'price' : 600
+        },
+        {
+          'damage' : 2.5,  // increase 250%
+          'frequency' : 0.8,
+          'range' : 1.5,
+          'live' : 3,
+          'price' : 1500
+        },
+        {
+          'damage' : 3.5,  // increase 350%
+          'frequency' : 0.8,
+          'range' : 2,
+          'live' : 4,
+          'price' : 5200
+        }
+      ],
+
+      'building-4' : [
+        {
+          'damage' : 3,  // increase 300%
+          'frequency' : 1,
+          'range' : 1.2,
+          'live' : 2,
+          'price' : 1500
+        },
+        {
+          'damage' : 5,  // increase 500%
+          'frequency' : 1,
+          'range' : 1.5,
+          'live' : 3,
+          'price' : 5000
+        },
+        {
+          'damage' : 10,  // increase 1000%
+          'frequency' :1,
+          'range' : 1.7,
+          'live' : 4,
+          'price' : 12000
+        }
+      ]
     }
 
   }

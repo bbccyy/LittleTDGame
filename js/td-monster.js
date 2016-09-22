@@ -14,7 +14,7 @@ _TD.loading.push(function(TD){
     this.probe = 0;
     this.alive = true;
     this.price = 0;     // rewards when finish this monster
-    this.live = live==undefined?100:live;
+    this.live = live==undefined?1000:live;
 
     this.move = function(){
       if(this.live <= 0) {

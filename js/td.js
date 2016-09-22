@@ -3,7 +3,7 @@ var _TD = {
 	init: function () {
     var i, TD = {
       version : "0.0.1",
-			money : 500,
+			money : 5000,
 			root : null,
 			terminalNodePool : [],
 			eventQueue : [],  //all moving or exploding events --> monster, bullet and building

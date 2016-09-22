@@ -198,6 +198,15 @@ _TD.loading.push(function(TD){
       return true;
     },
 
+    getBuilding : function ( p, r ){
+      var x = p[0], y = p[1], idx;
+      for(idx=0; idx<TD.buildingQueue.length; idx++){
+        if(this.getDistance(TD.buildingQueue[idx].position, p) <= r)
+          return TD.buildingQueue[idx];
+      }
+      return null;
+    },
+
     getAngle : function(e1, e2){
       var ps, p1, p2;
       if(this.pointEq(e1[0], e2[0]) || this.pointEq(e1[0], e2[1])){

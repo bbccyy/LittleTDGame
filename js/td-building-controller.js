@@ -2,6 +2,7 @@
 _TD.loading.push(function(TD){
 
   TD.waitingToBuild = null;
+  TD.waitingToChange = null;
 
   //before using buildingController, new it
   TD.buildingController = function(){
@@ -9,6 +10,10 @@ _TD.loading.push(function(TD){
     this.bld2 = document.getElementById('building-2');
     this.bld3 = document.getElementById('building-3');
     this.bld4 = document.getElementById('building-4');
+
+    this.ug = document.getElementById('upgrade');
+    this.sl = document.getElementById('sell');
+
     this.c = document.getElementById('td-canvas');
 
     this.bld1.addEventListener('click', this.onClick_building_1, false);
@@ -16,12 +21,28 @@ _TD.loading.push(function(TD){
     this.bld3.addEventListener('click', this.onClick_building_3, false);
     this.bld4.addEventListener('click', this.onClick_building_4, false);
 
+    this.ug.addEventListener('click', this.onClick_upgrade, false);
+    this.sl.addEventListener('click', this.onClick_sell, false);
+
     this.c.addEventListener('mousemove', this.onmouseMove, false);
     this.c.addEventListener('click', this.onClick, false);
 
   };
 
   TD.buildingController.prototype = {
+
+    onClick_upgrade : function(ev){  // can upgrade weapon damage, 'exploding range'?, frequency, fire range, live.
+      if(TD.waitingToChange == null) return;
+      TD.waitingToChange.upgrade();
+    },
+
+    onClick_sell : function(ev){
+      if(TD.waitingToChange == null) return;
+      TD.money += (TD.waitingToChange.price * 0.5);
+      TD.waitingToChange.onClick = false;
+      TD.waitingToChange.remove = true;
+      TD.waitingToChange = null;
+    },
 
     onClick_building_1 : function(ev){
       if(TD.waitingToBuild == 'building-1'){
@@ -88,6 +109,21 @@ _TD.loading.push(function(TD){
           cfg['position'] = bld.position;
           TD.drawer(cfg);
           TD.buildingQueue.push(bld);
+        }
+      }
+      else if(TD.waitingToBuild == null){
+        var bld = TD.lang.getBuilding([x,y], TD.cfg.buildingR);
+        if(bld != null){
+          if(TD.waitingToChange != null){
+            TD.waitingToChange.onClick = false;
+          }
+          TD.waitingToChange = bld;
+          bld.onClick = true;
+        }else{
+          if(TD.waitingToChange != null){
+            TD.waitingToChange.onClick = false;
+            TD.waitingToChange = null;
+          }
         }
       }
     },
