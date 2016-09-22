@@ -184,7 +184,7 @@ _TD.loading.push(function(TD){
     },
 
     ableToBuild : function( p, r ){
-      var x = p[0], y = p[1], idx;
+      var x = parseInt(p[0]), y = parseInt(p[1]), idx;  // parseInt to prevent float input
       if(TD.mapData == null) return false;
       if(x+r>=TD.cfg.width || x-r<0 || y+r>=TD.cfg.height || y-r<0) return false;
       if(TD.mapData[y][x+r] != 0) return false;
@@ -196,6 +196,23 @@ _TD.loading.push(function(TD){
           return false;
       }
       return true;
+    },
+
+    bindingElement : function( el, text ){
+      el.innerHTML = text;
+    },
+
+    setMoney : function( money ){
+      TD.money = money;
+      this.bindingElement(TD.moneyElement, TD.money);
+    },
+
+    getRandomMonster : function(){
+      var num = parseInt(Math.random()*4+1);
+      var key = 'monster-' + num;
+      var cfg = TD.cfg.Monsters[key];
+      var mst = new TD.monster(TD.root, cfg);
+      return mst;
     },
 
     getBuilding : function ( p, r ){

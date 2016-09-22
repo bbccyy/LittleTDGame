@@ -1,9 +1,6 @@
 
 _TD.loading.push(function(TD){
 
-  TD.waitingToBuild = null;
-  TD.waitingToChange = null;
-
   //before using buildingController, new it
   TD.buildingController = function(){
     this.bld1 = document.getElementById('building-1');
@@ -38,7 +35,7 @@ _TD.loading.push(function(TD){
 
     onClick_sell : function(ev){
       if(TD.waitingToChange == null) return;
-      TD.money += (TD.waitingToChange.price * 0.5);
+      TD.lang.setMoney(TD.money + (TD.waitingToChange.price * 0.5));
       TD.waitingToChange.onClick = false;
       TD.waitingToChange.remove = true;
       TD.waitingToChange = null;
@@ -81,8 +78,9 @@ _TD.loading.push(function(TD){
     },
 
     onmouseMove : function (ev){
-      var x = ev.clientX;
-      var y = ev.clientY;
+      var rect = TD.uc2.getBoundingClientRect();
+      var x = ev.clientX - rect.left;
+      var y = ev.clientY - rect.top;
       if(TD.waitingToBuild != null){
         var obj = {
           position : [x,y],
@@ -96,12 +94,13 @@ _TD.loading.push(function(TD){
     },
 
     onClick : function(ev){
-      var x = ev.clientX;
-      var y = ev.clientY;
-      if(TD.waitingToBuild != null && TD.lang.ableToBuild([x,y], TD.cfg.buildingR)){
+      var rect = TD.uc2.getBoundingClientRect();
+      var x = ev.clientX - rect.left;
+      var y = ev.clientY - rect.top;
+      if(TD.waitingToBuild != null && TD.lang.ableToBuild([x,y], TD.cfg.buildingR)){  // click to build?
         var cfg = TD.cfg.Buildings[TD.waitingToBuild];
         if(TD.money >= cfg.price){
-          TD.money -= cfg.price;
+          TD.lang.setMoney(TD.money - cfg.price);
           TD.waitingToBuild = null;
           TD.cfg.clearAll(TD.ucx2, TD.uc2); // clear the view of upper layer
           var bld = new TD.building([x,y], cfg);
@@ -111,7 +110,7 @@ _TD.loading.push(function(TD){
           TD.buildingQueue.push(bld);
         }
       }
-      else if(TD.waitingToBuild == null){
+      else if(TD.waitingToBuild == null){  //just click to show details?
         var bld = TD.lang.getBuilding([x,y], TD.cfg.buildingR);
         if(bld != null){
           if(TD.waitingToChange != null){

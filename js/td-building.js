@@ -22,7 +22,7 @@ _TD.loading.push(function(TD){
       if(this.level == TD.cfg.maxLevel) return false;
       var up = TD.cfg.upgradeMapping[this.type][this.level];
       if(TD.money < up.price) return false;
-      TD.money -= up.price;
+      TD.lang.setMoney(TD.money - up.price);
       this.price += up.price;
       this.level++;
       this.damage *= up.damage;

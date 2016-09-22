@@ -2,14 +2,6 @@
 
 _TD.loading.push(function(TD){
 
-  TD.rawMapData = null;
-  TD.path = null;
-  TD.uc = document.getElementById('td-canvas-1');
-  TD.ucx = TD.uc.getContext('2d');
-  TD.uc2 = document.getElementById('td-canvas-2');
-  TD.ucx2 = TD.uc2.getContext('2d');
-  TD.mapData = null;  // bit map, consist of 0,1 and 2s
-
   TD.createMap = function ( canvasBody, undoBody, redoBody, submitBody ){
     //this.rawData = null;
     TD.uc.width = 500;
@@ -81,8 +73,9 @@ _TD.loading.push(function(TD){
 
       onmousemove : function(ev) {
         var _this = TD.map.rawMap;
-        var x = ev.clientX;
-        var y = ev.clientY;
+        var rect = _this.c.getBoundingClientRect();
+        var x = ev.clientX - rect.left;
+        var y = ev.clientY - rect.top;
         if (_this.mousedown && _this.ok2Draw(x,y,TD.cfg.Restriction)) {
           _this.paint(x, y);
         }

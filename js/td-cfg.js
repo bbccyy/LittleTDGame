@@ -24,6 +24,8 @@ _TD.loading.push(function(TD){
 
     maxLevel : 3,
 
+    maxNumberOfMonsterPerWave : 10,
+
     speedMapping : function( area ){
       if(area <= 350) return 1;
       else if(area <= 700) return 0.9;
@@ -210,6 +212,53 @@ _TD.loading.push(function(TD){
           damageRange : 1,
           exploding : null
         }
+    },
+
+    monster_1_base_live : 100,   // setting base monster live, increase for each wave
+    monster_2_base_live : 150,
+    monster_3_base_live : 200,
+    monster_4_base_live : 300,
+
+    monster_1_base_price : 20,   // rewards when finish this monster
+    monster_2_base_price : 30,
+    monster_3_base_price : 40,
+    monster_4_base_price : 50,
+
+    monster_frequency : 500,   // monster attack frequency
+
+    Monsters : {
+      'monster-1' : {
+        type : 'monster-1',
+        range : 40,
+        speed : 1,
+        damage : 25,
+        live : function(){return TD.cfg.monster_1_base_live;},
+        price : function(){return TD.cfg.monster_1_base_price;}
+      },
+      'monster-2' : {
+        type : 'monster-2',
+        range : 50,
+        speed : 0.9,
+        damage : 30,
+        live : function(){return TD.cfg.monster_2_base_live;},
+        price : function(){return TD.cfg.monster_2_base_price;}
+      },
+      'monster-3' : {
+        type : 'monster-3',
+        range : 60,
+        speed : 0.8,
+        damage : 35,
+        live : function(){return TD.cfg.monster_3_base_live;},
+        price : function(){return TD.cfg.monster_3_base_price;}
+      },
+      'monster-4' : {
+        type : 'monster-4',
+        range : 70,
+        speed : 0.7,
+        damage : 50,
+        live : function(){return TD.cfg.monster_4_base_live;},
+        price : function(){return TD.cfg.monster_4_base_price;}
+      }
     },
 
     Buildings : {

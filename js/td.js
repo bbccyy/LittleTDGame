@@ -1,17 +1,13 @@
 var _TD = {
 	loading: [],
 	init: function () {
+
     var i, TD = {
-      version : "0.0.1",
-			money : 5000,
-			root : null,
-			terminalNodePool : [],
-			eventQueue : [],  //all moving or exploding events --> monster, bullet and building
-			monsterQueue : [],
-			buildingQueue : [],
-			bulletQueue : [],
-			aliveTerminals : {},
+
       init: function () {
+
+				TD.lang.setMoney(TD.money);
+
 				var canvas = document.getElementById('td-canvas');
 				var redoBody = document.getElementById('redo');
         var undoBody = document.getElementById('undo');
@@ -34,52 +30,63 @@ var _TD = {
 				for(var idx=0; idx<this.terminalNodePool.length; idx++){
 					this.aliveTerminals[this.terminalNodePool[idx]] = this.terminalNodePool[idx];
 				}
-				this.monsterQueue.push(new this.monster(this.root, 10, 1));
+				//TD.buildNextWave();
+				//this.monsterQueue.push(new this.monster(this.root, 10, 1));
 				this.ucx.clearRect(0, 0, this.width, this.height);
 			},
 
 			step : function(){
 				_this = TD;
-				// console.log(_this.root);
-		    // console.log(_this.terminalNodePool);
-				if(_this.monsterQueue.length==0){
+
+				if(TD.GameOver){
 					clearTimeout(_this._st);
 					return;
 				}
-				_this.ucx.clearRect(0, 0, _this.cfg.width, _this.cfg.height);
-				while(_this.eventQueue.length>0){
-					var e = _this.eventQueue.shift();
-					_this.drawer(e);
-				}
 
-				//1
-				var size = _this.monsterQueue.length;
-				while(size > 0){
-					size--;
-					var el = _this.monsterQueue.shift();
-					if(el.move() == true){
-						_this.monsterQueue.push(el);
-					}
+				if(TD.waitingForNextWave==false && _this.monsterQueue.length==0){
+					// won't stop the main thread, but after 6s, another thread will run bulidNextWave
+					// then monsterQueue will have something new
+					TD.waitingForNextWave = true;  // prevent create multiple setTimeout thread
+					setTimeout(TD.buildNextWave , 3000);
 				}
+				else{  // not waiting for next wave OR  still has alive monsters in queue
 
-				//2
-				size = _this.buildingQueue.length;
-				while(size > 0){
-					size--;
-					var el = _this.buildingQueue.shift();
-					if(el.move() == true){
-						_this.buildingQueue.push(el);
+					_this.ucx.clearRect(0, 0, _this.cfg.width, _this.cfg.height);
+					while(_this.eventQueue.length>0){
+						var e = _this.eventQueue.shift();
+						_this.drawer(e);
 					}
-				}
 
-				//3
-				size = _this.bulletQueue.length;
-				while(size > 0){
-					size--;
-					var el = _this.bulletQueue.shift();
-					if(el.move() == true){
-						_this.bulletQueue.push(el);
+					//1
+					var size = _this.monsterQueue.length;
+					while(size > 0){
+						size--;
+						var el = _this.monsterQueue.shift();
+						if(el.move() == true){
+							_this.monsterQueue.push(el);
+						}
 					}
+
+					//2
+					size = _this.buildingQueue.length;
+					while(size > 0){
+						size--;
+						var el = _this.buildingQueue.shift();
+						if(el.move() == true){
+							_this.buildingQueue.push(el);
+						}
+					}
+
+					//3
+					size = _this.bulletQueue.length;
+					while(size > 0){
+						size--;
+						var el = _this.bulletQueue.shift();
+						if(el.move() == true){
+							_this.bulletQueue.push(el);
+						}
+					}
+
 				}
 
 				_this._st = setTimeout(function(){
