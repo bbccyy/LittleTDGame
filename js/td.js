@@ -28,7 +28,10 @@ var _TD = {
 				TD.bldCtrl = new TD.buildingController();
 				console.log("haha2");
 				for(var idx=0; idx<this.terminalNodePool.length; idx++){
-					this.aliveTerminals[this.terminalNodePool[idx]] = this.terminalNodePool[idx];
+					var node = this.terminalNodePool[idx];
+					this.aliveTerminals[node] =
+						new TD.terminalBuilding(node.position, node, TD.cfg.Buildings['building-5']);
+					TD.bloodBarQueue.push(new TD.bloodBar(this.aliveTerminals[node]));
 				}
 				//TD.buildNextWave();
 				//this.monsterQueue.push(new this.monster(this.root, 10, 1));
@@ -63,7 +66,7 @@ var _TD = {
 					}
 
 					//1
-					var size = _this.monsterQueue.length;
+					var size = _this.monsterQueue.length, key;
 					while(size > 0){
 						size--;
 						var el = _this.monsterQueue.shift();
@@ -99,6 +102,21 @@ var _TD = {
 						var el = _this.bloodBarQueue.shift();
 						if(el.move() == true){
 							_this.bloodBarQueue.push(el);
+						}
+					}
+
+					for(key in TD.deadTerminals){
+						if(!TD.deadTerminals.hasOwnProperty(key)) continue;
+						var el = TD.deadTerminals[key];
+						el.move();
+					}
+
+					for(key in TD.aliveTerminals){
+						if(!TD.aliveTerminals.hasOwnProperty(key)) continue;
+						var el = TD.aliveTerminals[key];
+						if(el.move() == false){
+							TD.deadTerminals[key] = el;
+							delete TD.aliveTerminals[key];
 						}
 					}
 

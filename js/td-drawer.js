@@ -34,6 +34,14 @@ _TD.loading.push(function(TD){
     else if(obj.type == 'building-4'){
       TD.cfg.bld4(TD.ucx, obj);
     }
+    else if(obj.type == 'building-5'){
+      if(obj.alive==true){
+        TD.cfg.bld5(TD.ucx, obj);
+      }
+      else {
+        TD.cfg.bld5_2(TD.ucx, obj);
+      }
+    }
     else if(obj.type == 'bullet_small'){
       TD.cfg.bullet_small(TD.ucx, obj);
     }

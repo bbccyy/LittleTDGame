@@ -8,13 +8,16 @@ _TD.loading.push(function(TD){
   TD.waitingForNextWave = false;  // check if is between two waves
   TD.pause = false;  // pause the game
   TD.root = null;
-  TD.terminalNodePool = [];
+
   TD.eventQueue = [];  //all moving or exploding events --> monster, bullet and building
   TD.monsterQueue = [];
   TD.buildingQueue = [];
   TD.bulletQueue = [];
   TD.bloodBarQueue = [];
+
+  TD.terminalNodePool = [];
   TD.aliveTerminals = {};
+  TD.deadTerminals = {};
 
   TD.rawMapData = null;
   TD.path = null;

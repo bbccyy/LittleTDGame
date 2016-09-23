@@ -121,4 +121,63 @@ _TD.loading.push(function(TD){
 
   };
 
+
+  TD.terminalBuilding = function( position, terminalId, cfg ){
+    this.__proto__ = new TD.building( position, cfg );
+    this.type = 'building-5';
+    this.tid = terminalId;  // infact, this is a node itself
+    this.firePos = [position[0],position[1]-13];
+    this.upgrade = function(){
+      var up = TD.cfg.upgradeMapping[this.type][this.level];
+      if(TD.money < up.price) return false;
+      TD.lang.setMoney(TD.money - up.price);
+      this.price += up.price; // do not increase level for terminal building
+      this.maxLive   *= up.live;
+      this.live = this.maxLive;  // immediately refresh the live of building to max
+      TD.lang.showBuildingInfo(this);
+      if(TD.aliveTerminals[this.tid] == undefined){
+        TD.aliveTerminals[this.tid] = TD.deadTerminals[this.tid];
+        delete TD.deadTerminals[this.tid];
+      }
+      return true;
+    };
+    this.move = function(){
+      var obj = {
+        position : this.position,
+        type : this.type,   //building type, indicate the outline of building
+        alive : true
+      };
+      if(this.live <= 0) {       // this terminal building has been destroied
+        clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
+        obj.alive = false;
+        TD.eventQueue.push(obj);
+        return false;  // td.js will move it to TD.deadTerminals
+      }
+      var tmpTar = this.findTarget();
+      if(this.onClick){
+        obj['showRange'] = this.range;
+      }
+      if(this.target != tmpTar){
+        this.setTarget(tmpTar);
+      }
+      TD.eventQueue.push(obj);
+      return true;
+    };
+
+    this.controlFire = function(){  // let's make consistent fire as long as find a target
+      if(this.fire_st != null){
+        clearInterval(this.fire_st);
+      }
+      if(this.target == null){
+        return;
+      }
+      var that = this;
+      this.fire_st = setInterval(
+        function(){ that.fire(that.firePos,that.target.position, that.damage, that.cannonType); },
+        that.frequency);
+    };
+
+  };
+
+
 });

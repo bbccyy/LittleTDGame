@@ -37,18 +37,23 @@ _TD.loading.push(function(TD){
         this.probe = 1;
       }
       if(TD.lang.pointEq(this.position, this.to.position) || this.probe==this.path.length){
-        if(this.to.Feature == 'TA'){
+        if(this.to.Feature == 'TA'){   // the monster reaches the final Terminal, Game over
           this.alive = false;  // make sure blood bar will eventually disappear at this moment
           this.live = -1;
           return false;
-        }else{
+        }else{      // the monster reaches an ordinary terminal
           this.from = this.to;
           this.to = null;
           if(this.from.Feature=='T' || this.from.Feature == 'TJ'){
-            delete TD.aliveTerminals[this.from];
+            var tbld = TD.aliveTerminals[this.from];
+            if(tbld != undefined){
+              tbld.live = -1;
+              //TD.deadTerminals[this.from] = TD.aliveTerminals[this.from];
+              //delete TD.aliveTerminals[this.from];
+            }
           }
-          this.move();
-          return true;
+          //this.move();
+          return this.move();
         }
       }
       this.position = TD.lang.getNextPos(this.position, this.path[this.probe-1][0], this.path[this.probe][0], this.speed);

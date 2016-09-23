@@ -255,6 +255,49 @@ _TD.loading.push(function(TD){
       }
     },
 
+    bld5 : function( ctx, cfg ){
+      var x = cfg.position[0], y = cfg.position[1];
+      ctx.beginPath();
+      ctx.arc(x, y-13, 3, 0, 2*Math.PI, false);
+      ctx.fillStyle = "rgba(63, 190, 207, 1)";
+      ctx.fill();
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.moveTo(x, y-10);
+      ctx.lineTo(x-5, y+3);
+      ctx.lineTo(x+5, y+3);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillStyle = "rgba(34, 65, 98, 1)";
+      ctx.fill();
+
+      if(cfg.showRange != undefined){
+        var range = cfg.showRange;
+        ctx.beginPath();
+        ctx.arc(x, y, range, 0, 2*Math.PI, false);
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'grey';
+        ctx.stroke();
+      }
+    },
+
+    bld5_2 : function( ctx, cfg ){  // show as ruin
+      var x = cfg.position[0], y = cfg.position[1];
+      ctx.beginPath();
+      ctx.lineWidth = 1;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x-5, y+3);
+      ctx.lineTo(x+5, y+3);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillStyle = "rgba(34, 65, 98, 1)";
+      ctx.fill();
+    },
+
     Arsenal : {
       'bullet_small' : {
           speed : 12,
@@ -365,6 +408,16 @@ _TD.loading.push(function(TD){
         range : 60,
         damage : 5,
         cannonLen : 5
+      },
+      'building-5' : {   // this is the terminal building cfg
+        type : 'building-5',
+        cannonType : 'bullet_large',
+        frequency : 500,
+        live : 100,
+        price : 50000,
+        range : 100,
+        damage : 10,
+        cannonLen : 0
       }
     },
 
@@ -463,7 +516,18 @@ _TD.loading.push(function(TD){
           'live' : 4,
           'price' : 12000
         }
+      ],
+
+      'building-5' : [   // make sure terminal building's level always == 0
+        {
+          'damage' : 1,  // eventually, it's rebuild or refill blood
+          'frequency' : 1,
+          'range' : 1,
+          'live' : 2,    // bonus, double its live
+          'price' : 50000
+        }
       ]
+
     }
 
   }
