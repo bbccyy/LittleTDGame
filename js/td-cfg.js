@@ -83,7 +83,7 @@ _TD.loading.push(function(TD){
         ctx.fillStyle = "blue";
       }else{
         ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
-        ctx.fillStyle = "origin";
+        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
       }
       ctx.fill();
     },
@@ -95,7 +95,7 @@ _TD.loading.push(function(TD){
         ctx.fillStyle = "#40CF8E";
       }else{
         ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
-        ctx.fillStyle = "origin";
+        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
       }
       ctx.fill();
     },
@@ -107,7 +107,7 @@ _TD.loading.push(function(TD){
         ctx.fillStyle = "#AB4F80";
       }else{
         ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
-        ctx.fillStyle = "origin";
+        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
       }
       ctx.fill();
     },
@@ -118,6 +118,51 @@ _TD.loading.push(function(TD){
       ctx.lineWidth = 3;
       ctx.moveTo(cfg.origin[0], cfg.origin[1]);
       ctx.lineTo(cfg.position[0], cfg.position[1]);
+      ctx.stroke();
+    },
+
+    mst1 : function ( ctx, cfg ){
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(130, 142, 16, 1)';
+      ctx.arc(cfg.position[0], cfg.position[1], this.monsterR/2, 0, 2*Math.PI, false);
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+    },
+
+    mst2 : function ( ctx, cfg ){
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(142, 16, 41, 1)';
+      ctx.arc(cfg.position[0], cfg.position[1], this.monsterR, 0, 2*Math.PI, false);
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+    },
+
+    mst3 : function ( ctx, cfg ){
+      var d1 = 0.866* this.monsterR, d2 = this.monsterR/2;
+      ctx.beginPath();
+      ctx.moveTo(cfg.position[0], cfg.position[1]+this.monsterR);
+      ctx.lineTo(cfg.position[0] - d1, cfg.position[1]-d2);
+      ctx.lineTo(cfg.position[0] + d1, cfg.position[1]-d2);
+      ctx.closePath();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(16, 66, 142, 1)';
+      ctx.fill();
+    },
+
+    mst4 : function ( ctx, cfg ){
+      var d1 = this.monsterR * 0.707;
+      ctx.beginPath();
+      ctx.rect(cfg.position[0]-d1, cfg.position[1]-d1, 2*d1, 2*d1);
+      ctx.fillStyle = 'rgba(142, 83, 16, 1)';
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'black';
       ctx.stroke();
     },
 
@@ -212,14 +257,14 @@ _TD.loading.push(function(TD){
 
     Arsenal : {
       'bullet_small' : {
-          speed : 10,
-          damageRange : 5,
-          exploding : [1,2,3,4,3]
-        },
-      'bullet_middle' : {
-          speed : 8,
+          speed : 12,
           damageRange : 7,
           exploding : [2,3,4,5,4]
+        },
+      'bullet_middle' : {
+          speed : 10,
+          damageRange : 8,
+          exploding : [3,4,5,6,5]
         },
       'bullet_large' : {
           speed : 7,
@@ -297,7 +342,7 @@ _TD.loading.push(function(TD){
         frequency : 400,
         live : 100,
         price : 200,
-        range : 30,
+        range : 40,
         damage : 20,
         cannonLen : 12
       },
@@ -307,7 +352,7 @@ _TD.loading.push(function(TD){
         frequency : 500,
         live : 100,
         price : 300,
-        range : 40,
+        range : 45,
         damage : 50,
         cannonLen : 15
       },

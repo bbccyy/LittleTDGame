@@ -6,6 +6,7 @@ _TD.loading.push(function(TD){
   TD.wave = 0;  // current wave number
   TD.GameOver = false;  // if final target has been destroied, set GameOver := true
   TD.waitingForNextWave = false;  // check if is between two waves
+  TD.pause = false;  // pause the game
   TD.root = null;
   TD.terminalNodePool = [];
   TD.eventQueue = [];  //all moving or exploding events --> monster, bullet and building
@@ -30,6 +31,7 @@ _TD.loading.push(function(TD){
   TD.waitingToChange = null;  // for upgrading or selling click event
 
   TD.moneyElement = document.getElementById('money');
+  TD.waveElement  = document.getElementById('wave');
+  TD.panelElement  = document.getElementById('info');
 
-  
 });

@@ -11,6 +11,8 @@ _TD.loading.push(function(TD){
     this.ug = document.getElementById('upgrade');
     this.sl = document.getElementById('sell');
 
+    this.p = document.getElementById('pause');
+
     this.c = document.getElementById('td-canvas');
 
     this.bld1.addEventListener('click', this.onClick_building_1, false);
@@ -20,6 +22,8 @@ _TD.loading.push(function(TD){
 
     this.ug.addEventListener('click', this.onClick_upgrade, false);
     this.sl.addEventListener('click', this.onClick_sell, false);
+
+    this.p.addEventListener('click', this.onClick_pause, false);
 
     this.c.addEventListener('mousemove', this.onmouseMove, false);
     this.c.addEventListener('click', this.onClick, false);
@@ -39,6 +43,10 @@ _TD.loading.push(function(TD){
       TD.waitingToChange.onClick = false;
       TD.waitingToChange.remove = true;
       TD.waitingToChange = null;
+    },
+
+    onClick_pause : function(ev){
+      TD.pause = !TD.pause;
     },
 
     onClick_building_1 : function(ev){
@@ -104,6 +112,7 @@ _TD.loading.push(function(TD){
           TD.waitingToBuild = null;
           TD.cfg.clearAll(TD.ucx2, TD.uc2); // clear the view of upper layer
           var bld = new TD.building([x,y], cfg);
+          TD.lang.showBuildingInfo(bld);
           cfg['cannon'] = bld.cannonDir;
           cfg['position'] = bld.position;
           TD.drawer(cfg);
@@ -113,15 +122,17 @@ _TD.loading.push(function(TD){
       else if(TD.waitingToBuild == null){  //just click to show details?
         var bld = TD.lang.getBuilding([x,y], TD.cfg.buildingR);
         if(bld != null){
-          if(TD.waitingToChange != null){
+          if(TD.waitingToChange != null){  // enable previously choosed builing in map
             TD.waitingToChange.onClick = false;
           }
           TD.waitingToChange = bld;
+          TD.lang.showBuildingInfo(bld);
           bld.onClick = true;
-        }else{
+        }else{                              // click on empty place
           if(TD.waitingToChange != null){
             TD.waitingToChange.onClick = false;
             TD.waitingToChange = null;
+            TD.lang.showBuildingInfo(null);
           }
         }
       }

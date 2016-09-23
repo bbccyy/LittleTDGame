@@ -33,6 +33,7 @@ var _TD = {
 				//TD.buildNextWave();
 				//this.monsterQueue.push(new this.monster(this.root, 10, 1));
 				this.ucx.clearRect(0, 0, this.width, this.height);
+				TD.lang.showBuildingInfo();
 			},
 
 			step : function(){
@@ -43,12 +44,14 @@ var _TD = {
 					return;
 				}
 
-				if(TD.waitingForNextWave==false && _this.monsterQueue.length==0){
+				if(TD.pause == true){
+					// pause
+				}else if(TD.waitingForNextWave==false && _this.monsterQueue.length==0){
 					// won't stop the main thread, but after 6s, another thread will run bulidNextWave
 					// then monsterQueue will have something new
 					TD.waitingForNextWave = true;  // prevent create multiple setTimeout thread
 					TD.lang.levelUp();
-					TD.wave++;
+					TD.lang.setWave(TD.wave+1);
 					setTimeout(TD.buildNextWave , 3000);
 				}
 				else{  // not waiting for next wave OR  still has alive monsters in queue

@@ -26,6 +26,7 @@ _TD.loading.push(function(TD){
       if(this.live <= 0) {
         // can add exploding view later
         this.alive = false;
+        TD.lang.setMoney(TD.money + this.price);
         return false;
       }
       if(this.from == null) return false;
@@ -56,7 +57,7 @@ _TD.loading.push(function(TD){
       }
       TD.eventQueue.push({
         position : this.position,
-        type : 'Monster'
+        type : this.type
       });
       return true;
     };

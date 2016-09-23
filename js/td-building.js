@@ -31,6 +31,7 @@ _TD.loading.push(function(TD){
       this.maxLive   *= up.live;
       this.live = this.maxLive;  // immediately refresh the live of building to max
       this.frequency *= up.frequency;
+      TD.lang.showBuildingInfo(this);
       return true;
     };
 

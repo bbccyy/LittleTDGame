@@ -192,10 +192,31 @@ _TD.loading.push(function(TD){
       if(TD.mapData[y+r][x] != 0) return false;
       if(TD.mapData[y-r][x] != 0) return false;
       for(idx=0; idx<TD.buildingQueue.length; idx++){
-        if(this.getDistance(TD.buildingQueue[idx].position, p) <= r)
+        if(this.getDistance(TD.buildingQueue[idx].position, p) <= 2*r)
           return false;
       }
       return true;
+    },
+
+    showBuildingInfo : function ( bld ){
+      if(bld == null){
+        var str = "<dt>Level</dt>" + "<dd>" + "null" + "</dd>"
+                + "<dt>Damage</dt>" + "<dd>" + "null" + "</dd>"
+                + "<dt>Range</dt>" + "<dd>" + "null" + "</dd>"
+                + "<dt>Frequency</dt>" + "<dd>" + "null" + "</dd>"
+                + "<dt>Live</dt>" + "<dd>" + "null" + " / " + "null"  + "</dd>"
+                + "<dt>Price</dt>" + "<dd>" + "null" + "</dd>";
+        this.bindingElement(TD.panelElement, str);
+      }
+      else{
+        var str = "<dt>Level</dt>" + "<dd>" + bld.level + "</dd>"
+                + "<dt>Damage</dt>" + "<dd>" + bld.damage + "</dd>"
+                + "<dt>Range</dt>" + "<dd>" + bld.range + "</dd>"
+                + "<dt>Frequency</dt>" + "<dd>" + bld.frequency + "</dd>"
+                + "<dt>Live</dt>" + "<dd>" + bld.live + " / " + bld.maxLive  + "</dd>"
+                + "<dt>Price</dt>" + "<dd>" + bld.price + "</dd>";
+        this.bindingElement(TD.panelElement, str);
+      }
     },
 
     bindingElement : function( el, text ){
@@ -205,6 +226,11 @@ _TD.loading.push(function(TD){
     setMoney : function( money ){
       TD.money = money;
       this.bindingElement(TD.moneyElement, TD.money);
+    },
+
+    setWave : function( wave ){
+      TD.wave = wave;
+      this.bindingElement(TD.waveElement, TD.wave);
     },
 
     getRandomMonster : function(){
@@ -231,7 +257,7 @@ _TD.loading.push(function(TD){
       TD.cfg.monster_3_base_price = parseInt(TD.cfg.monster_3_base_price * rate);
       TD.cfg.monster_4_base_price = parseInt(TD.cfg.monster_4_base_price * rate);
     },
-    
+
     getBuilding : function ( p, r ){
       var x = p[0], y = p[1], idx;
       for(idx=0; idx<TD.buildingQueue.length; idx++){
