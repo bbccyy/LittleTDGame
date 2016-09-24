@@ -9,8 +9,38 @@ _TD.loading.push(function(TD){
 
     this.type = cfg.type;
     this.speed = cfg.speed;
-    this.attackRange = cfg.range;
+    this.range = cfg.range;   // attack range
     this.damage = cfg.damage;
+    this.cannonType = cfg.cannonType;
+    this.frequency = cfg.frequency;
+    this.target = null;     // monster target buildings
+    this.fire_st = null;
+    this.setTarget = function( tar ){
+      this.target = tar;
+      this.controlFire();
+    };
+
+    this.controlFire = function(){  // let's make consistent fire as long as find a target
+      if(this.fire_st != null){
+        clearInterval(this.fire_st);
+      }
+      if(this.target == null || this.target.live <= 0){
+        return;
+      }
+      var that = this;
+      this.fire_st = setInterval(
+        function(){
+          if(that.cannonType == 'bullet_layser'){
+            that.fire(that.position, that.target.position, that.damage, that.cannonType);
+          }else{
+            var dfx = parseInt(Math.random()*8-4), dfy = parseInt(Math.random()*8-4);
+            var tarP = [that.target.position[0]+dfx, that.target.position[1]+dfy];
+            that.fire(that.position, tarP, that.damage, that.cannonType);
+          }
+        },
+        that.frequency);
+    };
+
     this.live = cfg.live();
     this.maxLive = cfg.live();
     this.price = cfg.price();
@@ -23,23 +53,39 @@ _TD.loading.push(function(TD){
     this.alive = true;
 
     this.move = function(){
-      if(this.live <= 0) {
+      if(this.live <= 0) {      // current monster is dead
         // can add exploding view later
         this.alive = false;
+        clearInterval(this.fire_st);
         TD.lang.setMoney(TD.money + this.price);
         return false;
       }
-      if(this.from == null) return false;
-      if(this.to == null){
+      var tmpTar = this.findTarget();
+      if(tmpTar == null && this.target != null){
+        this.setTarget(tmpTar);
+      }
+      if(tmpTar != null){   // if this monster find a target, it will not move until destroy that target
+        TD.eventQueue.push({   // stay at the same position
+          position : this.position,
+          type : this.type
+        });
+        if(this.target != tmpTar){
+          this.setTarget(tmpTar);
+        }
+        return true;
+      }
+      if(this.from == null) return false;  // actually, I don't think it's possible
+      if(this.to == null){                 //find next station
         var res = TD.strategy(this.from);
         this.to = res[0];
         this.path = res[1];
         this.probe = 1;
       }
+      // this monster get to a terminal station
       if(TD.lang.pointEq(this.position, this.to.position) || this.probe==this.path.length){
         if(this.to.Feature == 'TA'){   // the monster reaches the final Terminal, Game over
           this.alive = false;  // make sure blood bar will eventually disappear at this moment
-          this.live = -1;
+          this.live = 0;
           return false;
         }else{      // the monster reaches an ordinary terminal
           this.from = this.to;
@@ -67,14 +113,43 @@ _TD.loading.push(function(TD){
       return true;
     };
 
-    this.checkSurroundAttackable = function(){
-      for(var idx=0; idx<TD.buildingsInBattleField.length; idx++){
-        if(isInRange(this.position, TD.buildingsInBattleField[idx].position, this.attackRange)){
-          return TD.buildingsInBattleField[idx];
+    this.findTarget = function(){
+      var theBuilding = null, dis = this.range, key, idx;
+      if(this.target != null && this.target.live > 0 &&
+         TD.lang.getDistance(this.position, this.target.position) <= dis){
+         return this.target;
+      }
+      for(key in TD.aliveTerminals){
+        if(!TD.aliveTerminals.hasOwnProperty(key)) continue;
+        theBuilding = TD.aliveTerminals[key];  // the terminal tower
+        if(TD.lang.getDistance(this.position, theBuilding.position) <= dis){
+          return theBuilding;
+        }
+      }
+      for(idx=0; idx<TD.inBuildingQueue.length; idx++){
+        if(isInRange(this.position, TD.inBuildingQueue[idx].position, dis)){
+          return TD.inBuildingQueue[idx];
         }
       }
       return null;
     };
+
+    this.fire = function(s, e, damage, cannonType){
+      // s: start point,  e: end point,  damage: damage,  type: draw style
+      // this.target.position as end point
+      // create a bullet object
+      // push that bullet object into TD.bulletQueue
+      var bulletCfg = {
+        position : s,
+        start : s,
+        end : e,
+        gender : false,    // this from evil
+        damage : damage,   // may increase when flying through something in the map
+        type : cannonType
+      };
+      var blt = new TD.bullet( bulletCfg );
+      TD.bulletQueue.push(blt);
+    }
 
 
   };

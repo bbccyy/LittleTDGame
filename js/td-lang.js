@@ -259,10 +259,20 @@ _TD.loading.push(function(TD){
     },
 
     getBuilding : function ( p, r ){
-      var x = p[0], y = p[1], idx;
+      var x = p[0], y = p[1], idx, key;
       for(idx=0; idx<TD.buildingQueue.length; idx++){
         if(this.getDistance(TD.buildingQueue[idx].position, p) <= r)
           return TD.buildingQueue[idx];
+      }
+      for(key in TD.aliveTerminals){
+        if(!TD.aliveTerminals.hasOwnProperty(key)) continue;
+        if(this.getDistance(TD.aliveTerminals[key].position, p) <= r)
+          return TD.aliveTerminals[key];
+      }
+      for(key in TD.deadTerminals){
+        if(!TD.deadTerminals.hasOwnProperty(key)) continue;
+        if(this.getDistance(TD.deadTerminals[key].position, p) <= r)
+          return TD.deadTerminals[key];
       }
       return null;
     },

@@ -339,6 +339,8 @@ _TD.loading.push(function(TD){
         range : 40,
         speed : 1,
         damage : 25,
+        frequency : 1000,
+        cannonType : 'bullet_small',
         live : function(){return TD.cfg.monster_1_base_live;},
         price : function(){return TD.cfg.monster_1_base_price;}
       },
@@ -347,6 +349,8 @@ _TD.loading.push(function(TD){
         range : 50,
         speed : 0.9,
         damage : 30,
+        frequency : 1000,
+        cannonType : 'bullet_middle',
         live : function(){return TD.cfg.monster_2_base_live;},
         price : function(){return TD.cfg.monster_2_base_price;}
       },
@@ -355,6 +359,8 @@ _TD.loading.push(function(TD){
         range : 60,
         speed : 0.8,
         damage : 35,
+        frequency : 1000,
+        cannonType : 'bullet_large',
         live : function(){return TD.cfg.monster_3_base_live;},
         price : function(){return TD.cfg.monster_3_base_price;}
       },
@@ -362,7 +368,9 @@ _TD.loading.push(function(TD){
         type : 'monster-4',
         range : 70,
         speed : 0.7,
-        damage : 50,
+        damage : 1,
+        frequency : 30,
+        cannonType : 'bullet_layser',
         live : function(){return TD.cfg.monster_4_base_live;},
         price : function(){return TD.cfg.monster_4_base_price;}
       }
@@ -413,8 +421,8 @@ _TD.loading.push(function(TD){
         type : 'building-5',
         cannonType : 'bullet_large',
         frequency : 500,
-        live : 100,
-        price : 50000,
+        live : 1000,
+        price : 500,
         range : 100,
         damage : 10,
         cannonLen : 0
@@ -524,7 +532,7 @@ _TD.loading.push(function(TD){
           'frequency' : 1,
           'range' : 1,
           'live' : 2,    // bonus, double its live
-          'price' : 50000
+          'price' : 500
         }
       ]
 

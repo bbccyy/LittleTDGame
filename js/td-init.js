@@ -11,7 +11,8 @@ _TD.loading.push(function(TD){
 
   TD.eventQueue = [];  //all moving or exploding events --> monster, bullet and building
   TD.monsterQueue = [];
-  TD.buildingQueue = [];
+  TD.buildingQueue = [];     // buildings outside battle field
+  TD.inBuildingQueue = [];   // buildings in battle field
   TD.bulletQueue = [];
   TD.bloodBarQueue = [];
 

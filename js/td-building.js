@@ -112,6 +112,7 @@ _TD.loading.push(function(TD){
         position : s,
         start : s,
         end : e,
+        gender : true,  // this is justice
         damage : damage,   // may increase when flying through something in the map
         type : cannonType
       };
@@ -121,7 +122,7 @@ _TD.loading.push(function(TD){
 
   };
 
-
+  // terminalBuilding inhert from TD.building object
   TD.terminalBuilding = function( position, terminalId, cfg ){
     this.__proto__ = new TD.building( position, cfg );
     this.type = 'building-5';

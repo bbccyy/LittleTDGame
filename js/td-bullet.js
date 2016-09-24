@@ -9,6 +9,7 @@ _TD.loading.push(function(TD){
     this.target = cfg.end;
     this.type = cfg.type;
     this.damage = cfg.damage;
+    this.gender = cfg.gender;  // true: from building, false: from monster
     this.speed = TD.cfg.Arsenal[this.type].speed;  //bullet speed
     this.range = TD.cfg.Arsenal[this.type].damageRange;
     this.exploding = TD.cfg.Arsenal[this.type].exploding;  // exploding style
@@ -54,12 +55,28 @@ _TD.loading.push(function(TD){
       return true;
     };
 
-    this.makeDamage = function(){
-      var idx, ms;
-      for(idx=0; idx<TD.monsterQueue.length; idx++){
-        ms = TD.monsterQueue[idx];
-        if(TD.lang.getDistance(this.target, ms.position) <= this.range){
-          ms.live -= this.damage;
+    this.makeDamage = function(){   // now, makeDamage function can process both justice and evil bullets
+      var idx, ms, key;
+      if(this.gender==true){
+        for(idx=0; idx<TD.monsterQueue.length; idx++){
+          ms = TD.monsterQueue[idx];
+          if(TD.lang.getDistance(this.target, ms.position) <= this.range){
+            ms.live -= this.damage;
+          }
+        }
+      }else{
+        for(idx=0; idx<TD.inBuildingQueue.length; idx++){
+          ms = TD.inBuildingQueue[idx];
+          if(TD.lang.getDistance(this.target, ms.position) <= this.range){
+            ms.live -= this.damage;
+          }
+        }
+        for(key in TD.aliveTerminals){
+          if(!TD.aliveTerminals.hasOwnProperty(key)) continue;
+          ms = TD.aliveTerminals[key];
+          if(TD.lang.getDistance(this.target, ms.position) <= this.range){
+            ms.live -= this.damage;
+          }
         }
       }
     };
