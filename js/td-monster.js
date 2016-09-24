@@ -53,6 +53,10 @@ _TD.loading.push(function(TD){
     this.alive = true;
 
     this.move = function(){
+      if(TD.pause){
+        this.setTarget(null);
+        return true;
+      }
       if(this.live <= 0) {      // current monster is dead
         // can add exploding view later
         this.alive = false;

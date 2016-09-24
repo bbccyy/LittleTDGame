@@ -58,11 +58,17 @@ _TD.loading.push(function(TD){
       }
       var that = this;
       this.fire_st = setInterval(
-        function(){ that.fire(that.cannonDir[1],that.target.position, that.damage, that.cannonType); },
+        function(){
+          that.fire(that.cannonDir[1],that.target.position, that.damage, that.cannonType);
+        },
         that.frequency);
     };
 
     this.move = function(){
+      if(TD.pause){
+        this.setTarget(null);
+        return true;
+      }
       if(this.remove == true) {       // this building has been removed
         clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
         return false;
@@ -143,6 +149,10 @@ _TD.loading.push(function(TD){
       return true;
     };
     this.move = function(){
+      if(TD.pause){
+        this.setTarget(null);
+        return true;
+      }
       var obj = {
         position : this.position,
         type : this.type,   //building type, indicate the outline of building

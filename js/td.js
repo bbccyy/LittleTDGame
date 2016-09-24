@@ -47,9 +47,7 @@ var _TD = {
 					return;
 				}
 
-				if(TD.pause == true){
-					// pause
-				}else if(TD.waitingForNextWave==false && _this.monsterQueue.length==0){
+				if(TD.waitingForNextWave==false && _this.monsterQueue.length==0){
 					// won't stop the main thread, but after 6s, another thread will run bulidNextWave
 					// then monsterQueue will have something new
 					TD.waitingForNextWave = true;  // prevent create multiple setTimeout thread
@@ -59,10 +57,12 @@ var _TD = {
 				}
 				else{  // not waiting for next wave OR  still has alive monsters in queue
 
-					_this.ucx.clearRect(0, 0, _this.cfg.width, _this.cfg.height);
-					while(_this.eventQueue.length>0){
-						var e = _this.eventQueue.shift();
-						_this.drawer(e);
+					if(!TD.pause){
+						_this.ucx.clearRect(0, 0, _this.cfg.width, _this.cfg.height);
+						while(_this.eventQueue.length>0){
+							var e = _this.eventQueue.shift();
+							_this.drawer(e);
+						}
 					}
 
 					//1
@@ -86,29 +86,31 @@ var _TD = {
 					}
 
 					//3
-					size = _this.bulletQueue.length;
-					while(size > 0){
-						size--;
-						var el = _this.bulletQueue.shift();
-						if(el.move() == true){
-							_this.bulletQueue.push(el);
+					if(!TD.pause){
+						size = _this.bulletQueue.length;
+						while(size > 0){
+							size--;
+							var el = _this.bulletQueue.shift();
+							if(el.move() == true){
+								_this.bulletQueue.push(el);
+							}
 						}
-					}
 
-					//4
-					size = _this.bloodBarQueue.length;
-					while(size > 0){
-						size--;
-						var el = _this.bloodBarQueue.shift();
-						if(el.move() == true){
-							_this.bloodBarQueue.push(el);
+						//4
+						size = _this.bloodBarQueue.length;
+						while(size > 0){
+							size--;
+							var el = _this.bloodBarQueue.shift();
+							if(el.move() == true){
+								_this.bloodBarQueue.push(el);
+							}
 						}
-					}
 
-					for(key in TD.deadTerminals){
-						if(!TD.deadTerminals.hasOwnProperty(key)) continue;
-						var el = TD.deadTerminals[key];
-						el.move();
+						for(key in TD.deadTerminals){
+							if(!TD.deadTerminals.hasOwnProperty(key)) continue;
+							var el = TD.deadTerminals[key];
+							el.move();
+						}
 					}
 
 					for(key in TD.aliveTerminals){
