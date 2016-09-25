@@ -60,7 +60,7 @@ _TD.loading.push(function(TD){
       if(this.gender==true){
         for(idx=0; idx<TD.monsterQueue.length; idx++){
           ms = TD.monsterQueue[idx];
-          if(TD.lang.getDistance(this.target, ms.position) <= this.range){
+          if(TD.lang.getDistance(this.position, ms.position) <= this.range){
             ms.live -= this.damage;
           }
         }
@@ -87,7 +87,7 @@ _TD.loading.push(function(TD){
   TD.missile = function( cfg ){
     this.__proto__ = new TD.bullet( cfg );
     this.track = [];
-    this.count = -5;
+    this.count = -7;
     this.hit = false;
     this.curTargetPosition = this.target.position;  // previous position, if target has been destroied, use this curTargetPosition
 

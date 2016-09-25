@@ -31,6 +31,7 @@ _TD.loading.push(function(TD){
       this.maxLive   *= up.live;
       this.live = this.maxLive;  // immediately refresh the live of building to max
       this.frequency *= up.frequency;
+      if(this.type=='building-6') this.missileNumber = up.missile;
       TD.lang.showBuildingInfo(this);
       return true;
     };
@@ -126,17 +127,130 @@ _TD.loading.push(function(TD){
         damage : damage,   // may increase when flying through something in the map
         type : cannonType
       };
-      var blt = new TD.bullet( bulletCfg );
+      if(cannonType == 'bullet_missile'){
+        bulletCfg['end'] = this.target;
+        var blt = new TD.missile( bulletCfg );
+      }else{
+        var blt = new TD.bullet( bulletCfg );
+      }
       TD.bulletQueue.push(blt);
     }
 
   };
 
 
-  TD.missileBuilding = function (position cfg){
+  TD.missileBuilding = function (position, cfg){
     this.__proto__ = new TD.building(position, cfg);
+    this.missileNumber = cfg.missileNumber;  // number of missiles available in each attack (max: 7)
+    this.curLauncher = [];
+    this.curLauncherPoint = [];
+    // Curbs are used to filter out monsters that are lay outside of its front face
+    this.leftCurb = [this.position, [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]];
+    this.rightCurb = [this.position, [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR]];
+    this.baseLauncher = [     // 4 points, first two is the front face
+                     [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR],
+                     [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
+                     [this.position[0]+TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
+                     [this.position[0]+TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]
+                    ];
+    this.baseLaunchPoint = [    //7 points indicate the place the missile will be launched
+                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]],
+                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR/3],
+                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR/3],
+                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR/3*2],
+                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR/3*2],
+                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
+                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]
+                       ];
+    this.baseLine = [this.position, [this.position[0]-10,this.position[1]]];  // <s, e>
 
-  }
+    this.getLauncher = function(){  //modify launcher body, launch-point and Curbs
+      var Dir = [this.position, this.cannonDir[1]], idx, tmpX, tmpY, x, y;
+      var angle = TD.lang.getAngle360(this.baseLine, Dir);  //get angle from baseLine(nver changes) to cannonDir
+      for(idx=0; idx<4; idx++){
+        tmpX = this.baseLauncher[idx][0] - this.position[0];
+        tmpY = this.baseLauncher[idx][1] - this.position[1];
+        x = tmpX*Math.cos(angle) - tmpY*Math.sin(angle) + this.position[0];
+        y = tmpX*Math.sin(angle) + tmpY*Math.cos(angle) + this.position[1];
+        this.curLauncher[idx] = [x, y];
+      }
+      this.leftCurb = [this.position, this.curLauncher[0]];
+      this.rightCurb = [this.position, this.curLauncher[1]];
+      for(idx=0; idx<this.missileNumber; idx++){
+        tmpX = this.baseLaunchPoint[idx][0] - this.position[0];
+        tmpY = this.baseLaunchPoint[idx][1] - this.position[1];
+        x = tmpX*Math.cos(angle) - tmpY*Math.sin(angle) + this.position[0];
+        y = tmpX*Math.sin(angle) + tmpY*Math.cos(angle) + this.position[1];
+        this.curLauncherPoint[idx] = [x, y];
+      }
+    };
+
+    this.move = function(){
+      if(TD.pause){
+        this.setTarget(null);
+        return true;
+      }
+      if(this.live <= 0) {       // this terminal building has been destroied
+        clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
+        return false;  // td.js will move it to TD.deadTerminals
+      }
+      if(this.remove == true) {       // this building has been removed
+        clearInterval(this.fire_st);  // again don't forget to shut down its cannon :)
+        return false;
+      }
+      var tmpTar = this.findTarget();
+      if(tmpTar != null){
+        this.cannonDir = TD.lang.getCannon(this.position, tmpTar.position, this.cannonLen);
+      }
+      this.getLauncher();
+      var obj = {
+        position : this.position,
+        type : this.type,   //building type, indicate the outline of building
+        launcher : this.curLauncher
+      };
+      if(this.onClick){
+        obj['showRange'] = this.range;
+      }
+      if(this.target != tmpTar){
+        this.setTarget(tmpTar);
+      }
+      TD.eventQueue.push(obj);
+      return true;
+    };
+
+    this.findAllTargets = function(){
+      var allMonsters = [], range = this.range,  dis, ms;
+      for(var idx=0; idx<TD.monsterQueue.length; idx++){
+        if(allMonsters.length > this.missileNumber) break;
+        ms = TD.monsterQueue[idx];
+        dis = TD.lang.getDistance(this.position, ms.position);
+        if(dis > range) continue;
+        if(!TD.lang.isOnLeft(this.leftCurb, ms.position) && TD.lang.isOnLeft(this.rightCurb, ms.position)){
+          allMonsters.push(ms);
+        }
+      }
+      return allMonsters;
+    };
+
+    this.fire = function(s, e, damage, cannonType){
+      var all = this.findAllTargets(), idx=0, i=0, tar;
+      for(idx=0; idx<this.missileNumber; idx++){
+        if(i==all.length) i=0;
+        tar = all[i++];
+        var bulletCfg = {
+          position : this.curLauncherPoint[idx],
+          start : this.curLauncherPoint[idx],
+          end : tar,
+          gender : true,
+          damage : damage,
+          type : cannonType
+        };
+        var blt = new TD.missile( bulletCfg );
+        TD.bulletQueue.push(blt);
+      }
+    };
+
+  };
 
   // terminalBuilding inhert from TD.building object
   TD.terminalBuilding = function( position, terminalId, cfg ){

@@ -42,6 +42,9 @@ _TD.loading.push(function(TD){
         TD.cfg.bld5_2(TD.ucx, obj);
       }
     }
+    else if(obj.type == 'building-6'){
+      TD.cfg.bld6(TD.ucx, obj);
+    }
     else if(obj.type == 'bullet_small'){
       TD.cfg.bullet_small(TD.ucx, obj);
     }
@@ -53,6 +56,9 @@ _TD.loading.push(function(TD){
     }
     else if(obj.type == 'bullet_layser'){
       TD.cfg.bullet_layser(TD.ucx, obj);
+    }
+    else if(obj.type == 'bullet_missile'){
+      TD.cfg.bullet_missile(TD.ucx, obj);
     }
   }
 

@@ -131,6 +131,7 @@ _TD.loading.push(function(TD){
         ctx.lineTo(e[1][0], e[1][1]);
         ctx.stroke();
       }
+
       if(cfg.exploding != undefined){
         ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
@@ -317,7 +318,48 @@ _TD.loading.push(function(TD){
     },
 
     bld6 : function( ctx, cfg ){
-      // draw missile launcher
+      var x = cfg.position[0], y = cfg.position[1];
+      var corners = [[x-7,y-7],[x+7, y-7],[x-7,y+7],[x+7,y+7]], idx;
+      for(idx=0; idx<corners.length; idx++){
+        ctx.beginPath();
+        ctx.arc(corners[idx][0], corners[idx][1], 2, 0, 2*Math.PI, false);
+        ctx.fillStyle = "rgba(208, 205, 254, 1)";
+        ctx.fill();
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(12, 3, 135, 1)';
+        ctx.moveTo(x, y);
+        ctx.lineTo(corners[idx][0], corners[idx][1]);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 1;
+      ctx.moveTo(cfg.launcher[0][0], cfg.launcher[0][1]);
+      ctx.lineTo(cfg.launcher[1][0], cfg.launcher[1][1]);
+      ctx.lineTo(cfg.launcher[2][0], cfg.launcher[2][1]);
+      ctx.lineTo(cfg.launcher[3][0], cfg.launcher[3][1]);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(108, 150, 178, 1)';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(51, 68, 97, 1)';
+      ctx.lineWidth = 3;
+      ctx.moveTo(cfg.launcher[0][0], cfg.launcher[0][1]);
+      ctx.lineTo(cfg.launcher[1][0], cfg.launcher[1][1]);
+      ctx.stroke();
+      if(cfg.showRange != undefined){
+        var range = cfg.showRange;
+        ctx.beginPath();
+        ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'grey';
+        ctx.stroke();
+      }
     },
 
     Arsenal : {
@@ -342,7 +384,7 @@ _TD.loading.push(function(TD){
           exploding : null
         },
       'bullet_missile' : {
-          speed : 2,
+          speed : 2.5,
           damageRange : 5,
           exploding : [2,3,4,5,4]
         }
@@ -407,31 +449,31 @@ _TD.loading.push(function(TD){
       'building-1' : {  // cfg
         type : 'building-1',
         cannonType : 'bullet_small',
-        frequency : 300,  //  1 per 100ms
+        frequency : 500,  //  1 per 100ms
         live : 100,
         price : 100,
         range : 50,
-        damage : 10,
+        damage : 20,
         cannonLen : 10
       },
       'building-2' : {
         type : 'building-2',
         cannonType : 'bullet_middle',
-        frequency : 400,
+        frequency : 600,
         live : 100,
         price : 200,
-        range : 40,
-        damage : 20,
+        range : 140,
+        damage : 45,
         cannonLen : 12
       },
       'building-3' : {
         type : 'building-3',
         cannonType : 'bullet_large',
-        frequency : 500,
+        frequency : 800,
         live : 100,
         price : 300,
         range : 45,
-        damage : 50,
+        damage : 60,
         cannonLen : 15
       },
       'building-4' : {
@@ -457,11 +499,12 @@ _TD.loading.push(function(TD){
       'building-6' : {   // missile launcher
         type : 'building-6',
         cannonType : 'bullet_missile',
-        frequency : 3000,   //render every 3 second
+        frequency : 3000,   //render every 5 second
         live : 100,
         price : 1500,
         range : 150,
         damage : 150,
+        missileNumber : 1,
         cannonLen : 5
       },
     },
@@ -577,7 +620,7 @@ _TD.loading.push(function(TD){
         {
           'damage' : 3,  // increase 300%
           'frequency' : 1,
-          'missile' : 4,
+          'missile' : 2,
           'range' : 1.2,
           'live' : 2,
           'price' : 2500
@@ -585,7 +628,7 @@ _TD.loading.push(function(TD){
         {
           'damage' : 5,  // increase 500%
           'frequency' : 1,
-          'missile' : 5,
+          'missile' : 3,
           'range' : 1.3,
           'live' : 3,
           'price' : 7000
@@ -593,7 +636,7 @@ _TD.loading.push(function(TD){
         {
           'damage' : 10,  // increase 1000%
           'frequency' :1,
-          'missile' : 7,
+          'missile' : 4,
           'range' : 1.5,
           'live' : 10,
           'price' : 22000

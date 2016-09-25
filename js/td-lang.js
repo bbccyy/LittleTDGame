@@ -290,6 +290,25 @@ _TD.loading.push(function(TD){
       return null;
     },
 
+    getSignByCrossProduct : function( v1, v2 ){
+      if( (v1[0]*v2[1] - v1[1]*v2[0]) >= 0 ) return 1;
+      else return -1;
+    },
+
+    getAngle360 : function(e1, e2){
+      var v1 = [e1[1][0]-e1[0][0], e1[1][1]-e1[0][1]];
+      var v2 = [e2[1][0]-e2[0][0], e2[1][1]-e2[0][1]];
+
+      var sign = this.getSignByCrossProduct(v1, v2);  // careful, it's v1 anti-clockwise to v2
+
+      var productValue = v1[0] * v2[0] + v1[1] * v2[1];
+      var v1_dis = Math.sqrt(v1[0]*v1[0] + v1[1]*v1[1]);
+      var v2_dis = Math.sqrt(v2[0]*v2[0] + v2[1]*v2[1]);
+      var cosValue = productValue / (v1_dis * v2_dis);
+
+      return Math.acos(cosValue) * sign;
+    },
+
     getAngle : function(e1, e2){
       var ps, p1, p2;
       if(this.pointEq(e1[0], e2[0]) || this.pointEq(e1[0], e2[1])){

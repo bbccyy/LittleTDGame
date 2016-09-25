@@ -2,7 +2,7 @@
 _TD.loading.push(function(TD){
 
   TD.version = "0.0.1";
-  TD.money = 5000;
+  TD.money = 55000;
   TD.wave = 0;  // current wave number
   TD.GameOver = false;  // if final target has been destroied, set GameOver := true
   TD.waitingForNextWave = false;  // check if is between two waves

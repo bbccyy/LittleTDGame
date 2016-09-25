@@ -7,6 +7,7 @@ _TD.loading.push(function(TD){
     this.bld2 = document.getElementById('building-2');
     this.bld3 = document.getElementById('building-3');
     this.bld4 = document.getElementById('building-4');
+    this.bld6 = document.getElementById('building-6');
 
     this.ug = document.getElementById('upgrade');
     this.sl = document.getElementById('sell');
@@ -19,6 +20,7 @@ _TD.loading.push(function(TD){
     this.bld2.addEventListener('click', this.onClick_building_2, false);
     this.bld3.addEventListener('click', this.onClick_building_3, false);
     this.bld4.addEventListener('click', this.onClick_building_4, false);
+    this.bld6.addEventListener('click', this.onClick_building_6, false);
 
     this.ug.addEventListener('click', this.onClick_upgrade, false);
     this.sl.addEventListener('click', this.onClick_sell, false);
@@ -85,6 +87,15 @@ _TD.loading.push(function(TD){
       }
     },
 
+    onClick_building_6 : function(ev){
+      if(TD.waitingToBuild == 'building-6'){
+        TD.waitingToBuild = null;
+        TD.cfg.clearAll(TD.ucx2, TD.uc2);
+      }else{
+        TD.waitingToBuild = 'building-6';
+      }
+    },
+
     onmouseMove : function (ev){
       var rect = TD.uc2.getBoundingClientRect();
       var x = ev.clientX - rect.left;
@@ -112,12 +123,19 @@ _TD.loading.push(function(TD){
           TD.lang.setMoney(TD.money - cfg.price);
           TD.waitingToBuild = null;
           TD.cfg.clearAll(TD.ucx2, TD.uc2); // clear the view of upper layer
-          var bld = new TD.building([x,y], cfg);
-          TD.lang.showBuildingInfo(bld);
-          cfg['cannon'] = bld.cannonDir;
-          cfg['position'] = bld.position;
+          if(cfg.type == 'building-6') {
+            var bld = new TD.missileBuilding([x,y], cfg);
+            cfg['position'] = bld.position;
+            cfg['launcher'] = bld.baseLauncher;
+          }
+          else {
+            var bld = new TD.building([x,y], cfg);
+            cfg['cannon'] = bld.cannonDir;
+            cfg['position'] = bld.position;
+          }
+          TD.lang.showBuildingInfo(bld);   // missile building should add missile number feature
           TD.drawer(cfg);
-          if(isAble==1){
+          if(isAble==1){   // builid outside the road
             TD.buildingQueue.push(bld);
           }else{
             TD.inBuildingQueue.push(bld);
