@@ -85,6 +85,16 @@ var _TD = {
 						}
 					}
 
+					//2.5
+					size = _this.inBuildingQueue.length;
+					while(size > 0){
+						size--;
+						var el = _this.inBuildingQueue.shift();
+						if(el.move() == true){
+							_this.inBuildingQueue.push(el);
+						}
+					}
+
 					//3
 					if(!TD.pause){
 						size = _this.bulletQueue.length;

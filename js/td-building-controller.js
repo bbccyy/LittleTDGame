@@ -95,7 +95,7 @@ _TD.loading.push(function(TD){
           type : 'mouse',
           buildable : true
         };
-        if(!TD.lang.ableToBuild([x,y], TD.cfg.buildingR))
+        if(TD.lang.ableToBuild([x,y], TD.cfg.buildingR)==-1)
           obj['buildable'] = false;
         TD.drawer(obj);
       }
@@ -105,7 +105,8 @@ _TD.loading.push(function(TD){
       var rect = TD.uc2.getBoundingClientRect();
       var x = ev.clientX - rect.left;
       var y = ev.clientY - rect.top;
-      if(TD.waitingToBuild != null && TD.lang.ableToBuild([x,y], TD.cfg.buildingR)){  // click to build?
+      var isAble = TD.lang.ableToBuild([x,y], TD.cfg.buildingR);
+      if(TD.waitingToBuild != null && isAble!=-1){  // click to build?
         var cfg = TD.cfg.Buildings[TD.waitingToBuild];
         if(TD.money >= cfg.price){
           TD.lang.setMoney(TD.money - cfg.price);
@@ -116,7 +117,12 @@ _TD.loading.push(function(TD){
           cfg['cannon'] = bld.cannonDir;
           cfg['position'] = bld.position;
           TD.drawer(cfg);
-          TD.buildingQueue.push(bld);
+          if(isAble==1){
+            TD.buildingQueue.push(bld);
+          }else{
+            TD.inBuildingQueue.push(bld);
+            TD.bloodBarQueue.push(new TD.bloodBar(bld));
+          }
         }
       }
       else if(TD.waitingToBuild == null){  //just click to show details?

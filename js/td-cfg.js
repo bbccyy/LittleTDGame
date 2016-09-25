@@ -121,6 +121,24 @@ _TD.loading.push(function(TD){
       ctx.stroke();
     },
 
+    bullet_missile : function(ctx, cfg ){
+      for(var idx=0; idx<cfg.track.length; idx++){
+        var e = cfg.track[idx];
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(251, 254, 205,'  + e.a + ')';
+        ctx.lineWidth = 1;
+        ctx.moveTo(e[0][0], e[0][1]);
+        ctx.lineTo(e[1][0], e[1][1]);
+        ctx.stroke();
+      }
+      if(cfg.exploding != undefined){
+        ctx.beginPath();
+        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        ctx.fill();
+      }
+    },
+
     mst1 : function ( ctx, cfg ){
       ctx.beginPath();
       ctx.fillStyle = 'rgba(130, 142, 16, 1)';
@@ -298,6 +316,10 @@ _TD.loading.push(function(TD){
       ctx.fill();
     },
 
+    bld6 : function( ctx, cfg ){
+      // draw missile launcher
+    },
+
     Arsenal : {
       'bullet_small' : {
           speed : 12,
@@ -318,6 +340,11 @@ _TD.loading.push(function(TD){
           speed : 1000,
           damageRange : 1,
           exploding : null
+        },
+      'bullet_missile' : {
+          speed : 2,
+          damageRange : 5,
+          exploding : [2,3,4,5,4]
         }
     },
 
@@ -426,7 +453,17 @@ _TD.loading.push(function(TD){
         range : 100,
         damage : 10,
         cannonLen : 0
-      }
+      },
+      'building-6' : {   // missile launcher
+        type : 'building-6',
+        cannonType : 'bullet_missile',
+        frequency : 3000,   //render every 3 second
+        live : 100,
+        price : 1500,
+        range : 150,
+        damage : 150,
+        cannonLen : 5
+      },
     },
 
     upgradeMapping : {
@@ -534,7 +571,34 @@ _TD.loading.push(function(TD){
           'live' : 2,    // bonus, double its live
           'price' : 500
         }
-      ]
+      ],
+
+      'building-6' : [
+        {
+          'damage' : 3,  // increase 300%
+          'frequency' : 1,
+          'missile' : 4,
+          'range' : 1.2,
+          'live' : 2,
+          'price' : 2500
+        },
+        {
+          'damage' : 5,  // increase 500%
+          'frequency' : 1,
+          'missile' : 5,
+          'range' : 1.3,
+          'live' : 3,
+          'price' : 7000
+        },
+        {
+          'damage' : 10,  // increase 1000%
+          'frequency' :1,
+          'missile' : 7,
+          'range' : 1.5,
+          'live' : 10,
+          'price' : 22000
+        }
+      ],
 
     }
 

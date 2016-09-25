@@ -9,6 +9,7 @@ _TD.loading.push(function(TD){
 
     this.type = cfg.type;
     this.speed = cfg.speed;
+    this.baseSpeed = cfg.speed;
     this.range = cfg.range;   // attack range
     this.damage = cfg.damage;
     this.cannonType = cfg.cannonType;
@@ -48,7 +49,7 @@ _TD.loading.push(function(TD){
     this.from = node;
     this.to = null;
     this.path = null;
-    this.probe = 0;
+    this.probe = 0;    // indicate current location on a single path
 
     this.alive = true;
 
@@ -106,6 +107,7 @@ _TD.loading.push(function(TD){
           return this.move();
         }
       }
+      this.speed = this.baseSpeed * this.path[this.probe-1][1];
       this.position = TD.lang.getNextPos(this.position, this.path[this.probe-1][0], this.path[this.probe][0], this.speed);
       if(TD.lang.pointEq(this.position, this.path[this.probe][0])){
         this.probe++;
@@ -131,7 +133,7 @@ _TD.loading.push(function(TD){
         }
       }
       for(idx=0; idx<TD.inBuildingQueue.length; idx++){
-        if(isInRange(this.position, TD.inBuildingQueue[idx].position, dis)){
+        if(TD.lang.isInRange(this.position, TD.inBuildingQueue[idx].position, dis)){
           return TD.inBuildingQueue[idx];
         }
       }

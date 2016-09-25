@@ -69,6 +69,10 @@ _TD.loading.push(function(TD){
         this.setTarget(null);
         return true;
       }
+      if(this.live <= 0) {       // this terminal building has been destroied
+        clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
+        return false;  // td.js will move it to TD.deadTerminals
+      }
       if(this.remove == true) {       // this building has been removed
         clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
         return false;
@@ -127,6 +131,12 @@ _TD.loading.push(function(TD){
     }
 
   };
+
+
+  TD.missileBuilding = function (position cfg){
+    this.__proto__ = new TD.building(position, cfg);
+
+  }
 
   // terminalBuilding inhert from TD.building object
   TD.terminalBuilding = function( position, terminalId, cfg ){

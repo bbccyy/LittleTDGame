@@ -6,7 +6,7 @@ _TD.loading.push(function(TD){
   TD.bullet = function( cfg ){
     this.position = cfg.position;
     this.origin = cfg.start;
-    this.target = cfg.end;
+    this.target = cfg.end;   // in missile type, this stores the monster object
     this.type = cfg.type;
     this.damage = cfg.damage;
     this.gender = cfg.gender;  // true: from building, false: from monster
@@ -80,7 +80,77 @@ _TD.loading.push(function(TD){
         }
       }
     };
+  };
 
-  }
+  // inherit from bullet
+  // make sure cfg.end = monster object
+  TD.missile = function( cfg ){
+    this.__proto__ = new TD.bullet( cfg );
+    this.track = [];
+    this.count = -5;
+    this.hit = false;
+    this.curTargetPosition = this.target.position;  // previous position, if target has been destroied, use this curTargetPosition
+
+    this.move = function(){
+      if(!this.hit && this.target != undefined && this.target != null && this.target.live > 0){
+        this.curTargetPosition = this.target.position;
+      }
+
+      if(TD.lang.pointEq(this.curTargetPosition, this.position)==true){
+        this.count++;
+        if(this.count == 0){
+          this.track[0].a=0.9;
+        }else if(this.count > 0){
+          if(this.track[0].a == 0.1) this.track.shift();
+          for(idx=0; idx<this.track.length; idx++){
+            this.track[idx].a -= 0.1;
+            if(this.track[idx].a == 0.9) break;
+          }
+        }
+        if( this.track.length > 0){
+          var obj = {
+            position : this.curTargetPosition,
+            type : this.type,
+            exploding : this.exploding[this.index],
+            track : this.track
+          };
+          this.index++;
+          TD.eventQueue.push(obj);
+          return true;
+        }else{
+          return false;
+        }
+      }
+      var nextPosition = TD.lang.getNextPos(this.position, this.position, this.curTargetPosition, this.speed);
+      var point = [this.position, nextPosition], idx;
+      point.a = 1;
+      this.track.push(point);
+      this.position = nextPosition;
+      this.count++;
+      if(this.count == 0){
+        this.track[0].a=0.9;
+      }else if(this.count > 0){
+        if(this.track[0].a == 0.1) this.track.shift();
+        for(idx=0; idx<this.track.length; idx++){
+          this.track[idx].a -= 0.1;
+          if(this.track[idx].a == 0.9) break;
+        }
+      }
+      var obj = {
+        position : this.curTargetPosition,
+        type : this.type,
+        track : this.track
+      };
+      if(TD.lang.pointEq(this.curTargetPosition, this.position)==true){
+        this.hit = true;
+        this.makeDamage();
+        obj['exploding'] = this.exploding[this.index];
+        this.index++;
+      }
+      TD.eventQueue.push(obj);
+      return true;
+    };
+
+  };
 
 });

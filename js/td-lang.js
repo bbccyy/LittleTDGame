@@ -184,18 +184,27 @@ _TD.loading.push(function(TD){
     },
 
     ableToBuild : function( p, r ){
-      var x = parseInt(p[0]), y = parseInt(p[1]), idx;  // parseInt to prevent float input
+      var x = parseInt(p[0]), y = parseInt(p[1]), idx, cur;  // parseInt to prevent float input
       if(TD.mapData == null) return false;
-      if(x+r>=TD.cfg.width || x-r<0 || y+r>=TD.cfg.height || y-r<0) return false;
-      if(TD.mapData[y][x+r] != 0) return false;
-      if(TD.mapData[y][x-r] != 0) return false;
-      if(TD.mapData[y+r][x] != 0) return false;
-      if(TD.mapData[y-r][x] != 0) return false;
-      for(idx=0; idx<TD.buildingQueue.length; idx++){
-        if(this.getDistance(TD.buildingQueue[idx].position, p) <= 2*r)
-          return false;
+      if(x+r>=TD.cfg.width || x-r<0 || y+r>=TD.cfg.height || y-r<0) return -1;
+      cur = TD.mapData[y][x+r];
+      //if(TD.mapData[y][x+r] != 0) return false;
+      if(TD.mapData[y][x-r] != cur) return -1;
+      if(TD.mapData[y+r][x] != cur) return -1;
+      if(TD.mapData[y-r][x] != cur) return -1;
+      if(cur == 0){
+        for(idx=0; idx<TD.buildingQueue.length; idx++){
+          if(this.getDistance(TD.buildingQueue[idx].position, p) <= 2*r)
+            return -1;
+        }
+      }else{
+        for(idx=0; idx<TD.inBuildingQueue.length; idx++){
+          if(this.getDistance(TD.inBuildingQueue[idx].position, p) <= 2*r)
+            return -1;
+        }
+        // should also check for terminal towers, both alive and dead
       }
-      return true;
+      return cur+1;  // 1: --> outside,   2: --> inside
     },
 
     showBuildingInfo : function ( bld ){
@@ -263,6 +272,10 @@ _TD.loading.push(function(TD){
       for(idx=0; idx<TD.buildingQueue.length; idx++){
         if(this.getDistance(TD.buildingQueue[idx].position, p) <= r)
           return TD.buildingQueue[idx];
+      }
+      for(idx=0; idx<TD.inBuildingQueue.length; idx++){
+        if(this.getDistance(TD.inBuildingQueue[idx].position, p) <= r)
+          return TD.inBuildingQueue[idx];
       }
       for(key in TD.aliveTerminals){
         if(!TD.aliveTerminals.hasOwnProperty(key)) continue;
