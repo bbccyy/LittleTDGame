@@ -364,17 +364,17 @@ _TD.loading.push(function(TD){
 
     Arsenal : {
       'bullet_small' : {
-          speed : 12,
+          speed : 10,
           damageRange : 7,
           exploding : [2,3,4,5,4]
         },
       'bullet_middle' : {
-          speed : 10,
-          damageRange : 8,
+          speed : 9,
+          damageRange : 10,
           exploding : [3,4,5,6,5]
         },
       'bullet_large' : {
-          speed : 7,
+          speed : 8,
           damageRange : 15,
           exploding : [4,6,8,10,8]
         },
@@ -384,9 +384,9 @@ _TD.loading.push(function(TD){
           exploding : null
         },
       'bullet_missile' : {
-          speed : 2.5,
+          speed : 3.5,
           damageRange : 5,
-          exploding : [2,3,4,5,4]
+          exploding : [3,4,5,6,7,7,5]
         }
     },
 
@@ -395,10 +395,10 @@ _TD.loading.push(function(TD){
     monster_3_base_live : 200,
     monster_4_base_live : 300,
 
-    monster_1_base_price : 20,   // rewards when finish this monster
-    monster_2_base_price : 30,
-    monster_3_base_price : 40,
-    monster_4_base_price : 50,
+    monster_1_base_price : 10,   // rewards when finish this monster
+    monster_2_base_price : 12,
+    monster_3_base_price : 15,
+    monster_4_base_price : 20,
 
     monster_frequency : 500,   // monster attack frequency
 
@@ -451,8 +451,8 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_small',
         frequency : 500,  //  1 per 100ms
         live : 100,
-        price : 100,
-        range : 50,
+        price : 200,
+        range : 55,
         damage : 20,
         cannonLen : 10
       },
@@ -461,9 +461,9 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_middle',
         frequency : 600,
         live : 100,
-        price : 200,
-        range : 140,
-        damage : 45,
+        price : 300,
+        range : 70,
+        damage : 50,
         cannonLen : 12
       },
       'building-3' : {
@@ -471,8 +471,8 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_large',
         frequency : 800,
         live : 100,
-        price : 300,
-        range : 45,
+        price : 500,
+        range : 90,
         damage : 60,
         cannonLen : 15
       },
@@ -481,7 +481,7 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_layser',
         frequency : 30,   //render every frame
         live : 100,
-        price : 500,
+        price : 1000,
         range : 60,
         damage : 5,
         cannonLen : 5
@@ -513,22 +513,22 @@ _TD.loading.push(function(TD){
       'building-1' : [
         {
           'damage' : 1.5,  // increase to 150%
-          'frequency' : 0.8,
-          'range' : 1.2,
+          'frequency' : 0.9,
+          'range' : 1.1,
           'live' : 2,
           'price' : 200   // +$200
         },
         {
           'damage' : 1.9,  // increase 190%
-          'frequency' : 0.7,
-          'range' : 1.5,
+          'frequency' : 0.8,
+          'range' : 1.2,
           'live' : 3,
           'price' : 500
         },
         {
           'damage' : 2.5,  // increase 250%
-          'frequency' : 0.6,
-          'range' : 1.7,
+          'frequency' : 0.7,
+          'range' : 1.5,
           'live' : 4,
           'price' : 2000
         }
@@ -537,22 +537,22 @@ _TD.loading.push(function(TD){
       'building-2' : [
         {
           'damage' : 1.5,  // increase 150%
-          'frequency' : 0.8,
-          'range' : 1.2,
+          'frequency' : 0.9,
+          'range' : 1.1,
           'live' : 2,
           'price' : 400
         },
         {
           'damage' : 2,  // increase 200%
           'frequency' : 0.8,
-          'range' : 1.5,
+          'range' : 1.2,
           'live' : 3,
           'price' : 800
         },
         {
           'damage' : 3,  // increase 300%
           'frequency' : 0.7,
-          'range' : 2,
+          'range' : 1.5,
           'live' : 4,
           'price' : 3500
         }
@@ -561,22 +561,22 @@ _TD.loading.push(function(TD){
       'building-3' : [
         {
           'damage' : 1.7,  // increase 170%
-          'frequency' : 0.8,
-          'range' : 1.2,
+          'frequency' : 0.9,
+          'range' : 1.1,
           'live' : 2,
           'price' : 600
         },
         {
           'damage' : 2.5,  // increase 250%
           'frequency' : 0.8,
-          'range' : 1.5,
+          'range' : 1.2,
           'live' : 3,
           'price' : 1500
         },
         {
           'damage' : 3.5,  // increase 350%
-          'frequency' : 0.8,
-          'range' : 2,
+          'frequency' : 0.7,
+          'range' : 1.5,
           'live' : 4,
           'price' : 5200
         }
@@ -586,21 +586,21 @@ _TD.loading.push(function(TD){
         {
           'damage' : 3,  // increase 300%
           'frequency' : 1,
-          'range' : 1.2,
+          'range' : 1.1,
           'live' : 2,
           'price' : 1500
         },
         {
           'damage' : 5,  // increase 500%
           'frequency' : 1,
-          'range' : 1.5,
+          'range' : 1.2,
           'live' : 3,
           'price' : 5000
         },
         {
           'damage' : 10,  // increase 1000%
           'frequency' :1,
-          'range' : 1.7,
+          'range' : 1.5,
           'live' : 4,
           'price' : 12000
         }
@@ -612,14 +612,14 @@ _TD.loading.push(function(TD){
           'frequency' : 1,
           'range' : 1,
           'live' : 2,    // bonus, double its live
-          'price' : 500
+          'price' : 5000
         }
       ],
 
       'building-6' : [
         {
           'damage' : 3,  // increase 300%
-          'frequency' : 1,
+          'frequency' : 0.95,
           'missile' : 2,
           'range' : 1.2,
           'live' : 2,
@@ -627,19 +627,19 @@ _TD.loading.push(function(TD){
         },
         {
           'damage' : 5,  // increase 500%
-          'frequency' : 1,
+          'frequency' : 0.9,
           'missile' : 3,
-          'range' : 1.3,
+          'range' : 1.5,
           'live' : 3,
-          'price' : 7000
+          'price' : 5000
         },
         {
           'damage' : 10,  // increase 1000%
-          'frequency' :1,
+          'frequency' :0.8,
           'missile' : 4,
-          'range' : 1.5,
+          'range' : 1.7,
           'live' : 10,
-          'price' : 22000
+          'price' : 10000
         }
       ],
 

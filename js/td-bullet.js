@@ -87,7 +87,7 @@ _TD.loading.push(function(TD){
   TD.missile = function( cfg ){
     this.__proto__ = new TD.bullet( cfg );
     this.track = [];
-    this.count = -7;
+    this.count = -3;
     this.hit = false;
     this.curTargetPosition = this.target.position;  // previous position, if target has been destroied, use this curTargetPosition
 
