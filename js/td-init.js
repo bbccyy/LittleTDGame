@@ -1,13 +1,20 @@
 
 _TD.loading.push(function(TD){
 
-  TD.version = "0.0.1";
-  TD.money = 500;
+  TD.version = "0.1.0";
+  TD.money = 50000;
+  TD.score = '???';
   TD.wave = 0;  // current wave number
   TD.GameOver = false;  // if final target has been destroied, set GameOver := true
   TD.waitingForNextWave = false;  // check if is between two waves
   TD.pause = false;  // pause the game
-  TD.root = null;
+  TD.root = null;    // root of Graph as map
+
+  TD.validMap = false;  // will set to true if get a valid one after running td-path module
+
+  TD.bldCtrl = null;  // building controller
+  TD.runner  = null;  //should conbine run with pause
+  TD.beforeRun = true;  //will set to false when first click runner
 
   TD.eventQueue = [];  //all moving or exploding events --> monster, bullet and building
   TD.monsterQueue = [];

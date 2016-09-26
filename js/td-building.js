@@ -26,11 +26,11 @@ _TD.loading.push(function(TD){
       TD.lang.setMoney(TD.money - up.price);
       this.price += up.price;
       this.level++;
-      this.damage *= up.damage;
-      this.range  *= up.range;
-      this.maxLive   *= up.live;
-      this.live = this.maxLive;  // immediately refresh the live of building to max
-      this.frequency *= up.frequency;
+      this.damage = parseInt(this.damage*up.damage);
+      this.range  = parseInt(this.range*up.range);
+      this.maxLive= parseInt(this.maxLive*up.live);
+      this.live   = parseInt(this.live*this.maxLive);  // immediately refresh the live of building to max
+      this.frequency = parseInt(this.frequency*up.frequency);
       if(this.type=='building-6') this.missileNumber = up.missile;
       TD.lang.showBuildingInfo(this);
       return true;
@@ -89,6 +89,7 @@ _TD.loading.push(function(TD){
       };
       if(this.onClick){
         obj['showRange'] = this.range;
+        TD.lang.showBuildingInfo(this);
       }
       if(this.target != tmpTar){
         this.setTarget(tmpTar);
@@ -210,6 +211,7 @@ _TD.loading.push(function(TD){
       };
       if(this.onClick){
         obj['showRange'] = this.range;
+        TD.lang.showBuildingInfo(this);
       }
       if(this.target != tmpTar){
         this.setTarget(tmpTar);
@@ -268,6 +270,7 @@ _TD.loading.push(function(TD){
       TD.lang.showBuildingInfo(this);
       if(TD.aliveTerminals[this.tid] == undefined){
         TD.aliveTerminals[this.tid] = TD.deadTerminals[this.tid];
+        TD.bloodBarQueue.push(new TD.bloodBar(TD.aliveTerminals[this.tid]));
         delete TD.deadTerminals[this.tid];
       }
       return true;
@@ -282,16 +285,18 @@ _TD.loading.push(function(TD){
         type : this.type,   //building type, indicate the outline of building
         alive : true
       };
+      if(this.onClick){
+        obj['showRange'] = this.range;
+        TD.lang.showBuildingInfo(this);
+      }
       if(this.live <= 0) {       // this terminal building has been destroied
         clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
         obj.alive = false;
         TD.eventQueue.push(obj);
+        if(this.tid.Feature =='TA') TD.GameOver = true;
         return false;  // td.js will move it to TD.deadTerminals
       }
       var tmpTar = this.findTarget();
-      if(this.onClick){
-        obj['showRange'] = this.range;
-      }
       if(this.target != tmpTar){
         this.setTarget(tmpTar);
       }

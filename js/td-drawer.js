@@ -60,6 +60,9 @@ _TD.loading.push(function(TD){
     else if(obj.type == 'bullet_missile'){
       TD.cfg.bullet_missile(TD.ucx, obj);
     }
+    else if(obj.type == 'game_over'){
+      TD.cfg.game_over(TD.ucx, obj);
+    }
   }
 
 });

@@ -684,8 +684,7 @@ _TD.loading.push(function(TD){
         if(!TD.lang.isOnLeft(TD.cfg.taRestriction, node.position)){
           TD.terminalNodePool.unshift(node);
           node.Feature = 'TA';
-          console.log("find TA:");
-          console.log(node);
+          TD.validMap = true;
         }else{
           TD.terminalNodePool.push(node);
         }
@@ -772,6 +771,13 @@ _TD.loading.push(function(TD){
     new this.cdt(this.pathOutline[0], this.pathOutline[1]);
     this.trimRedundantTerminalTriangle();
     TD.root = new this.buildPath(startTriangle);
+    if(!TD.validMap){
+      TD.terminalNodePool = [];
+      TD.aliveTerminals = {};
+      alert("Please connect start point and end point!");
+      TD.init();
+      return;
+    }
     this.setPath(TD.terminalNodePool);
     this.setWeight( TD.root );
 

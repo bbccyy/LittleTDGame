@@ -127,11 +127,12 @@ _TD.loading.push(function(TD){
 
         TD.rawMapData = _this.history[_this.index].data;
         TD.path = new TD.createPath(TD.rawMapData);
-        console.log(TD.path);
+        //console.log(TD.path);
         //new TD.path.cdt(TD.path.pathOutline[0], TD.path.pathOutline[1]);
       },
 
       preDraw : function(){
+        this.cx.clearRect(0,0,this.cx.width, this.cx.height);
         this.cx.beginPath();
         this.cx.strokeStyle = 'rgb(0, 0, 0)';
         this.cx.lineWidth = 30;

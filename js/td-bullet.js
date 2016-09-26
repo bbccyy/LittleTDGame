@@ -56,11 +56,13 @@ _TD.loading.push(function(TD){
     };
 
     this.makeDamage = function(){   // now, makeDamage function can process both justice and evil bullets
-      var idx, ms, key;
+      var idx, ms, key, monsterPosition;
       if(this.gender==true){
         for(idx=0; idx<TD.monsterQueue.length; idx++){
           ms = TD.monsterQueue[idx];
-          if(TD.lang.getDistance(this.position, ms.position) <= this.range){
+          monsterPosition = this.target;
+          if(this.type=='bullet_missile') monsterPosition = this.position;
+          if(TD.lang.getDistance(monsterPosition, ms.position) <= this.range){
             ms.live -= this.damage;
           }
         }
@@ -87,7 +89,7 @@ _TD.loading.push(function(TD){
   TD.missile = function( cfg ){
     this.__proto__ = new TD.bullet( cfg );
     this.track = [];
-    this.count = -3;
+    this.count = 15;
     this.hit = false;
     this.curTargetPosition = this.target.position;  // previous position, if target has been destroied, use this curTargetPosition
 
@@ -97,17 +99,8 @@ _TD.loading.push(function(TD){
       }
 
       if(TD.lang.pointEq(this.curTargetPosition, this.position)==true){
-        this.count++;
-        if(this.count == 0){
-          this.track[0].a=0.9;
-        }else if(this.count > 0){
-          if(this.track[0].a == 0.1) this.track.shift();
-          for(idx=0; idx<this.track.length; idx++){
-            this.track[idx].a -= 0.1;
-            if(this.track[idx].a == 0.9) break;
-          }
-        }
-        if( this.track.length > 0){
+        if( this.track.length > 1){
+          this.track.shift();
           var obj = {
             position : this.curTargetPosition,
             type : this.type,
@@ -123,19 +116,9 @@ _TD.loading.push(function(TD){
       }
       var nextPosition = TD.lang.getNextPos(this.position, this.position, this.curTargetPosition, this.speed);
       var point = [this.position, nextPosition], idx;
-      point.a = 1;
       this.track.push(point);
       this.position = nextPosition;
-      this.count++;
-      if(this.count == 0){
-        this.track[0].a=0.9;
-      }else if(this.count > 0){
-        if(this.track[0].a == 0.1) this.track.shift();
-        for(idx=0; idx<this.track.length; idx++){
-          this.track[idx].a -= 0.1;
-          if(this.track[idx].a == 0.9) break;
-        }
-      }
+      if(this.track.length > this.count) this.track.shift();
       var obj = {
         position : this.curTargetPosition,
         type : this.type,

@@ -14,19 +14,14 @@ var _TD = {
         var submitBody = document.getElementById('submit');
 
         this.map = new TD.createMap(canvas, undoBody, redoBody, submitBody);
-        console.log("haha1");
-        console.log(this.rawMapData);
-
-				// var canvas2 = document.getElementById('td-canvas-1');
-				// var ctx2 = canvas2.getContext('2d');
-				//this.uc.globalAlpha = 0.5
+				
 			},
 
 			start : function(){
 				this.runner = document.getElementById('run');
-				this.runner.addEventListener('click', TD.step, false);
+				this.runner.addEventListener('click', TD.onClick_runner, false);
 				TD.bldCtrl = new TD.buildingController();
-				console.log("haha2");
+				//console.log("haha2");
 				for(var idx=0; idx<this.terminalNodePool.length; idx++){
 					var node = this.terminalNodePool[idx];
 					this.aliveTerminals[node] =
@@ -39,11 +34,21 @@ var _TD = {
 				TD.lang.showBuildingInfo();
 			},
 
+			onClick_runner : function(){
+				if(TD.beforeRun){
+					TD.beforeRun = false;
+					TD.step();
+				}else{
+					TD.pause = !TD.pause;
+				}
+			},
+
 			step : function(){
 				_this = TD;
 
 				if(TD.GameOver){
 					clearTimeout(_this._st);
+					TD.gameOver();
 					return;
 				}
 

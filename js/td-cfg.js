@@ -122,16 +122,15 @@ _TD.loading.push(function(TD){
     },
 
     bullet_missile : function(ctx, cfg ){
+      ctx.beginPath();
+      ctx.moveTo(cfg.track[0][0][0], cfg.track[0][0][1]);
       for(var idx=0; idx<cfg.track.length; idx++){
         var e = cfg.track[idx];
-        ctx.beginPath();
-        ctx.strokeStyle = 'rgba(251, 254, 205,'  + e.a + ')';
+        ctx.strokeStyle = 'rgba(50, 110, 251, 1)';
         ctx.lineWidth = 1;
-        ctx.moveTo(e[0][0], e[0][1]);
         ctx.lineTo(e[1][0], e[1][1]);
-        ctx.stroke();
       }
-
+      ctx.stroke();
       if(cfg.exploding != undefined){
         ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
@@ -315,6 +314,15 @@ _TD.loading.push(function(TD){
       ctx.stroke();
       ctx.fillStyle = "rgba(34, 65, 98, 1)";
       ctx.fill();
+
+      if(cfg.showRange != undefined){
+        var range = cfg.showRange;
+        ctx.beginPath();
+        ctx.arc(x, y, range, 0, 2*Math.PI, false);
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = 'grey';
+        ctx.stroke();
+      }
     },
 
     bld6 : function( ctx, cfg ){
@@ -362,6 +370,30 @@ _TD.loading.push(function(TD){
       }
     },
 
+    game_over : function( ctx, cfg ){
+      ctx.font = "30px Georgia";
+      ctx.fillText("Game Over!", 150, 200);
+
+      ctx.font = "50px Verdana";
+      // Create gradient
+      var gradient = ctx.createLinearGradient(0, 0, TD.uc.width, 0);
+      gradient.addColorStop("0", "magenta");
+      gradient.addColorStop("0.5", "blue");
+      gradient.addColorStop("1.0", "red");
+      // Fill with gradient
+      ctx.fillStyle = gradient;
+      ctx.fillText("Big smile!", 120, 300);
+
+      ctx.font = "20px Arial";
+      ctx.fillStyle = 'rgba(194, 251, 50, 1)';
+      ctx.fillText("Wave: " + cfg.wave, 160, 350);
+
+      if(cfg.score == null) return;
+      ctx.font = "20px Arial";
+      ctx.fillStyle = 'rgba(194, 251, 50, 1)';
+      ctx.fillText("Score: " + cfg.score, 160, 400);
+    },
+
     Arsenal : {
       'bullet_small' : {
           speed : 10,
@@ -384,7 +416,7 @@ _TD.loading.push(function(TD){
           exploding : null
         },
       'bullet_missile' : {
-          speed : 3.5,
+          speed : 4,
           damageRange : 5,
           exploding : [3,4,5,6,7,7,5]
         }
@@ -461,7 +493,7 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_middle',
         frequency : 600,
         live : 100,
-        price : 300,
+        price : 200,
         range : 70,
         damage : 50,
         cannonLen : 12
@@ -471,7 +503,7 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_large',
         frequency : 800,
         live : 100,
-        price : 500,
+        price : 400,
         range : 90,
         damage : 60,
         cannonLen : 15
@@ -481,7 +513,7 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_layser',
         frequency : 30,   //render every frame
         live : 100,
-        price : 1000,
+        price : 700,
         range : 60,
         damage : 5,
         cannonLen : 5
@@ -501,8 +533,8 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_missile',
         frequency : 3000,   //render every 5 second
         live : 100,
-        price : 1500,
-        range : 150,
+        price : 1000,
+        range : 125,
         damage : 150,
         missileNumber : 1,
         cannonLen : 5
@@ -512,14 +544,14 @@ _TD.loading.push(function(TD){
     upgradeMapping : {
       'building-1' : [
         {
-          'damage' : 1.5,  // increase to 150%
+          'damage' : 1.25,
           'frequency' : 0.9,
           'range' : 1.1,
           'live' : 2,
           'price' : 200   // +$200
         },
         {
-          'damage' : 1.9,  // increase 190%
+          'damage' : 1.7,
           'frequency' : 0.8,
           'range' : 1.2,
           'live' : 3,
@@ -527,10 +559,10 @@ _TD.loading.push(function(TD){
         },
         {
           'damage' : 2.5,  // increase 250%
-          'frequency' : 0.7,
+          'frequency' : 0.8,
           'range' : 1.5,
           'live' : 4,
-          'price' : 2000
+          'price' : 1250
         }
       ],
 
@@ -554,7 +586,7 @@ _TD.loading.push(function(TD){
           'frequency' : 0.7,
           'range' : 1.5,
           'live' : 4,
-          'price' : 3500
+          'price' : 2700
         }
       ],
 
@@ -571,38 +603,38 @@ _TD.loading.push(function(TD){
           'frequency' : 0.8,
           'range' : 1.2,
           'live' : 3,
-          'price' : 1500
+          'price' : 1200
         },
         {
           'damage' : 3.5,  // increase 350%
           'frequency' : 0.7,
           'range' : 1.5,
           'live' : 4,
-          'price' : 5200
+          'price' : 3900
         }
       ],
 
       'building-4' : [
         {
-          'damage' : 3,  // increase 300%
+          'damage' : 2,  // increase 200%
           'frequency' : 1,
           'range' : 1.1,
           'live' : 2,
-          'price' : 1500
+          'price' : 1000
         },
         {
-          'damage' : 5,  // increase 500%
+          'damage' : 3,  // increase 300%
           'frequency' : 1,
           'range' : 1.2,
           'live' : 3,
-          'price' : 5000
+          'price' : 2500
         },
         {
-          'damage' : 10,  // increase 1000%
+          'damage' : 4.5,  // increase 400%
           'frequency' :1,
           'range' : 1.5,
           'live' : 4,
-          'price' : 12000
+          'price' : 5700
         }
       ],
 
@@ -618,28 +650,28 @@ _TD.loading.push(function(TD){
 
       'building-6' : [
         {
-          'damage' : 3,  // increase 300%
+          'damage' : 1.5,
           'frequency' : 0.95,
           'missile' : 2,
           'range' : 1.2,
           'live' : 2,
-          'price' : 2500
+          'price' : 2000
         },
         {
-          'damage' : 5,  // increase 500%
+          'damage' : 2,
           'frequency' : 0.9,
           'missile' : 3,
-          'range' : 1.5,
+          'range' : 1.3,
           'live' : 3,
-          'price' : 5000
+          'price' : 3900
         },
         {
-          'damage' : 10,  // increase 1000%
-          'frequency' :0.8,
+          'damage' : 3,  // increase 1000%
+          'frequency' :0.9,
           'missile' : 4,
-          'range' : 1.7,
-          'live' : 10,
-          'price' : 10000
+          'range' : 1.5,
+          'live' : 4,
+          'price' : 7000
         }
       ],
 

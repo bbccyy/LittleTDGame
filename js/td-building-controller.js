@@ -12,8 +12,6 @@ _TD.loading.push(function(TD){
     this.ug = document.getElementById('upgrade');
     this.sl = document.getElementById('sell');
 
-    this.p = document.getElementById('pause');
-
     this.c = document.getElementById('td-canvas');
 
     this.bld1.addEventListener('click', this.onClick_building_1, false);
@@ -24,8 +22,6 @@ _TD.loading.push(function(TD){
 
     this.ug.addEventListener('click', this.onClick_upgrade, false);
     this.sl.addEventListener('click', this.onClick_sell, false);
-
-    this.p.addEventListener('click', this.onClick_pause, false);
 
     this.c.addEventListener('mousemove', this.onmouseMove, false);
     this.c.addEventListener('click', this.onClick, false);
@@ -45,10 +41,6 @@ _TD.loading.push(function(TD){
       TD.waitingToChange.onClick = false;
       TD.waitingToChange.remove = true;
       TD.waitingToChange = null;
-    },
-
-    onClick_pause : function(ev){
-      TD.pause = !TD.pause;
     },
 
     onClick_building_1 : function(ev){
