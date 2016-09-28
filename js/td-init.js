@@ -5,6 +5,7 @@ _TD.loading.push(function(TD){
   TD.money = 50000;
   TD.score = '???';
   TD.wave = 0;  // current wave number
+  TD.maxNumberOfMonsterPerWave = 10;
   TD.GameOver = false;  // if final target has been destroied, set GameOver := true
   TD.waitingForNextWave = false;  // check if is between two waves
   TD.pause = false;  // pause the game
@@ -14,7 +15,7 @@ _TD.loading.push(function(TD){
 
   TD.bldCtrl = null;  // building controller
   TD.runner  = null;  //should conbine run with pause
-  TD.beforeRun = true;  //will set to false when first click runner
+  TD.beforeRun = true;  //will set to false when first click runner, used to conbine pause and run function
 
   TD.eventQueue = [];  //all moving or exploding events --> monster, bullet and building
   TD.monsterQueue = [];
@@ -29,6 +30,12 @@ _TD.loading.push(function(TD){
 
   TD.rawMapData = null;
   TD.path = null;
+
+  TD.gSpriteSheets = {};  // used to store SpriteSheetClass entities
+  TD.monsterFrame = {};   // monster use its type to search this table, get image name sequence in 4 direction
+  TD.monsterTypes = ['monster-1', 'monster-2', 'monster-3', 'monster-4'];
+  TD.monsterSpriteSource = 'zombie.png';
+  TD.sceneSpriteSource = 'scene.png';
 
   TD.uc = document.getElementById('td-canvas-1'); // middle layer canvas --> draw builids, monsters and bullets
   TD.ucx = TD.uc.getContext('2d');

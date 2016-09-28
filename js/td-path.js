@@ -346,7 +346,7 @@ _TD.loading.push(function(TD){
         this.area = cdtThis.computeTriAreaByEdges(innerEdge.concat(outerEdge));
         this.toString = function(){
           return this.Inner + ' ' + this.Outer;  // used when compare two triangles
-        }
+        };
         this.position = null;
         // first delete input edge because it eventually turned into a terminal edge
         // remove the input edge from this.Inner array

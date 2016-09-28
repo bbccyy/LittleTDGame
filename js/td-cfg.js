@@ -28,6 +28,8 @@ _TD.loading.push(function(TD){
 
     maxNumberOfMonsterPerWave : 10,
 
+    money : 500,
+
     speedMapping : function( area ){
       if(area <= 350) return 1;
       else if(area <= 700) return 0.9;
@@ -123,10 +125,11 @@ _TD.loading.push(function(TD){
 
     bullet_missile : function(ctx, cfg ){
       ctx.beginPath();
+      var idx, e;
       ctx.moveTo(cfg.track[0][0][0], cfg.track[0][0][1]);
-      for(var idx=0; idx<cfg.track.length; idx++){
-        var e = cfg.track[idx];
-        ctx.strokeStyle = 'rgba(50, 110, 251, 1)';
+      for(idx=0; idx<cfg.track.length; idx++){
+        e = cfg.track[idx];
+        ctx.strokeStyle = 'rgba(251, 212, 40, 0.5)';
         ctx.lineWidth = 1;
         ctx.lineTo(e[1][0], e[1][1]);
       }
@@ -136,52 +139,63 @@ _TD.loading.push(function(TD){
         ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
         ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
         ctx.fill();
+      }else if(cfg.track.length > 1){
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+        ctx.lineWidth = 2;
+        ctx.moveTo(e[0][0], e[0][1]);
+        ctx.lineTo(e[1][0], e[1][1]);
+        ctx.stroke();
       }
     },
 
     mst1 : function ( ctx, cfg ){
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(130, 142, 16, 1)';
-      ctx.arc(cfg.position[0], cfg.position[1], this.monsterR/2, 0, 2*Math.PI, false);
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
+      // ctx.beginPath();
+      // ctx.fillStyle = 'rgba(130, 142, 16, 1)';
+      // ctx.arc(cfg.position[0], cfg.position[1], this.monsterR/2, 0, 2*Math.PI, false);
+      // ctx.fill();
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = 'black';
+      // ctx.stroke();
+      TD.drawSprite(ctx, cfg.type, cfg.spritename, cfg.position[0], cfg.position[1]);
     },
 
     mst2 : function ( ctx, cfg ){
-      ctx.beginPath();
-      ctx.fillStyle = 'rgba(142, 16, 41, 1)';
-      ctx.arc(cfg.position[0], cfg.position[1], this.monsterR, 0, 2*Math.PI, false);
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
+      // ctx.beginPath();
+      // ctx.fillStyle = 'rgba(142, 16, 41, 1)';
+      // ctx.arc(cfg.position[0], cfg.position[1], this.monsterR, 0, 2*Math.PI, false);
+      // ctx.fill();
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = 'black';
+      // ctx.stroke();
+      TD.drawSprite(ctx, cfg.type, cfg.spritename, cfg.position[0], cfg.position[1]);
     },
 
     mst3 : function ( ctx, cfg ){
-      var d1 = 0.866* this.monsterR, d2 = this.monsterR/2;
-      ctx.beginPath();
-      ctx.moveTo(cfg.position[0], cfg.position[1]+this.monsterR);
-      ctx.lineTo(cfg.position[0] - d1, cfg.position[1]-d2);
-      ctx.lineTo(cfg.position[0] + d1, cfg.position[1]-d2);
-      ctx.closePath();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(16, 66, 142, 1)';
-      ctx.fill();
+      // var d1 = 0.866* this.monsterR, d2 = this.monsterR/2;
+      // ctx.beginPath();
+      // ctx.moveTo(cfg.position[0], cfg.position[1]+this.monsterR);
+      // ctx.lineTo(cfg.position[0] - d1, cfg.position[1]-d2);
+      // ctx.lineTo(cfg.position[0] + d1, cfg.position[1]-d2);
+      // ctx.closePath();
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = 'black';
+      // ctx.stroke();
+      // ctx.fillStyle = 'rgba(16, 66, 142, 1)';
+      // ctx.fill();
+      TD.drawSprite(ctx, cfg.type, cfg.spritename, cfg.position[0], cfg.position[1]);
     },
 
     mst4 : function ( ctx, cfg ){
-      var d1 = this.monsterR * 0.707;
-      ctx.beginPath();
-      ctx.rect(cfg.position[0]-d1, cfg.position[1]-d1, 2*d1, 2*d1);
-      ctx.fillStyle = 'rgba(142, 83, 16, 1)';
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
+      // var d1 = this.monsterR * 0.707;
+      // ctx.beginPath();
+      // ctx.rect(cfg.position[0]-d1, cfg.position[1]-d1, 2*d1, 2*d1);
+      // ctx.fillStyle = 'rgba(142, 83, 16, 1)';
+      // ctx.fill();
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = 'black';
+      // ctx.stroke();
+      TD.drawSprite(ctx, cfg.type, cfg.spritename, cfg.position[0], cfg.position[1]);
     },
 
     bld1 : function( ctx, cfg ){
@@ -652,7 +666,7 @@ _TD.loading.push(function(TD){
         {
           'damage' : 1.5,
           'frequency' : 0.95,
-          'missile' : 2,
+          'missile' : 1,
           'range' : 1.2,
           'live' : 2,
           'price' : 2000
@@ -660,7 +674,7 @@ _TD.loading.push(function(TD){
         {
           'damage' : 2,
           'frequency' : 0.9,
-          'missile' : 3,
+          'missile' : 2,
           'range' : 1.3,
           'live' : 3,
           'price' : 3900
@@ -668,7 +682,7 @@ _TD.loading.push(function(TD){
         {
           'damage' : 3,  // increase 1000%
           'frequency' :0.9,
-          'missile' : 4,
+          'missile' : 3,
           'range' : 1.5,
           'live' : 4,
           'price' : 7000

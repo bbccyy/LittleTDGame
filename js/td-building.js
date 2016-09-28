@@ -156,12 +156,12 @@ _TD.loading.push(function(TD){
                     ];
     this.baseLaunchPoint = [    //7 points indicate the place the missile will be launched
                         [this.position[0]-TD.cfg.buildingR/2,this.position[1]],
-                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR/3],
-                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR/3],
+                      //  [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR/3],
+                      //  [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR/3],
                         [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR/3*2],
                         [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR/3*2],
-                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
-                        [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]
+                      //  [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
+                      //  [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]
                        ];
     this.baseLine = [this.position, [this.position[0]-10,this.position[1]]];  // <s, e>
 

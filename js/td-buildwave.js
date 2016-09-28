@@ -3,7 +3,7 @@ _TD.loading.push(function(TD){
 
   TD.buildNextWave = function(){
     TD.waitingForNextWave = false;
-    var total = TD.cfg.maxNumberOfMonsterPerWave;
+    var total = TD.maxNumberOfMonsterPerWave;
     var _st = null;
     var createMave = function(){
       if(total <= 0){

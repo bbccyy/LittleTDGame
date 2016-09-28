@@ -53,6 +53,10 @@ _TD.loading.push(function(TD){
 
     this.alive = true;
 
+    this.dirFrameArray = TD.monsterFrame[this.type];
+    this.frame = 0;  // used to show images
+    this.Dir = 0;  // current direction
+
     this.move = function(){
       if(TD.pause){
         this.setTarget(null);
@@ -72,7 +76,9 @@ _TD.loading.push(function(TD){
       if(tmpTar != null){   // if this monster find a target, it will not move until destroy that target
         TD.eventQueue.push({   // stay at the same position
           position : this.position,
-          type : this.type
+          type : this.type,
+          spritename : this.dirFrameArray[this.Dir][5],
+          dir : this.Dir
         });
         if(this.target != tmpTar){
           this.setTarget(tmpTar);
@@ -107,6 +113,18 @@ _TD.loading.push(function(TD){
           return this.move();
         }
       }
+
+      // -------- set direction --------
+      var nextDir = TD.lang.getCurDir(this.position, this.path[this.probe][0]);
+      if(this.Dir != nextDir){
+        this.frame = 0;
+        this.Dir = nextDir;
+      }else{
+        this.frame++;
+        this.frame %= this.dirFrameArray[this.Dir].length;
+      }
+      // -------- end of set direction --------
+
       this.speed = this.baseSpeed * this.path[this.probe-1][1];
       this.position = TD.lang.getNextPos(this.position, this.path[this.probe-1][0], this.path[this.probe][0], this.speed);
       if(TD.lang.pointEq(this.position, this.path[this.probe][0])){
@@ -114,7 +132,9 @@ _TD.loading.push(function(TD){
       }
       TD.eventQueue.push({
         position : this.position,
-        type : this.type
+        type : this.type,
+        spritename : this.dirFrameArray[this.Dir][this.frame],
+        dir : this.Dir
       });
       return true;
     };
@@ -159,10 +179,5 @@ _TD.loading.push(function(TD){
 
 
   };
-
-
-
-
-
 
 });

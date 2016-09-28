@@ -176,6 +176,14 @@ _TD.loading.push(function(TD){
       return [x,y];
     },
 
+    getCurDir : function( s, e ){
+      var dx = e[0] - s[0], dy = e[1] - s[1], ax = Math.abs(dx), ay = Math.abs(dy);
+      if(dx > 0 && ay <= dx) return 3;
+      else if(dy > 0 && ax <= dy) return 1;
+      else if(dx < 0 && ay <= ax) return 2;
+      else return 4;
+    },
+
     getCannon : function(s, e, l){
       var dis = this.getDistance(s, e);
       var x = (e[0]-s[0])/dis;
@@ -209,12 +217,12 @@ _TD.loading.push(function(TD){
 
     showBuildingInfo : function ( bld ){
       if(bld == null){
-        var str = "<dt>Level</dt>" + "<dd>" + "null" + "</dd>"
-                + "<dt>Damage</dt>" + "<dd>" + "null" + "</dd>"
-                + "<dt>Range</dt>" + "<dd>" + "null" + "</dd>"
-                + "<dt>Frequency</dt>" + "<dd>" + "null" + "</dd>"
-                + "<dt>Live</dt>" + "<dd>" + "null" + " / " + "null"  + "</dd>"
-                + "<dt>Price</dt>" + "<dd>" + "null" + "</dd>";
+        var str = "<dt>Level</dt>" + "<dd>" + " " + "</dd>"
+                + "<dt>Damage</dt>" + "<dd>" + " " + "</dd>"
+                + "<dt>Range</dt>" + "<dd>" + " " + "</dd>"
+                + "<dt>Frequency</dt>" + "<dd>" + " " + "</dd>"
+                + "<dt>Live</dt>" + "<dd>" + " " + " / " + " "  + "</dd>"
+                + "<dt>Price</dt>" + "<dd>" + " " + "</dd>";
         this.bindingElement(TD.panelElement, str);
       }
       else{
@@ -252,9 +260,26 @@ _TD.loading.push(function(TD){
 
     levelUp : function(){   // modify monsters' feature to increase difficulty
       if(TD.wave == 0) return;
-      var rate = 1.2;
-      if(TD.wave % 10 == 0){
+      var rate = 1;
+      if(TD.wave < 10){
+        rate = 1.2;
+      }else if(TD.wave >= 10 && TD.wave < 20){
+        rate = 1.15;
+      }else if(TD.wave >= 20 && TD.wave < 30){
+        rate = 1.1;
+      }
+      else if(TD.wave >= 30 && TD.wave < 40){
+        rate = 1.05;
+      }
+      else{
+        rate = 1.025;
+      }
+      if(TD.wave % 20 == 0){
         rate = 1.5;
+        TD.cfg.maxNumberOfMonsterPerWave += 1;
+      }
+      if(TD.wave % 10 == 0){
+        TD.cfg.maxNumberOfMonsterPerWave += 1;
       }
       TD.cfg.monster_1_base_live = parseInt(TD.cfg.monster_1_base_live * rate);
       TD.cfg.monster_2_base_live = parseInt(TD.cfg.monster_2_base_live * rate);

@@ -8,13 +8,16 @@ var _TD = {
 
 				TD.lang.setMoney(TD.money);
 
+				var spriteHandler = new TD.spriteSheetHandler();
+				spriteHandler.init({type : 'monster'});
+
 				var canvas = document.getElementById('td-canvas');
 				var redoBody = document.getElementById('redo');
         var undoBody = document.getElementById('undo');
         var submitBody = document.getElementById('submit');
 
         this.map = new TD.createMap(canvas, undoBody, redoBody, submitBody);
-				
+
 			},
 
 			start : function(){

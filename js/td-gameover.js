@@ -49,6 +49,20 @@ _TD.loading.push(function(TD){
     TD.bloodBarQueue = [];
     TD.terminalNodePool = [];
 
+    TD.maxNumberOfMonsterPerWave = TD.cfg.maxNumberOfMonsterPerWave;
+    TD.money = TD.cfg.money;
+    TD.score = 0;
+    TD.wave = 0;
+    TD.GameOver = false;
+    TD.waitingForNextWave = false;
+    TD.pause = false;
+    TD.root = null;
+    TD.validMap = false;
+    TD.beforeRun = true;
+
+    TD.waitingToBuild = null;
+    TD.waitingToChange = null;
+
     var obj = {
       type : 'game_over',
       score : null,
