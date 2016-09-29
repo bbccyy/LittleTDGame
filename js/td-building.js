@@ -128,10 +128,14 @@ _TD.loading.push(function(TD){
         damage : damage,   // may increase when flying through something in the map
         type : cannonType
       };
-      if(cannonType == 'bullet_missile' || cannonType == 'bullet_layser'){
+      if(cannonType == 'bullet_missile'){
         bulletCfg['end'] = this.target;
         var blt = new TD.missile( bulletCfg );
-      }else{
+      }else if(cannonType == 'bullet_layser'){
+        bulletCfg['end'] = this.target;
+        var blt = new TD.bullet( bulletCfg );
+      }
+      else{
         var blt = new TD.bullet( bulletCfg );
       }
       TD.bulletQueue.push(blt);

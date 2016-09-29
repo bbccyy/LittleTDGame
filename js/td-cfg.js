@@ -221,7 +221,7 @@ _TD.loading.push(function(TD){
         ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'grey';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
       }
     },
@@ -243,7 +243,7 @@ _TD.loading.push(function(TD){
         ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'grey';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
       }
     },
@@ -265,7 +265,7 @@ _TD.loading.push(function(TD){
         ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'grey';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
       }
     },
@@ -287,7 +287,7 @@ _TD.loading.push(function(TD){
         ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'grey';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
       }
     },
@@ -317,7 +317,7 @@ _TD.loading.push(function(TD){
         ctx.beginPath();
         ctx.arc(x, y, range, 0, 2*Math.PI, false);
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'grey';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
       }
     },
@@ -339,7 +339,7 @@ _TD.loading.push(function(TD){
         ctx.beginPath();
         ctx.arc(x, y, range, 0, 2*Math.PI, false);
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'grey';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
       }
     },
@@ -384,7 +384,7 @@ _TD.loading.push(function(TD){
         ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], range, 0, 2*Math.PI, false);
         ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'grey';
+        ctx.strokeStyle = 'white';
         ctx.stroke();
       }
     },
@@ -487,7 +487,7 @@ _TD.loading.push(function(TD){
       'monster-4' : {
         type : 'monster-4',
         range : 70,
-        speed : 0.7,
+        speed : 0.75,
         damage : 1,
         frequency : 30,
         cannonType : 'bullet_layser',

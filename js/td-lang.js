@@ -280,6 +280,8 @@ _TD.loading.push(function(TD){
       var num = parseInt(Math.random()*4+1);
       var key = 'monster-' + num;
       var cfg = TD.cfg.Monsters[key];
+      cfg.speed += (Math.random()*0.2 - 0.1);
+      cfg.range += parseInt(Math.random()*20 - 10);
       var mst = new TD.monster(TD.root, cfg);
       return mst;
     },

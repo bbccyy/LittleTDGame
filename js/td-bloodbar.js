@@ -14,6 +14,9 @@ _TD.loading.push(function(TD){
       if(this.host.type == 'building-5'){
         posY -= 8;
       }
+      if(this.host.type[1] == 'o'){
+        posY -= 17;
+      }
       var obj = {
         type : 'bar',
         position : [[posLX, posY],[posRX, posY]],
