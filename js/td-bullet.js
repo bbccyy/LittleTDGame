@@ -6,19 +6,20 @@ _TD.loading.push(function(TD){
   TD.bullet = function( cfg ){
     this.position = cfg.position;
     this.origin = cfg.start;
-    this.target = cfg.end;   // in missile type, this stores the monster object
+    this.target = cfg.end;   // in missile/layser type, this stores the monster object
     this.type = cfg.type;
     this.damage = cfg.damage;
     this.gender = cfg.gender;  // true: from building, false: from monster
     this.speed = TD.cfg.Arsenal[this.type].speed;  //bullet speed
     this.range = TD.cfg.Arsenal[this.type].damageRange;
-    this.exploding = TD.cfg.Arsenal[this.type].exploding;  // exploding style
+    //this.exploding = TD.cfg.Arsenal[this.type].exploding;  // exploding style
+    this.exploding = TD.explodeFrame[this.type];  // if layser then undefined
     this.index = 0;  //exploding frame index
 
     this.move = function(){
       if(this.type == 'bullet_layser'){
         var obj = {
-          position : this.target,
+          position : this.target.position,
           origin : this.origin,
           type : this.type
         };
@@ -56,6 +57,10 @@ _TD.loading.push(function(TD){
     };
 
     this.makeDamage = function(){   // now, makeDamage function can process both justice and evil bullets
+      if(this.type == 'bullet_layser'){
+        this.target.live -= this.damage;
+        return;
+      }
       var idx, ms, key, monsterPosition;
       if(this.gender==true){
         for(idx=0; idx<TD.monsterQueue.length; idx++){

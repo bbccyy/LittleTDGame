@@ -18,11 +18,11 @@ _TD.loading.push(function(TD){
 
     monsterR : 10,    // the max radius of a monster could be
 
-    bulletSize1 : 2,   // the size of bullet, radius of bullet
+    bulletSize1 : 1,   // the size of bullet, radius of bullet
 
-    bulletSize2 : 3,
+    bulletSize2 : 1,
 
-    bulletSize3 : 4,
+    bulletSize3 : 2,
 
     maxLevel : 3,
 
@@ -79,42 +79,46 @@ _TD.loading.push(function(TD){
     },
 
     bullet_small : function( ctx, cfg ){
-      ctx.beginPath();
       if(cfg.exploding == undefined){
+        ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], this.bulletSize1, 0, 2*Math.PI, false);
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "rgba(118, 93, 5, 1)";
+        ctx.fill();
       }else{
-        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
-        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        // ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        // ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        TD.drawSprite(ctx, 'explode', cfg.exploding, cfg.position[0], cfg.position[1]);
       }
-      ctx.fill();
     },
 
     bullet_middle : function( ctx, cfg ){
-      ctx.beginPath();
       if(cfg.exploding == undefined){
+        ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], this.bulletSize2, 0, 2*Math.PI, false);
         ctx.fillStyle = "#40CF8E";
+        ctx.fill();
       }else{
-        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
-        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        // ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        // ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        TD.drawSprite(ctx, 'explode', cfg.exploding, cfg.position[0], cfg.position[1]);
       }
-      ctx.fill();
     },
 
     bullet_large : function( ctx, cfg ){
-      ctx.beginPath();
       if(cfg.exploding == undefined){
+        ctx.beginPath();
         ctx.arc(cfg.position[0], cfg.position[1], this.bulletSize3, 0, 2*Math.PI, false);
         ctx.fillStyle = "#AB4F80";
+        ctx.fill();
       }else{
-        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
-        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        // ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        // ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        TD.drawSprite(ctx, 'explode', cfg.exploding, cfg.position[0], cfg.position[1]);
       }
-      ctx.fill();
     },
 
     bullet_layser : function( ctx, cfg ){
+      if(cfg.position == undefined) return;
       ctx.beginPath();
       ctx.strokeStyle = '#E084B5';
       ctx.lineWidth = 3;
@@ -135,10 +139,11 @@ _TD.loading.push(function(TD){
       }
       ctx.stroke();
       if(cfg.exploding != undefined){
-        ctx.beginPath();
-        ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
-        ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
-        ctx.fill();
+        // ctx.beginPath();
+        // ctx.arc(cfg.position[0], cfg.position[1], cfg.exploding, 0, 2*Math.PI, false);
+        // ctx.fillStyle = "rgba(215, 140, 66, 0.7)";
+        // ctx.fill();
+        TD.drawSprite(ctx, 'explode', cfg.exploding, cfg.position[0], cfg.position[1]);
       }else if(cfg.track.length > 1){
         ctx.beginPath();
         ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
@@ -465,7 +470,7 @@ _TD.loading.push(function(TD){
         speed : 0.9,
         damage : 30,
         frequency : 1000,
-        cannonType : 'bullet_middle',
+        cannonType : 'bullet_small',
         live : function(){return TD.cfg.monster_2_base_live;},
         price : function(){return TD.cfg.monster_2_base_price;}
       },
@@ -475,7 +480,7 @@ _TD.loading.push(function(TD){
         speed : 0.8,
         damage : 35,
         frequency : 1000,
-        cannonType : 'bullet_large',
+        cannonType : 'bullet_small',
         live : function(){return TD.cfg.monster_3_base_live;},
         price : function(){return TD.cfg.monster_3_base_price;}
       },
@@ -534,7 +539,7 @@ _TD.loading.push(function(TD){
       },
       'building-5' : {   // this is the terminal building cfg
         type : 'building-5',
-        cannonType : 'bullet_large',
+        cannonType : 'bullet_small',
         frequency : 500,
         live : 1000,
         price : 500,

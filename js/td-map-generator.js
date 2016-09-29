@@ -2,12 +2,14 @@
 
 _TD.loading.push(function(TD){
 
-  TD.createMap = function ( canvasBody, undoBody, redoBody, submitBody ){
+  TD.createMap = function (){
     //this.rawData = null;
     TD.uc.width = 500;
     TD.uc.height = 500;
     TD.uc2.width = 500;
     TD.uc2.height = 500;
+    TD.uc0.width = 500;
+    TD.uc0.height = 500;
 
     this.getRawMapFromStroke = function (){
       this.mousedown = false;
@@ -15,11 +17,11 @@ _TD.loading.push(function(TD){
       this.oldy = null;
       this.height = TD.cfg.height;
       this.width = TD.cfg.width;
-      this.c = canvasBody;
-      this.cx = canvasBody.getContext('2d');
-      this.u = undoBody;
-      this.r = redoBody;
-      this.s = submitBody;
+      this.c = TD.canvasBody;
+      this.cx = TD.canvasBody.getContext('2d');
+      this.u = TD.undoBody;
+      this.r = TD.redoBody;
+      this.s = TD.submitBody;
       this.history = [];  // a buffer stroing recent view in historical order
       this.index = -1;    // indicate current view
 
@@ -33,7 +35,7 @@ _TD.loading.push(function(TD){
         this.c.width = this.width;
         this.cx.lineWidth = 25;
         this.cx.lineCap = 'round';
-        this.cx.strokeStyle = 'rgb(0, 0, 0)';
+        this.cx.strokeStyle = 'rgba(0, 0, 0, 1)';
       },
 
       onmousedown : function(ev) {
@@ -76,7 +78,7 @@ _TD.loading.push(function(TD){
         var rect = _this.c.getBoundingClientRect();
         var x = ev.clientX - rect.left;
         var y = ev.clientY - rect.top;
-        if (_this.mousedown && _this.ok2Draw(x,y,TD.cfg.Restriction)) {
+        if (_this.mousedown && TD.lang.ok2Draw(x,y,TD.cfg.Restriction)) {
           _this.paint(x, y);
         }
       },
@@ -84,6 +86,7 @@ _TD.loading.push(function(TD){
       paint : function(x, y) {
         var _this = TD.map.rawMap;
         if (_this.oldx > 0 && _this.oldy > 0) {
+          _this.cx.globalCompositeOperation="destination-out";
           _this.cx.beginPath();
           _this.cx.moveTo(_this.oldx, _this.oldy);
           _this.cx.lineTo(x, y);
@@ -133,8 +136,11 @@ _TD.loading.push(function(TD){
 
       preDraw : function(){
         this.cx.clearRect(0,0,this.cx.width, this.cx.height);
+        TD.lang.paintGround( TD.uc0, 'ground_02.png' );
+        TD.lang.paintGround( this.c, 'ground_01.png' );
         this.cx.beginPath();
-        this.cx.strokeStyle = 'rgb(0, 0, 0)';
+        this.cx.strokeStyle = 'rgba(0, 0, 0, 1)';
+        this.cx.globalCompositeOperation="destination-out";
         this.cx.lineWidth = 30;
         this.cx.moveTo(0,0);
         this.cx.lineTo(60,60);
@@ -146,13 +152,13 @@ _TD.loading.push(function(TD){
         this.cx.closePath();
       },
 
-      //isOnLeft(e, r)  true --> left
-      ok2Draw : function(x, y, lines){  // lines --> [lineUpLeft, lineDownRight]
-          for(var i=0; i<lines.length; i++){
-            if(!TD.lang.isOnLeft(lines[i],[x,y])) return false;
-          }
-          return true;
-      },
+      // //isOnLeft(e, r)  true --> left
+      // ok2Draw : function(x, y, lines){  // lines --> [lineUpLeft, lineDownRight]
+      //     for(var i=0; i<lines.length; i++){
+      //       if(!TD.lang.isOnLeft(lines[i],[x,y])) return false;
+      //     }
+      //     return true;
+      // },
 
       _init : function(){
         this.setupCanvas();

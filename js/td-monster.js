@@ -32,7 +32,7 @@ _TD.loading.push(function(TD){
       this.fire_st = setInterval(
         function(){
           if(that.cannonType == 'bullet_layser'){
-            that.fire(that.position, that.target.position, that.damage, that.cannonType);
+            that.fire(that.position, that.target, that.damage, that.cannonType);
           }else{
             var dfx = parseInt(Math.random()*8-4), dfy = parseInt(Math.random()*8-4);
             var tarP = [that.target.position[0]+dfx, that.target.position[1]+dfy];

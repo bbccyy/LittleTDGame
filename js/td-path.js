@@ -17,7 +17,7 @@ _TD.loading.push(function(TD){
       for(i = 1; i<height-1; i++){
         for(j = 1; j<width-1; j++){
           idx = i*4*width + j*4;
-          map[i][j] = (data[idx]==0 && data[idx+1]==0 && data[idx+2]==0 && data[idx+3]>100)? 1 : 0;
+          map[i][j] = (data[idx]==0 && data[idx+1]==0 && data[idx+2]==0 && data[idx+3]==0)? 1 : 0;
         }
       }
       map[1][1] = 2;
@@ -34,11 +34,11 @@ _TD.loading.push(function(TD){
       var vectorQue = this.parseQue( outputQueue );
       var vectorInnerQue = [];
       //var cx = document.getElementById('td-canvas').getContext('2d');
-      //TD.lang.drawOutline(cx, vectorQue);
+      TD.lang.drawOutline(cx, vectorQue);
       for(idx=0; idx<innerLines.length; idx++){
         var vq = this.parseQue(innerLines[idx]);
         vectorInnerQue.push(vq);
-        //TD.lang.drawOutline(cx, vq);
+        TD.lang.drawOutline(cx, vq);
       }
 
       //vectorQue

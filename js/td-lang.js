@@ -74,42 +74,59 @@ _TD.loading.push(function(TD){
     },
 
     drawOutline : function(cx, que){
-      cx.lineWidth = 2;
-      cx.lineCap = 'round';
-      cx.strokeStyle = 'rgb(255, 0, 0)';
 
-      var fg = true;
-      var oldx=0, oldy=0, idx;
-      var point = [];
-
+      var oldx=0, oldy=0, idx, spriteSheet, spt, point = [], q = [];
+      cx.globalCompositeOperation="source-over";
+      spriteSheet = TD.gSpriteSheets['scene'];
+      spt = spriteSheet.getStats('grass_15.png');
+      var hlf = {
+        x : spt.cx,
+        y : spt.cy
+      };
+      var fence = this.randomNum(5)+3;
+      idx = this.randomNum(30)+20;
       for(idx=0; idx<que.length; idx++){
-        point = que[idx];
-        if (oldx == 0 && oldy == 0) {
-          oldx = point[0];
-          oldy = point[1];
+        if(fence == 0){
+          fence = this.randomNum(5)+3;
+          idx += this.randomNum(20)+5;
           continue;
         }
-        else{
-          if(fg){
-            fg = !fg;
-            cx.beginPath();
-            cx.strokeStyle = 'rgb(0, 255, 0)';
-            cx.moveTo(oldx, oldy);
-            cx.lineTo(point[0], point[1]);
-            cx.stroke();
+        fence--;
+        point = que[idx];
+        if(this.ok2Draw(point[0], point[1])){
+          if(this.getCurDir([oldx, oldy], point) == 4){  // from down to up, draw downer before draw upper
+            if(q.length==0) q.push([oldx, oldy]);
+            else if(!this.pointEq(q[q.length-1], [oldx, oldy])) q.push([oldx, oldy]);
+            q.push(point);
           }else{
-            fg = !fg;
-            cx.beginPath();
-            cx.strokeStyle = 'rgb(255, 0, 0)';
-            cx.moveTo(oldx, oldy);
-            cx.lineTo(point[0], point[1]);
-            cx.stroke();
+            cx.drawImage(spriteSheet.img, spt.x, spt.y,
+               spt.w, spt.h, point[0]+hlf.x, point[1]+hlf.y-3, spt.w, spt.h);
           }
         }
-        oldx = point[0];
-        oldy = point[1];
+        oldx=point[0];
+        oldy=point[1];
       }
-      //cx.closePath();
+      while(q.length > 0){
+        point = q.pop();
+        cx.drawImage(spriteSheet.img, spt.x, spt.y,
+           spt.w, spt.h, point[0]+hlf.x, point[1]+hlf.y-3, spt.w, spt.h);
+      }
+    },
+
+    randomNum : function( upLimit ){
+      return parseInt(Math.random() * upLimit);
+    },
+
+    paintGround : function( uc, spritename ){
+      var w = uc.width, h = uc.height, i, j, ctx = uc.getContext('2d');
+      var spriteSheet = TD.gSpriteSheets['scene'];
+      var spt = spriteSheet.getStats(spritename);
+      for(j=0; j<h; j+=70){
+        for(i=0; i<w; i+=70){
+          ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+             spt.w, spt.h, i, j, 70, 70);
+        }
+      }
     },
 
     getCentrePoint : function(x1, x2, x3){
@@ -160,6 +177,15 @@ _TD.loading.push(function(TD){
       var dis = this.getDistance(p1, p2);
       if( dis <= r) return true;
       else return false;
+    },
+
+    //isOnLeft(e, r)  true --> left
+    ok2Draw : function(x, y, lines){  // lines --> [lineUpLeft, lineDownRight]
+      if(lines == undefined) lines = TD.cfg.Restriction;
+      for(var i=0; i<lines.length; i++){
+        if(!TD.lang.isOnLeft(lines[i],[x,y])) return false;
+      }
+      return true;
     },
 
     getDistance : function(p1, p2){
