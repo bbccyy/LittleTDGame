@@ -14,7 +14,7 @@ _TD.loading.push(function(TD){
 
     Dir : [[[1,0,6],[-1,0,2],[0,1,4],[0,-1,8]], [[-1,-1,1],[-1,1,3],[1,-1,7],[1,1,5]]],
 
-    buildingR : 10,    // show how large the building is on map
+    buildingR : 20,    // show how large the building is on map
 
     monsterR : 10,    // the max radius of a monster could be
 
@@ -222,18 +222,38 @@ _TD.loading.push(function(TD){
     },
 
     bld1 : function( ctx, cfg ){
-      ctx.beginPath();
-      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
-      ctx.fillStyle = "blue";
-      ctx.fill();
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = '#003300';
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.lineWidth = 2;
-      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
-      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
-      ctx.stroke();
+      // ctx.beginPath();
+      // ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      // ctx.fillStyle = "blue";
+      // ctx.fill();
+      // ctx.lineWidth = 0.5;
+      // ctx.strokeStyle = '#003300';
+      // ctx.stroke();
+      // ctx.beginPath();
+      // ctx.lineWidth = 2;
+      // ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      // ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      // ctx.stroke();
+      // position : this.position,
+      // type : this.type,   //building type, indicate the outline of building
+      // angle : this.angle,
+      // frame : 0
+      var x = cfg.position[0], y = cfg.position[1];
+      var spriteSheet = TD.gSpriteSheets['turret'];
+      TD.turretFrame[cfg.type];
+      spt = spriteSheet.getStats(TD.turretFrame[cfg.type][cfg.frame]);
+      var hlf = {
+        x : 25,
+        y : 15
+      };
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(cfg.angle);
+      ctx.translate(-hlf.x, -hlf.y);
+      ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+         spt.w, spt.h, 0, 0, 40, 30);
+      ctx.restore();
+
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
         ctx.beginPath();
@@ -245,17 +265,32 @@ _TD.loading.push(function(TD){
     },
 
     bld2 : function( ctx, cfg ){
-      ctx.beginPath();
-      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
-      ctx.fillStyle = "red";
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = '#003300';
-      ctx.stroke();
-      ctx.lineWidth = 2;
-      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
-      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
-      ctx.stroke();
+      // ctx.beginPath();
+      // ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      // ctx.fillStyle = "red";
+      // ctx.fill();
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = '#003300';
+      // ctx.stroke();
+      // ctx.lineWidth = 2;
+      // ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      // ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      // ctx.stroke();
+      var x = cfg.position[0], y = cfg.position[1];
+      var spriteSheet = TD.gSpriteSheets['turret'];
+      TD.turretFrame[cfg.type];
+      spt = spriteSheet.getStats(TD.turretFrame[cfg.type][cfg.frame]);
+      var hlf = {
+        x : 25,
+        y : 15
+      };
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(cfg.angle);
+      ctx.translate(-hlf.x, -hlf.y);
+      ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+         spt.w, spt.h, 0, 0, 40, 30);
+      ctx.restore();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
         ctx.beginPath();
@@ -267,17 +302,32 @@ _TD.loading.push(function(TD){
     },
 
     bld3 : function( ctx, cfg ){
-      ctx.beginPath();
-      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
-      ctx.fillStyle = "brown";
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = '#003300';
-      ctx.stroke();
-      ctx.lineWidth = 2;
-      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
-      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
-      ctx.stroke();
+      // ctx.beginPath();
+      // ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      // ctx.fillStyle = "brown";
+      // ctx.fill();
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = '#003300';
+      // ctx.stroke();
+      // ctx.lineWidth = 2;
+      // ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      // ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      // ctx.stroke();
+      var x = cfg.position[0], y = cfg.position[1];
+      var spriteSheet = TD.gSpriteSheets['turret'];
+      TD.turretFrame[cfg.type];
+      spt = spriteSheet.getStats(TD.turretFrame[cfg.type][cfg.frame]);
+      var hlf = {
+        x : 25,
+        y : 15
+      };
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(cfg.angle);
+      ctx.translate(-hlf.x, -hlf.y);
+      ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+         spt.w, spt.h, 0, 0, 40, 30);
+      ctx.restore();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
         ctx.beginPath();
@@ -289,17 +339,32 @@ _TD.loading.push(function(TD){
     },
 
     bld4 : function( ctx, cfg ){
-      ctx.beginPath();
-      ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
-      ctx.fillStyle = "purple";
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = '#003300';
-      ctx.stroke();
-      ctx.lineWidth = 2;
-      ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
-      ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
-      ctx.stroke();
+      // ctx.beginPath();
+      // ctx.arc(cfg.position[0], cfg.position[1], this.buildingR, 0, 2*Math.PI, false);
+      // ctx.fillStyle = "purple";
+      // ctx.fill();
+      // ctx.lineWidth = 1;
+      // ctx.strokeStyle = '#003300';
+      // ctx.stroke();
+      // ctx.lineWidth = 2;
+      // ctx.moveTo(cfg.cannon[0][0], cfg.cannon[0][1]);
+      // ctx.lineTo(cfg.cannon[1][0], cfg.cannon[1][1]);
+      // ctx.stroke();
+      var x = cfg.position[0], y = cfg.position[1];
+      var spriteSheet = TD.gSpriteSheets['turret'];
+      TD.turretFrame[cfg.type];
+      spt = spriteSheet.getStats(TD.turretFrame[cfg.type][cfg.frame]);
+      var hlf = {
+        x : 22,
+        y : 19
+      };
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(cfg.angle);
+      ctx.translate(-hlf.x, -hlf.y);
+      ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+         spt.w, spt.h, 0, 0, 41, 38);
+      ctx.restore();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
         ctx.beginPath();
@@ -333,13 +398,16 @@ _TD.loading.push(function(TD){
       // type : this.type,   //building type, indicate the outline of building
       // tid : this.tid.Feature,  // 'TA' or not
       var spriteSheet = TD.gSpriteSheets['scene'];
-      if(cfg.tid == 'TA') var spt = spriteSheet.getStats('tower_02.png');
-      else var spt = spriteSheet.getStats('tower_01.png');
+      if(cfg.tid == 'TA'){
+          var spt = spriteSheet.getStats('tower_02.png');
+      }
+      else{
+          var spt = spriteSheet.getStats('tower_01.png');
+      }
       var hlf = {
         x : spt.cx+10,
         y : spt.cy+5
       };
-
       ctx.drawImage(spriteSheet.img, spt.x, spt.y,
          spt.w, spt.h, x+hlf.x, y+hlf.y, 15, 50);
 
@@ -387,39 +455,55 @@ _TD.loading.push(function(TD){
 
     bld6 : function( ctx, cfg ){
       var x = cfg.position[0], y = cfg.position[1];
-      var corners = [[x-7,y-7],[x+7, y-7],[x-7,y+7],[x+7,y+7]], idx;
-      for(idx=0; idx<corners.length; idx++){
-        ctx.beginPath();
-        ctx.arc(corners[idx][0], corners[idx][1], 2, 0, 2*Math.PI, false);
-        ctx.fillStyle = "rgba(208, 205, 254, 1)";
-        ctx.fill();
-        ctx.lineWidth = 0.5;
-        ctx.strokeStyle = 'black';
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = 'rgba(12, 3, 135, 1)';
-        ctx.moveTo(x, y);
-        ctx.lineTo(corners[idx][0], corners[idx][1]);
-        ctx.stroke();
-      }
-      ctx.beginPath();
-      ctx.strokeStyle = 'black';
-      ctx.lineWidth = 1;
-      ctx.moveTo(cfg.launcher[0][0], cfg.launcher[0][1]);
-      ctx.lineTo(cfg.launcher[1][0], cfg.launcher[1][1]);
-      ctx.lineTo(cfg.launcher[2][0], cfg.launcher[2][1]);
-      ctx.lineTo(cfg.launcher[3][0], cfg.launcher[3][1]);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(108, 150, 178, 1)';
-      ctx.fill();
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(51, 68, 97, 1)';
-      ctx.lineWidth = 3;
-      ctx.moveTo(cfg.launcher[0][0], cfg.launcher[0][1]);
-      ctx.lineTo(cfg.launcher[1][0], cfg.launcher[1][1]);
-      ctx.stroke();
+      // var corners = [[x-7,y-7],[x+7, y-7],[x-7,y+7],[x+7,y+7]], idx;
+      // for(idx=0; idx<corners.length; idx++){
+      //   ctx.beginPath();
+      //   ctx.arc(corners[idx][0], corners[idx][1], 2, 0, 2*Math.PI, false);
+      //   ctx.fillStyle = "rgba(208, 205, 254, 1)";
+      //   ctx.fill();
+      //   ctx.lineWidth = 0.5;
+      //   ctx.strokeStyle = 'black';
+      //   ctx.stroke();
+      //   ctx.beginPath();
+      //   ctx.lineWidth = 2;
+      //   ctx.strokeStyle = 'rgba(12, 3, 135, 1)';
+      //   ctx.moveTo(x, y);
+      //   ctx.lineTo(corners[idx][0], corners[idx][1]);
+      //   ctx.stroke();
+      // }
+      // ctx.beginPath();
+      // ctx.strokeStyle = 'black';
+      // ctx.lineWidth = 1;
+      // ctx.moveTo(cfg.launcher[0][0], cfg.launcher[0][1]);
+      // ctx.lineTo(cfg.launcher[1][0], cfg.launcher[1][1]);
+      // ctx.lineTo(cfg.launcher[2][0], cfg.launcher[2][1]);
+      // ctx.lineTo(cfg.launcher[3][0], cfg.launcher[3][1]);
+      // ctx.closePath();
+      // ctx.stroke();
+      // ctx.fillStyle = 'rgba(108, 150, 178, 1)';
+      // ctx.fill();
+      // ctx.beginPath();
+      // ctx.strokeStyle = 'rgba(51, 68, 97, 1)';
+      // ctx.lineWidth = 3;
+      // ctx.moveTo(cfg.launcher[0][0], cfg.launcher[0][1]);
+      // ctx.lineTo(cfg.launcher[1][0], cfg.launcher[1][1]);
+      // ctx.stroke();
+      // position : this.position,
+      // type : this.type,   //building type, indicate the outline of building
+      // angle : this.angle
+      var spriteSheet = TD.gSpriteSheets['turret'];
+      spt = spriteSheet.getStats('turret_06.png');
+      var hlf = {
+        x : 20,
+        y : 20
+      };
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(cfg.angle);
+      ctx.translate(-hlf.x, -hlf.y);
+      ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+         spt.w, spt.h, 0, 0, 40, 40);
+      ctx.restore();
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
         ctx.beginPath();
@@ -456,7 +540,7 @@ _TD.loading.push(function(TD){
 
     Arsenal : {
       'bullet_small' : {
-          speed : 10,
+          speed : 1000,
           damageRange : 7,
           exploding : [2,3,4,5,4]
         },

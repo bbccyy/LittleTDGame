@@ -14,6 +14,11 @@ _TD.loading.push(function(TD){
     this.price = cfg.price;
     this.level = 0;  // building level, upgradable, Level is binding with building View.
 
+    this.frameArray = TD.turretFrame[this.type];
+    this.frameIndex = 0;
+    this.baseLine = [this.position, [this.position[0]-10,this.position[1]]];  // <s, e>
+    this.angle = 0;  // control rotation of building
+
     this.live = cfg.live;
     this.maxLive = cfg.live;
     this.frequency = cfg.frequency;  // fire frequency
@@ -65,6 +70,12 @@ _TD.loading.push(function(TD){
         that.frequency);
     };
 
+    this.cumputeAngle = function(target){
+      this.cannonDir = TD.lang.getCannon(this.position, target.position, 10);
+      var Dir = [this.position, this.cannonDir[1]];
+      this.angle = TD.lang.getAngle360(this.baseLine, Dir);  //get angle from baseLine(nver changes) to cannonDir
+    };
+
     this.move = function(){
       if(TD.pause){
         this.setTarget(null);
@@ -78,15 +89,19 @@ _TD.loading.push(function(TD){
         clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
         return false;
       }
-      var tmpTar = this.findTarget();
-      if(tmpTar != null){
-        this.cannonDir = TD.lang.getCannon(this.position, tmpTar.position, this.cannonLen);
-      }
       var obj = {
         position : this.position,
         type : this.type,   //building type, indicate the outline of building
-        cannon : this.cannonDir
+        angle : this.angle,
+        frame : this.frameIndex
       };
+      var tmpTar = this.findTarget();
+      if(tmpTar != null){
+        this.cumputeAngle(tmpTar);
+        obj['frame'] = this.frameIndex;
+        this.frameIndex++;
+        this.frameIndex %= this.frameArray.length;
+      }
       if(this.onClick){
         obj['showRange'] = this.range;
         TD.lang.showBuildingInfo(this);
@@ -149,15 +164,15 @@ _TD.loading.push(function(TD){
     this.__proto__ = new TD.building(position, cfg);
     this.missileNumber = cfg.missileNumber;  // number of missiles available in each attack (max: 7)
     this.curLauncher = [];
-    this.curLauncherPoint = [];
+    this.curLaunchPoint = [];
     // Curbs are used to filter out monsters that are lay outside of its front face
     this.leftCurb = [this.position, [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]];
     this.rightCurb = [this.position, [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR]];
     this.baseLauncher = [     // 4 points, first two is the front face
                      [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR],
                      [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
-                     [this.position[0]+TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
-                     [this.position[0]+TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]
+                    // [this.position[0]+TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
+                    // [this.position[0]+TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]
                     ];
     this.baseLaunchPoint = [    //7 points indicate the place the missile will be launched
                         [this.position[0]-TD.cfg.buildingR/2,this.position[1]],
@@ -168,16 +183,15 @@ _TD.loading.push(function(TD){
                       //  [this.position[0]-TD.cfg.buildingR/2,this.position[1]-TD.cfg.buildingR],
                       //  [this.position[0]-TD.cfg.buildingR/2,this.position[1]+TD.cfg.buildingR]
                        ];
-    this.baseLine = [this.position, [this.position[0]-10,this.position[1]]];  // <s, e>
 
-    this.getLauncher = function(){  //modify launcher body, launch-point and Curbs
-      var Dir = [this.position, this.cannonDir[1]], idx, tmpX, tmpY, x, y;
-      var angle = TD.lang.getAngle360(this.baseLine, Dir);  //get angle from baseLine(nver changes) to cannonDir
-      for(idx=0; idx<4; idx++){
+    //modify launcher body, launch-point and Curbs
+    this.computeLaunchPointAndCurbRestriction = function(){
+      var idx, tmpX, tmpY, x, y;
+      for(idx=0; idx<2; idx++){
         tmpX = this.baseLauncher[idx][0] - this.position[0];
         tmpY = this.baseLauncher[idx][1] - this.position[1];
-        x = tmpX*Math.cos(angle) - tmpY*Math.sin(angle) + this.position[0];
-        y = tmpX*Math.sin(angle) + tmpY*Math.cos(angle) + this.position[1];
+        x = tmpX*Math.cos(this.angle) - tmpY*Math.sin(this.angle) + this.position[0];
+        y = tmpX*Math.sin(this.angle) + tmpY*Math.cos(this.angle) + this.position[1];
         this.curLauncher[idx] = [x, y];
       }
       this.leftCurb = [this.position, this.curLauncher[0]];
@@ -185,11 +199,12 @@ _TD.loading.push(function(TD){
       for(idx=0; idx<this.missileNumber; idx++){
         tmpX = this.baseLaunchPoint[idx][0] - this.position[0];
         tmpY = this.baseLaunchPoint[idx][1] - this.position[1];
-        x = tmpX*Math.cos(angle) - tmpY*Math.sin(angle) + this.position[0];
-        y = tmpX*Math.sin(angle) + tmpY*Math.cos(angle) + this.position[1];
-        this.curLauncherPoint[idx] = [x, y];
+        x = tmpX*Math.cos(this.angle) - tmpY*Math.sin(this.angle) + this.position[0];
+        y = tmpX*Math.sin(this.angle) + tmpY*Math.cos(this.angle) + this.position[1];
+        this.curLaunchPoint[idx] = [x, y];
       }
     };
+
 
     this.move = function(){
       if(TD.pause){
@@ -206,13 +221,13 @@ _TD.loading.push(function(TD){
       }
       var tmpTar = this.findTarget();
       if(tmpTar != null){
-        this.cannonDir = TD.lang.getCannon(this.position, tmpTar.position, this.cannonLen);
+        this.cumputeAngle(tmpTar);
       }
-      this.getLauncher();
+      this.computeLaunchPointAndCurbRestriction();
       var obj = {
         position : this.position,
         type : this.type,   //building type, indicate the outline of building
-        launcher : this.curLauncher
+        angle : this.angle
       };
       if(this.onClick){
         obj['showRange'] = this.range;
@@ -245,8 +260,8 @@ _TD.loading.push(function(TD){
         if(i==all.length) i=0;
         tar = all[i++];
         var bulletCfg = {
-          position : this.curLauncherPoint[idx],
-          start : this.curLauncherPoint[idx],
+          position : this.curLaunchPoint[idx],
+          start : this.curLaunchPoint[idx],
           end : tar,
           gender : true,
           damage : damage,
@@ -326,6 +341,12 @@ _TD.loading.push(function(TD){
         function(){ that.fire(that.firePos,that.target.position, that.damage, that.cannonType); },
         that.frequency);
     };
+
+    (function(that){
+      if(that.tid.Feature=='TA'){
+        that.position[0] -= 15;
+      }
+    })(this);
 
   };
 

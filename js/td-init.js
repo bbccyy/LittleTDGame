@@ -43,6 +43,8 @@ _TD.loading.push(function(TD){
   TD.explodeSpriteSource = 'explode.png';
   TD.sceneFrame = {};  // any scene including ground, grass, tower. EG. [grass] -> [grass_01.png, grass_02.png ... ]
   TD.sceneSpriteSource = 'scene.png';
+  TD.turretFrame = {};
+  TD.turretSpriteSource = 'turret.png';
 
   TD.uc = document.getElementById('td-canvas-1'); // middle layer canvas --> draw builids, monsters and bullets
   TD.ucx = TD.uc.getContext('2d');

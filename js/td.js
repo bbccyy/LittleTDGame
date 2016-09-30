@@ -16,6 +16,7 @@ var _TD = {
 				spriteHandler.init({type : 'monster'});
 				spriteHandler.init({type : 'explode'});
 				spriteHandler.init({type : 'scene'});
+				spriteHandler.init({type : 'turret'});
 
 				TD.map = new TD.createMap();
 

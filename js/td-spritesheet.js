@@ -30,6 +30,17 @@ _TD.loading.push(function(TD){
         sceneSheet.img.onload = function(){
           console.log('IMAGEs!!!');
         };
+      }else if(cfg.type == 'turret'){
+        var turretSheet = new this.SpriteSheetClass( 'turret' );
+        turretSheet.load(TD.turretSpriteSource);
+        turretSheet.parseAtlasDefinition(turretJSON);
+        TD.turretFrame['building-1'] = ['turret_01_1.png','turret_01_1.png','turret_01_1.png',
+                                        'turret_01_2.png','turret_01_2.png','turret_01_2.png',
+                                        'turret_01_3.png','turret_01_3.png','turret_01_3.png'];
+        TD.turretFrame['building-2'] = ['turret_02.png'];
+        TD.turretFrame['building-3'] = ['turret_03.png'];
+        TD.turretFrame['building-4'] = ['turret_04.png'];
+        TD.turretFrame['building-6'] = ['turret_06.png'];
       }
     };
 

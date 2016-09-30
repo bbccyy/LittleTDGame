@@ -118,12 +118,13 @@ _TD.loading.push(function(TD){
           if(cfg.type == 'building-6') {
             var bld = new TD.missileBuilding([x,y], cfg);
             cfg['position'] = bld.position;
-            cfg['launcher'] = bld.baseLauncher;
+            cfg['frame'] = 0;
           }
           else {
             var bld = new TD.building([x,y], cfg);
-            cfg['cannon'] = bld.cannonDir;
+            cfg['angle'] = 0;
             cfg['position'] = bld.position;
+            cfg['frame'] = 0;
           }
           TD.lang.showBuildingInfo(bld);   // missile building should add missile number feature
           TD.drawer(cfg);
