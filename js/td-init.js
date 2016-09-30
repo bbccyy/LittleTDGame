@@ -3,7 +3,7 @@ _TD.loading.push(function(TD){
 
   TD.version = "0.1.0";
   TD.money = 50000;
-  TD.score = '???';
+  TD.score = 0;  // score += monster's live / 100
   TD.wave = 0;  // current wave number
   TD.maxNumberOfMonsterPerWave = 10;
   TD.GameOver = false;  // if final target has been destroied, set GameOver := true
@@ -29,6 +29,7 @@ _TD.loading.push(function(TD){
   TD.terminalNodePool = [];
   TD.aliveTerminals = {};
   TD.deadTerminals = {};
+  TD.terminalTmpBuffer = [];  // sort all tower stuffs according to their Y-axis before pushing into eventQueue
 
   TD.rawMapData = null;
   TD.path = null;
@@ -59,7 +60,11 @@ _TD.loading.push(function(TD){
 
   TD.moneyElement = document.getElementById('money');
   TD.waveElement  = document.getElementById('wave');
+  TD.scoreElement  = document.getElementById('score');
   TD.panelElement  = document.getElementById('info');
+
+  TD.runner = document.getElementById('run');
+  TD.pauseElement = document.getElementById('pause');
 
   TD.canvasBody = document.getElementById('td-canvas');
   TD.redoBody = document.getElementById('redo');

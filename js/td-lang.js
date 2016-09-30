@@ -247,7 +247,7 @@ _TD.loading.push(function(TD){
                 + "<dt>Damage</dt>" + "<dd>" + " " + "</dd>"
                 + "<dt>Range</dt>" + "<dd>" + " " + "</dd>"
                 + "<dt>Frequency</dt>" + "<dd>" + " " + "</dd>"
-                + "<dt>Live</dt>" + "<dd>" + " " + " / " + " "  + "</dd>"
+                + "<dt>Live</dt>" + "<dd>" + " " + "</dd>"
                 + "<dt>Price</dt>" + "<dd>" + " " + "</dd>";
         this.bindingElement(TD.panelElement, str);
       }
@@ -268,12 +268,17 @@ _TD.loading.push(function(TD){
 
     setMoney : function( money ){
       TD.money = money;
-      this.bindingElement(TD.moneyElement, TD.money);
+      this.bindingElement(TD.moneyElement, 'money : ' + TD.money);
     },
 
     setWave : function( wave ){
       TD.wave = wave;
-      this.bindingElement(TD.waveElement, TD.wave);
+      this.bindingElement(TD.waveElement, 'wave : ' + TD.wave);
+    },
+
+    setScore : function( score ){
+      TD.score = score;
+      this.bindingElement(TD.scoreElement, 'score : ' + TD.score);
     },
 
     getRandomMonster : function(){

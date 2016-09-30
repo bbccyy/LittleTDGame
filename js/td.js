@@ -6,6 +6,9 @@ var _TD = {
 
       init: function () {
 
+				document.getElementById('post').style.display = 'none';
+				document.getElementById('pre').style.display = 'block';
+
 				TD.lang.setMoney(TD.money);
 
 				var spriteHandler = new TD.spriteSheetHandler();
@@ -13,14 +16,15 @@ var _TD = {
 				spriteHandler.init({type : 'monster'});
 				spriteHandler.init({type : 'explode'});
 				spriteHandler.init({type : 'scene'});
-				
+
 				TD.map = new TD.createMap();
 
 			},
 
 			start : function(){
-				this.runner = document.getElementById('run');
 				this.runner.addEventListener('click', TD.onClick_runner, false);
+				this.pauseElement.addEventListener('click', TD.onClick_pause, false);
+
 				TD.bldCtrl = new TD.buildingController();
 				//console.log("haha2");
 				for(var idx=0; idx<this.terminalNodePool.length; idx++){
@@ -38,14 +42,25 @@ var _TD = {
 			onClick_runner : function(){
 				if(TD.beforeRun){
 					TD.beforeRun = false;
+					document.getElementById('run').style.display = 'none';
+					document.getElementById('pause').style.display = 'block';
 					TD.step();
 				}else{
-					TD.pause = !TD.pause;
+					TD.pause = false;
+					document.getElementById('run').style.display = 'none';
+					document.getElementById('pause').style.display = 'block';
 				}
+			},
+
+			onClick_pause : function(){
+				TD.pause = true;
+				document.getElementById('run').style.display = 'block';
+				document.getElementById('pause').style.display = 'none';
 			},
 
 			step : function(){
 				_this = TD;
+				//TD.terminalTmpBuffer = [];
 
 				if(TD.GameOver){
 					clearTimeout(_this._st);
@@ -101,27 +116,8 @@ var _TD = {
 						}
 					}
 
-					//3
 					if(!TD.pause){
-						size = _this.bulletQueue.length;
-						while(size > 0){
-							size--;
-							var el = _this.bulletQueue.shift();
-							if(el.move() == true){
-								_this.bulletQueue.push(el);
-							}
-						}
-
-						//4
-						size = _this.bloodBarQueue.length;
-						while(size > 0){
-							size--;
-							var el = _this.bloodBarQueue.shift();
-							if(el.move() == true){
-								_this.bloodBarQueue.push(el);
-							}
-						}
-
+						//3
 						for(key in TD.deadTerminals){
 							if(!TD.deadTerminals.hasOwnProperty(key)) continue;
 							var el = TD.deadTerminals[key];
@@ -129,6 +125,7 @@ var _TD = {
 						}
 					}
 
+					//4
 					for(key in TD.aliveTerminals){
 						if(!TD.aliveTerminals.hasOwnProperty(key)) continue;
 						var el = TD.aliveTerminals[key];
@@ -138,7 +135,35 @@ var _TD = {
 						}
 					}
 
-				}
+					if(TD.terminalTmpBuffer.length > 0){  // this step makes sure that no latter object covers over front object
+						TD.terminalTmpBuffer.sort(function(a,b){return a.position[1] - b.position[1];});
+						while(TD.terminalTmpBuffer.length > 0){
+							TD.eventQueue.push(TD.terminalTmpBuffer.shift());
+						}
+					}
+
+					//5~ 6
+					if(!TD.pause){
+						size = _this.bloodBarQueue.length;
+						while(size > 0){
+							size--;
+							var el = _this.bloodBarQueue.shift();
+							if(el.move() == true){
+								_this.bloodBarQueue.push(el);
+							}
+						}
+
+						size = _this.bulletQueue.length;
+						while(size > 0){
+							size--;
+							var el = _this.bulletQueue.shift();
+							if(el.move() == true){
+								_this.bulletQueue.push(el);
+							}
+						}
+					}
+
+				}  // end of else
 
 				_this._st = setTimeout(function(){
 					_this.step();

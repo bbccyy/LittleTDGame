@@ -15,13 +15,15 @@ _TD.loading.push(function(TD){
     //this.exploding = TD.cfg.Arsenal[this.type].exploding;  // exploding style
     this.exploding = TD.explodeFrame[this.type];  // if layser then undefined
     this.index = 0;  //exploding frame index
+    this.hostType = cfg.hostType;
 
     this.move = function(){
       if(this.type == 'bullet_layser'){
         var obj = {
           position : this.target.position,
           origin : this.origin,
-          type : this.type
+          type : this.type,
+          hostType : this.hostType
         };
         this.makeDamage();
         TD.eventQueue.push(obj);
@@ -32,7 +34,8 @@ _TD.loading.push(function(TD){
           var obj = {
             position : this.position,
             type : this.type,
-            exploding : this.exploding[this.index]
+            exploding : this.exploding[this.index],
+            hostType : this.hostType
           };
           this.index++;
           TD.eventQueue.push(obj);
@@ -45,7 +48,8 @@ _TD.loading.push(function(TD){
       this.position = nextPosition;
       var obj = {
         position : nextPosition,
-        type : this.type
+        type : this.type,
+        hostType : this.hostType
       };
       if(TD.lang.pointEq(this.target, this.position)==true){
         this.makeDamage();
@@ -104,13 +108,15 @@ _TD.loading.push(function(TD){
       }
 
       if(TD.lang.pointEq(this.curTargetPosition, this.position)==true){
-        if( this.track.length > 1){
+        //if( this.track.length > 1){
+        if(this.index < this.exploding.length){
           this.track.shift();
           var obj = {
             position : this.curTargetPosition,
             type : this.type,
             exploding : this.exploding[this.index],
-            track : this.track
+            track : this.track,
+            hostType : this.hostType
           };
           this.index++;
           TD.eventQueue.push(obj);
@@ -127,7 +133,8 @@ _TD.loading.push(function(TD){
       var obj = {
         position : this.curTargetPosition,
         type : this.type,
-        track : this.track
+        track : this.track,
+        hostType : this.hostType
       };
       if(TD.lang.pointEq(this.curTargetPosition, this.position)==true){
         this.hit = true;

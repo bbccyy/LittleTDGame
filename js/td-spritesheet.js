@@ -163,7 +163,7 @@ _TD.loading.push(function(TD){
       y : spt.cy
     };
     // posX+hlf.x, posY+hlf.y  --> make sure we actually put the image centre at the point we want
-    if(type[0] == 'm')
+    if(type[1] == 'o')
       ctx.drawImage(spriteSheet.img, spt.x, spt.y, spt.w, spt.h, posX+hlf.x, posY+hlf.y-10, spt.w, spt.h);
     else {
       ctx.drawImage(spriteSheet.img, spt.x, spt.y, spt.w, spt.h, posX+hlf.x, posY+hlf.y, spt.w, spt.h);

@@ -29,7 +29,7 @@ _TD.loading.push(function(TD){
       this.damage = parseInt(this.damage*up.damage);
       this.range  = parseInt(this.range*up.range);
       this.maxLive= parseInt(this.maxLive*up.live);
-      this.live   = parseInt(this.live*this.maxLive);  // immediately refresh the live of building to max
+      this.live   = this.maxLive;  // immediately refresh the live of building to max
       this.frequency = parseInt(this.frequency*up.frequency);
       if(this.type=='building-6') this.missileNumber = up.missile;
       TD.lang.showBuildingInfo(this);
@@ -126,7 +126,8 @@ _TD.loading.push(function(TD){
         end : e,
         gender : true,  // this is justice
         damage : damage,   // may increase when flying through something in the map
-        type : cannonType
+        type : cannonType,
+        hostType : this.type
       };
       if(cannonType == 'bullet_missile'){
         bulletCfg['end'] = this.target;
@@ -249,7 +250,8 @@ _TD.loading.push(function(TD){
           end : tar,
           gender : true,
           damage : damage,
-          type : cannonType
+          type : cannonType,
+          hostType : this.type
         };
         var blt = new TD.missile( bulletCfg );
         TD.bulletQueue.push(blt);
@@ -263,13 +265,13 @@ _TD.loading.push(function(TD){
     this.__proto__ = new TD.building( position, cfg );
     this.type = 'building-5';
     this.tid = terminalId;  // infact, this is a node itself
-    this.firePos = [position[0],position[1]-13];
+    this.firePos = [position[0],position[1]-33];
     this.upgrade = function(){
       var up = TD.cfg.upgradeMapping[this.type][this.level];
       if(TD.money < up.price) return false;
       TD.lang.setMoney(TD.money - up.price);
       this.price += up.price; // do not increase level for terminal building
-      this.maxLive   *= up.live;
+      this.maxLive *= up.live;
       this.live = this.maxLive;  // immediately refresh the live of building to max
       TD.lang.showBuildingInfo(this);
       if(TD.aliveTerminals[this.tid] == undefined){
@@ -287,6 +289,7 @@ _TD.loading.push(function(TD){
       var obj = {
         position : this.position,
         type : this.type,   //building type, indicate the outline of building
+        tid : this.tid.Feature,  // 'TA' or not
         alive : true
       };
       if(this.onClick){
@@ -296,7 +299,9 @@ _TD.loading.push(function(TD){
       if(this.live <= 0) {       // this terminal building has been destroied
         clearInterval(this.fire_st);  // don't forget to shut down its cannon :)
         obj.alive = false;
-        TD.eventQueue.push(obj);
+        //TD.eventQueue.push(obj);
+        TD.terminalTmpBuffer.push(obj);
+        TD.lang.setScore(TD.score - parseInt(this.maxLive/100));
         if(this.tid.Feature =='TA') TD.GameOver = true;
         return false;  // td.js will move it to TD.deadTerminals
       }
@@ -304,7 +309,8 @@ _TD.loading.push(function(TD){
       if(this.target != tmpTar){
         this.setTarget(tmpTar);
       }
-      TD.eventQueue.push(obj);
+      //TD.eventQueue.push(obj);
+      TD.terminalTmpBuffer.push(obj);
       return true;
     };
 

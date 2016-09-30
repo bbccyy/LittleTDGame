@@ -12,7 +12,7 @@ _TD.loading.push(function(TD){
           posY = this.host.position[1] - 11;
           posRx = 18 * this.host.live / this.host.maxLive + posLX + 1;
       if(this.host.type == 'building-5'){
-        posY -= 8;
+        posY -= 37;
       }
       if(this.host.type[1] == 'o'){
         posY -= 17;

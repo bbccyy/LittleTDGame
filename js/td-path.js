@@ -673,7 +673,7 @@ _TD.loading.push(function(TD){
             e = tri.value[e][1];
           }
         }while(tri.Feature == 'L');
-        TD.lang.drawArray(cx, path, 'rgb(255,255,102)');
+        //TD.lang.drawArray(cx, path, 'rgb(255,255,102)');
         return [path, tri, e];
       },
 
@@ -774,7 +774,7 @@ _TD.loading.push(function(TD){
     if(!TD.validMap){
       TD.terminalNodePool = [];
       TD.aliveTerminals = {};
-      alert("Please connect start point and end point!");
+      alert("Please connect start point to end point!");
       TD.init();
       return;
     }

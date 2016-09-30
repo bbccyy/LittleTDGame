@@ -119,12 +119,30 @@ _TD.loading.push(function(TD){
 
     bullet_layser : function( ctx, cfg ){
       if(cfg.position == undefined) return;
-      ctx.beginPath();
-      ctx.strokeStyle = '#E084B5';
-      ctx.lineWidth = 3;
-      ctx.moveTo(cfg.origin[0], cfg.origin[1]);
-      ctx.lineTo(cfg.position[0], cfg.position[1]);
-      ctx.stroke();
+      if(cfg.hostType == undefined || cfg.hostType == 'building-4'){
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(156, 58, 153, 1)';
+        ctx.lineWidth = 1;
+        ctx.moveTo(cfg.origin[0], cfg.origin[1]);
+        ctx.lineTo(cfg.position[0], cfg.position[1]);
+        ctx.stroke();
+      }
+      else if(cfg.hostType == 'monster-4'){
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(156, 81, 58, 1)';
+        ctx.lineWidth = 1;
+        ctx.moveTo(cfg.origin[0], cfg.origin[1]);
+        ctx.lineTo(cfg.position[0], cfg.position[1]);
+        ctx.stroke();
+      }
+      else{  // should be terminal building
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(226, 116, 167, 1)';
+        ctx.lineWidth = 1;
+        ctx.moveTo(cfg.origin[0], cfg.origin[1]);
+        ctx.lineTo(cfg.position[0], cfg.position[1]);
+        ctx.stroke();
+      }
     },
 
     bullet_missile : function(ctx, cfg ){
@@ -294,23 +312,36 @@ _TD.loading.push(function(TD){
 
     bld5 : function( ctx, cfg ){
       var x = cfg.position[0], y = cfg.position[1];
-      ctx.beginPath();
-      ctx.arc(x, y-13, 3, 0, 2*Math.PI, false);
-      ctx.fillStyle = "rgba(63, 190, 207, 1)";
-      ctx.fill();
-      ctx.lineWidth = 0.5;
-      ctx.strokeStyle = 'black';
-      ctx.stroke();
+      // ctx.beginPath();
+      // ctx.arc(x, y-13, 3, 0, 2*Math.PI, false);
+      // ctx.fillStyle = "rgba(63, 190, 207, 1)";
+      // ctx.fill();
+      // ctx.lineWidth = 0.5;
+      // ctx.strokeStyle = 'black';
+      // ctx.stroke();
+      //
+      // ctx.beginPath();
+      // ctx.lineWidth = 1;
+      // ctx.moveTo(x, y-10);
+      // ctx.lineTo(x-5, y+3);
+      // ctx.lineTo(x+5, y+3);
+      // ctx.closePath();
+      // ctx.stroke();
+      // ctx.fillStyle = "rgba(34, 65, 98, 1)";
+      // ctx.fill();
+      // position : this.position,
+      // type : this.type,   //building type, indicate the outline of building
+      // tid : this.tid.Feature,  // 'TA' or not
+      var spriteSheet = TD.gSpriteSheets['scene'];
+      if(cfg.tid == 'TA') var spt = spriteSheet.getStats('tower_02.png');
+      else var spt = spriteSheet.getStats('tower_01.png');
+      var hlf = {
+        x : spt.cx+10,
+        y : spt.cy+5
+      };
 
-      ctx.beginPath();
-      ctx.lineWidth = 1;
-      ctx.moveTo(x, y-10);
-      ctx.lineTo(x-5, y+3);
-      ctx.lineTo(x+5, y+3);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.fillStyle = "rgba(34, 65, 98, 1)";
-      ctx.fill();
+      ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+         spt.w, spt.h, x+hlf.x, y+hlf.y, 15, 50);
 
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
@@ -324,15 +355,25 @@ _TD.loading.push(function(TD){
 
     bld5_2 : function( ctx, cfg ){  // show as ruin
       var x = cfg.position[0], y = cfg.position[1];
-      ctx.beginPath();
-      ctx.lineWidth = 1;
-      ctx.moveTo(x, y);
-      ctx.lineTo(x-5, y+3);
-      ctx.lineTo(x+5, y+3);
-      ctx.closePath();
-      ctx.stroke();
-      ctx.fillStyle = "rgba(34, 65, 98, 1)";
-      ctx.fill();
+      // ctx.beginPath();
+      // ctx.lineWidth = 1;
+      // ctx.moveTo(x, y);
+      // ctx.lineTo(x-5, y+3);
+      // ctx.lineTo(x+5, y+3);
+      // ctx.closePath();
+      // ctx.stroke();
+      // ctx.fillStyle = "rgba(34, 65, 98, 1)";
+      // ctx.fill();
+
+      var spriteSheet = TD.gSpriteSheets['scene'];
+      var spt = spriteSheet.getStats('tower_03.png');
+      var hlf = {
+        x : spt.cx+7,
+        y : spt.cy-20
+      };
+
+      ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+         spt.w, spt.h, x+hlf.x, y+hlf.y, 15, 15);
 
       if(cfg.showRange != undefined){
         var range = cfg.showRange;
@@ -501,7 +542,7 @@ _TD.loading.push(function(TD){
         type : 'building-1',
         cannonType : 'bullet_small',
         frequency : 500,  //  1 per 100ms
-        live : 100,
+        live : 80,
         price : 200,
         range : 55,
         damage : 20,
@@ -539,12 +580,12 @@ _TD.loading.push(function(TD){
       },
       'building-5' : {   // this is the terminal building cfg
         type : 'building-5',
-        cannonType : 'bullet_small',
-        frequency : 500,
+        cannonType : 'bullet_layser',
+        frequency : 30,
         live : 1000,
         price : 500,
         range : 100,
-        damage : 10,
+        damage : 2,
         cannonLen : 0
       },
       'building-6' : {   // missile launcher

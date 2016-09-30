@@ -128,6 +128,11 @@ _TD.loading.push(function(TD){
         _this.r.removeEventListener('click', _this.onClickRedo, false);
         _this.s.removeEventListener('click', _this.onClickSubmit, false);
 
+        document.getElementById('post').style.display = 'block';
+				document.getElementById('pre').style.display = 'none';
+        document.getElementById('run').style.display = 'block';
+        document.getElementById('pause').style.display = 'none';
+
         TD.rawMapData = _this.history[_this.index].data;
         TD.path = new TD.createPath(TD.rawMapData);
         //console.log(TD.path);

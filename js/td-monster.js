@@ -67,6 +67,7 @@ _TD.loading.push(function(TD){
         this.alive = false;
         clearInterval(this.fire_st);
         TD.lang.setMoney(TD.money + this.price);
+        TD.lang.setScore(TD.score + parseInt(this.maxLive/100));
         return false;
       }
       var tmpTar = this.findTarget();
