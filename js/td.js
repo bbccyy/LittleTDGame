@@ -8,8 +8,11 @@ var _TD = {
 
 				document.getElementById('post').style.display = 'none';
 				document.getElementById('pre').style.display = 'block';
+				document.getElementById('over').style.display = 'none';
 
-				TD.lang.setMoney(TD.money);
+				TD.lang.setMoney(TD.cfg.money);
+				TD.lang.setWave(TD.wave);
+				TD.lang.setScore(TD.score);
 
 				var spriteHandler = new TD.spriteSheetHandler();
 
@@ -84,6 +87,26 @@ var _TD = {
 						while(_this.eventQueue.length>0){
 							var e = _this.eventQueue.shift();
 							_this.drawer(e);
+						}
+
+						var size = _this.grassQueue.length;
+						while(size > 0){
+							size--;
+							var el = _this.grassQueue.shift();
+							if(el.alive){
+								_this.eventQueue.push(el);
+								_this.grassQueue.push(el);
+							}
+						}
+
+						var size = _this.irremovalbeGrassQueue.length;
+						while(size > 0){
+							size--;
+							var el = _this.irremovalbeGrassQueue.shift();
+							if(el.alive){
+								_this.eventQueue.push(el);
+								_this.irremovalbeGrassQueue.push(el);
+							}
 						}
 					}
 

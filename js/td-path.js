@@ -639,6 +639,7 @@ _TD.loading.push(function(TD){
         // if has indirect nodes return 0;
         // else return -1;
         this.worthToVisit = function(){
+          if(this.Feature == 'TA') return 1;  //since I manually modifies TA's position, I have to add this check statement to prevent a bug
           if(typeof TD.aliveTerminals === 'undefined') return true;
           var res = -1;
           for(var key in TD.aliveTerminals){
@@ -780,6 +781,7 @@ _TD.loading.push(function(TD){
     }
     this.setPath(TD.terminalNodePool);
     this.setWeight( TD.root );
+    TD.plantMap(TD.cfg.density);  // plant grass onto map
 
     // console.log(TD.root);
     // console.log(TD.terminalNodePool);

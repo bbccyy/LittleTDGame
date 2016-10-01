@@ -2,7 +2,7 @@
 _TD.loading.push(function(TD){
 
   TD.version = "0.1.0";
-  TD.money = 50000;
+  TD.money = 500;
   TD.score = 0;  // score += monster's live / 100
   TD.wave = 0;  // current wave number
   TD.maxNumberOfMonsterPerWave = 10;
@@ -18,6 +18,7 @@ _TD.loading.push(function(TD){
   TD.bldCtrl = null;  // building controller
   TD.runner  = null;  //should conbine run with pause
   TD.beforeRun = true;  //will set to false when first click runner, used to conbine pause and run function
+  TD.reStart = null;  // hold the document element that triggers new game
 
   TD.eventQueue = [];  //all moving or exploding events --> monster, bullet and building
   TD.monsterQueue = [];
@@ -25,6 +26,9 @@ _TD.loading.push(function(TD){
   TD.inBuildingQueue = [];   // buildings in battle field
   TD.bulletQueue = [];
   TD.bloodBarQueue = [];
+
+  TD.grassQueue = [];  //removable grass on map
+  TD.irremovalbeGrassQueue = [];
 
   TD.terminalNodePool = [];
   TD.aliveTerminals = {};

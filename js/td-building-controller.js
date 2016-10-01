@@ -115,6 +115,7 @@ _TD.loading.push(function(TD){
           TD.lang.setMoney(TD.money - cfg.price);
           TD.waitingToBuild = null;
           TD.cfg.clearAll(TD.ucx2, TD.uc2); // clear the view of upper layer
+          TD.lang.clearGrass([x,y]);  // clear up grass if anyone near this place
           if(cfg.type == 'building-6') {
             var bld = new TD.missileBuilding([x,y], cfg);
             cfg['position'] = bld.position;

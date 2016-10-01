@@ -2,17 +2,20 @@ _TD.loading.push(function(TD){
 
   TD.gameOver = function(){
 
-    TD.bldCtrl.bld1.removeEventListener('click', this.onClick_building_1, false);
-    TD.bldCtrl.bld2.removeEventListener('click', this.onClick_building_2, false);
-    TD.bldCtrl.bld3.removeEventListener('click', this.onClick_building_3, false);
-    TD.bldCtrl.bld4.removeEventListener('click', this.onClick_building_4, false);
-    TD.bldCtrl.bld6.removeEventListener('click', this.onClick_building_6, false);
+    TD.bldCtrl.bld1.removeEventListener('click', TD.bldCtrl.onClick_building_1, false);
+    TD.bldCtrl.bld2.removeEventListener('click', TD.bldCtrl.onClick_building_2, false);
+    TD.bldCtrl.bld3.removeEventListener('click', TD.bldCtrl.onClick_building_3, false);
+    TD.bldCtrl.bld4.removeEventListener('click', TD.bldCtrl.onClick_building_4, false);
+    TD.bldCtrl.bld6.removeEventListener('click', TD.bldCtrl.onClick_building_6, false);
 
-    TD.bldCtrl.ug.removeEventListener('click', this.onClick_upgrade, false);
-    TD.bldCtrl.sl.removeEventListener('click', this.onClick_sell, false);
+    TD.runner.removeEventListener('click', TD.onClick_runner, false);
+    TD.pauseElement.removeEventListener('click', TD.onClick_pause, false);
 
-    TD.bldCtrl.c.removeEventListener('mousemove', this.onmouseMove, false);
-    TD.bldCtrl.c.removeEventListener('click', this.onClick, false);
+    TD.bldCtrl.ug.removeEventListener('click', TD.bldCtrl.onClick_upgrade, false);
+    TD.bldCtrl.sl.removeEventListener('click', TD.bldCtrl.onClick_sell, false);
+
+    TD.bldCtrl.c.removeEventListener('mousemove', TD.bldCtrl.onmouseMove, false);
+    TD.bldCtrl.c.removeEventListener('click', TD.bldCtrl.onClick, false);
 
     var key, cur;
     while(TD.monsterQueue.length > 0){
@@ -73,6 +76,11 @@ _TD.loading.push(function(TD){
 
     // addEventListener to the NextLevel buttom
     // onClick, refresh the initial map, run TD.init() again
+    document.getElementById('post').style.display = 'none';
+    document.getElementById('pre').style.display = 'none';
+    document.getElementById('over').style.display = 'block';
+    TD.reStart = document.getElementById('restart');
+    TD.reStart.addEventListener( 'click', TD.lang.onClick_restart, false );
 
   };
 

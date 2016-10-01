@@ -316,6 +316,7 @@ _TD.loading.push(function(TD){
         obj.alive = false;
         //TD.eventQueue.push(obj);
         TD.terminalTmpBuffer.push(obj);
+        if(TD.deadTerminals[this.position] != undefined) return false;  // prevent a dead terminal keeps decreasing score
         TD.lang.setScore(TD.score - parseInt(this.maxLive/100));
         if(this.tid.Feature =='TA') TD.GameOver = true;
         return false;  // td.js will move it to TD.deadTerminals
@@ -345,6 +346,8 @@ _TD.loading.push(function(TD){
     (function(that){
       if(that.tid.Feature=='TA'){
         that.position[0] -= 15;
+        that.position[1] -= 10;
+        that.firePos = [that.position[0],that.position[1]-33];
       }
     })(this);
 

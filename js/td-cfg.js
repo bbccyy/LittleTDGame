@@ -28,7 +28,9 @@ _TD.loading.push(function(TD){
 
     maxNumberOfMonsterPerWave : 10,
 
-    money : 500,
+    money : 5000,
+
+    density : 10,
 
     speedMapping : function( area ){
       if(area <= 350) return 1;
@@ -169,6 +171,28 @@ _TD.loading.push(function(TD){
         ctx.moveTo(e[0][0], e[0][1]);
         ctx.lineTo(e[1][0], e[1][1]);
         ctx.stroke();
+      }
+    },
+
+    grass : function( ctx, cfg ){
+      var x = cfg.position[0], y = cfg.position[1];
+      var spriteSheet = TD.gSpriteSheets['scene'];
+      spt = spriteSheet.getStats(cfg.spritename);
+      var feature = cfg.spritename[7];
+      if(feature == '6' || feature == '9' || feature == '0'){
+        var hlf = {
+          x : spt.cx,
+          y : spt.cy
+        };
+        ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+           spt.w, spt.h, x+hlf.x, y+hlf.y, spt.w, spt.h);
+      }else{
+        var hlf = {
+          x : spt.cx/2,
+          y : spt.cy/2
+        };
+        ctx.drawImage(spriteSheet.img, spt.x, spt.y,
+           spt.w, spt.h, x+hlf.x, y+hlf.y, spt.w/2, spt.h/2);
       }
     },
 

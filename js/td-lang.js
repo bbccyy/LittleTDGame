@@ -113,6 +113,13 @@ _TD.loading.push(function(TD){
       }
     },
 
+    onClick_restart : function(){
+      TD.reStart.removeEventListener('click', TD.lang.onClick_restart, false);
+      TD.reStart = null;
+      document.getElementById('over').style.display = 'none';
+      TD.init();
+    },
+
     randomNum : function( upLimit ){
       return parseInt(Math.random() * upLimit);
     },
@@ -217,6 +224,13 @@ _TD.loading.push(function(TD){
       return [[x*3 + s[0], y*3 + s[1]], [x*(3+l) + s[0], y*(3+l) + s[1]]];
     },
 
+    clearGrass : function( p ){  //clear up grass to build something on it
+      for(var idx=0; idx<TD.grassQueue.length; idx++){
+        if(this.getDistance(p, TD.grassQueue[idx].position) <= TD.cfg.buildingR*2)
+          TD.grassQueue[idx].alive = false;
+      }
+    },
+
     ableToBuild : function( p, r ){
       var x = parseInt(p[0]), y = parseInt(p[1]), idx, cur;  // parseInt to prevent float input
       if(TD.mapData == null) return false;
@@ -229,6 +243,10 @@ _TD.loading.push(function(TD){
       if(cur == 0){
         for(idx=0; idx<TD.buildingQueue.length; idx++){
           if(this.getDistance(TD.buildingQueue[idx].position, p) <= 2*r)
+            return -1;
+        }
+        for(idx=0; idx<TD.irremovalbeGrassQueue.length; idx++){
+          if(this.getDistance(TD.irremovalbeGrassQueue[idx].position, p) <= 30)
             return -1;
         }
       }else{
@@ -284,11 +302,23 @@ _TD.loading.push(function(TD){
     getRandomMonster : function(){
       var num = parseInt(Math.random()*4+1);
       var key = 'monster-' + num;
-      var cfg = TD.cfg.Monsters[key];
+      //var cfg = TD.cfg.Monsters[key];  // find a bug! cfg here will cumulate previous effects
+      var cfg = this.copy(TD.cfg.Monsters[key]);
+      cfg['live'] = TD.cfg.Monsters[key].live;
+      cfg['price'] = TD.cfg.Monsters[key].price;
       cfg.speed += (Math.random()*0.2 - 0.1);
       cfg.range += parseInt(Math.random()*20 - 10);
       var mst = new TD.monster(TD.root, cfg);
       return mst;
+    },
+
+    copy : function( obj ){  //not deep copy of an object
+      var res = {};
+      for(var key in obj){
+        if(!obj.hasOwnProperty(key)) continue;
+        res[key] = obj[key];
+      }
+      return res;
     },
 
     levelUp : function(){   // modify monsters' feature to increase difficulty
