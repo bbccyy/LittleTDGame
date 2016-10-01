@@ -77,4 +77,6 @@ _TD.loading.push(function(TD){
   TD.undoBody = document.getElementById('undo');
   TD.submitBody = document.getElementById('submit');
 
+  TD.catnonImg = document.getElementById('catnon');  // my lovely catnon!!!
+
 });

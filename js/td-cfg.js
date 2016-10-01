@@ -28,7 +28,7 @@ _TD.loading.push(function(TD){
 
     maxNumberOfMonsterPerWave : 10,
 
-    money : 5000,
+    money : 50000,
 
     density : 10,
 
@@ -165,12 +165,24 @@ _TD.loading.push(function(TD){
         // ctx.fill();
         TD.drawSprite(ctx, 'explode', cfg.exploding, cfg.position[0], cfg.position[1]);
       }else if(cfg.track.length > 1){
-        ctx.beginPath();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-        ctx.lineWidth = 2;
-        ctx.moveTo(e[0][0], e[0][1]);
-        ctx.lineTo(e[1][0], e[1][1]);
-        ctx.stroke();
+        if(cfg.catnon){
+          var x = e[1][0], y = e[1][1], img = TD.catnonImg;
+          var baseLine = [ e[0] ,  [x-10, y] ];
+          var angle = TD.lang.getAngle360(baseLine, e);
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(angle);
+          ctx.translate(-21, -13);
+          ctx.drawImage(img, 0, 0, 42, 26);
+          ctx.restore();
+        }else{
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+          ctx.lineWidth = 2;
+          ctx.moveTo(e[0][0], e[0][1]);
+          ctx.lineTo(e[1][0], e[1][1]);
+          ctx.stroke();
+        }
       }
     },
 
@@ -651,7 +663,7 @@ _TD.loading.push(function(TD){
         cannonType : 'bullet_small',
         frequency : 500,  //  1 per 100ms
         live : 80,
-        price : 200,
+        price : 100,
         range : 55,
         damage : 20,
         cannonLen : 10

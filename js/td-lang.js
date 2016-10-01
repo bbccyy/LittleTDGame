@@ -264,18 +264,18 @@ _TD.loading.push(function(TD){
         var str = "<dt>Level</dt>" + "<dd>" + " " + "</dd>"
                 + "<dt>Damage</dt>" + "<dd>" + " " + "</dd>"
                 + "<dt>Range</dt>" + "<dd>" + " " + "</dd>"
-                + "<dt>Frequency</dt>" + "<dd>" + " " + "</dd>"
+                + "<dt>Shot delay</dt>" + "<dd>" + " " + "</dd>"
                 + "<dt>Live</dt>" + "<dd>" + " " + "</dd>"
-                + "<dt>Price</dt>" + "<dd>" + " " + "</dd>";
+                + "<dt>Upgrade cost</dt>" + "<dd>" + " " + "</dd>";
         this.bindingElement(TD.panelElement, str);
       }
       else{
         var str = "<dt>Level</dt>" + "<dd>" + bld.level + "</dd>"
                 + "<dt>Damage</dt>" + "<dd>" + bld.damage + "</dd>"
                 + "<dt>Range</dt>" + "<dd>" + bld.range + "</dd>"
-                + "<dt>Frequency</dt>" + "<dd>" + bld.frequency + "</dd>"
+                + "<dt>Shot delay</dt>" + "<dd>" + bld.frequency + "</dd>"
                 + "<dt>Live</dt>" + "<dd>" + bld.live + " / " + bld.maxLive  + "</dd>"
-                + "<dt>Price</dt>" + "<dd>" + bld.price + "</dd>";
+                + "<dt>Upgrade cost</dt>" + "<dd>" + '$ ' + (bld.level==3?'-':(TD.cfg.upgradeMapping[bld.type][bld.level].price)) + "</dd>";
         this.bindingElement(TD.panelElement, str);
       }
     },
@@ -386,7 +386,7 @@ _TD.loading.push(function(TD){
       else return -1;
     },
 
-    getAngle360 : function(e1, e2){
+    getAngle360 : function(e1, e2){  // from e1 to e2
       var v1 = [e1[1][0]-e1[0][0], e1[1][1]-e1[0][1]];
       var v2 = [e2[1][0]-e2[0][0], e2[1][1]-e2[0][1]];
 

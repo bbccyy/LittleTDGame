@@ -15,7 +15,7 @@ _TD.loading.push(function(TD){
     //this.exploding = TD.cfg.Arsenal[this.type].exploding;  // exploding style
     this.exploding = TD.explodeFrame[this.type];  // if layser then undefined
     this.index = 0;  //exploding frame index
-    this.hostType = cfg.hostType;
+    this.hostType = cfg.hostType;  // used to identify different Layser Hoster --> draw differently
 
     this.move = function(){
       if(this.type == 'bullet_layser'){
@@ -115,8 +115,8 @@ _TD.loading.push(function(TD){
             position : this.curTargetPosition,
             type : this.type,
             exploding : this.exploding[this.index],
-            track : this.track,
-            hostType : this.hostType
+            track : this.track
+            //hostType : this.hostType
           };
           this.index++;
           TD.eventQueue.push(obj);
@@ -134,7 +134,8 @@ _TD.loading.push(function(TD){
         position : this.curTargetPosition,
         type : this.type,
         track : this.track,
-        hostType : this.hostType
+        //hostType : this.hostType,
+        catnon : this.damage > 500
       };
       if(TD.lang.pointEq(this.curTargetPosition, this.position)==true){
         this.hit = true;
