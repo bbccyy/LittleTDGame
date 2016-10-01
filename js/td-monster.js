@@ -34,8 +34,7 @@ _TD.loading.push(function(TD){
           if(that.cannonType == 'bullet_layser'){
             that.fire(that.position, that.target, that.damage, that.cannonType);
           }else{
-            var dfx = parseInt(Math.random()*8-4), dfy = parseInt(Math.random()*8-4);
-            var tarP = [that.target.position[0]+dfx, that.target.position[1]+dfy];
+            var tarP = TD.lang.accuracyDestroyer(that.target.position, 8);
             that.fire(that.position, tarP, that.damage, that.cannonType);
           }
         },

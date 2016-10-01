@@ -65,7 +65,14 @@ _TD.loading.push(function(TD){
       var that = this;
       this.fire_st = setInterval(
         function(){
-          that.fire(that.cannonDir[1],that.target.position, that.damage, that.cannonType);
+          if(that.cannonType == 'bullet_missile'){
+            that.fire(null, null, that.damage, that.cannonType);
+          }else if(that.cannonType == 'bullet_layser'){
+            that.fire(that.cannonDir[1], that.target.position, that.damage, that.cannonType);
+          }else{
+            var tarP = TD.lang.accuracyDestroyer(that.target.position, 10);
+            that.fire(that.cannonDir[1], tarP, that.damage, that.cannonType);
+          }
         },
         that.frequency);
     };

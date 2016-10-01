@@ -299,13 +299,16 @@ _TD.loading.push(function(TD){
       this.bindingElement(TD.scoreElement, 'score : ' + TD.score);
     },
 
+    accuracyDestroyer : function( p, d ){
+      var dfx = parseInt(Math.random()*d-d/2), dfy = parseInt(Math.random()*d-d/2);
+      return [p[0]+dfx, p[1]+dfy];
+    },
+
     getRandomMonster : function(){
       var num = parseInt(Math.random()*4+1);
       var key = 'monster-' + num;
       //var cfg = TD.cfg.Monsters[key];  // find a bug! cfg here will cumulate previous effects
       var cfg = this.copy(TD.cfg.Monsters[key]);
-      cfg['live'] = TD.cfg.Monsters[key].live;
-      cfg['price'] = TD.cfg.Monsters[key].price;
       cfg.speed += (Math.random()*0.2 - 0.1);
       cfg.range += parseInt(Math.random()*20 - 10);
       var mst = new TD.monster(TD.root, cfg);
