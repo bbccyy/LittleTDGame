@@ -76,27 +76,27 @@
         <div id='pre'>
           <div class="row" style="margin-top:20px;">
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/ok.png' id='submit'/>
+              <img class='imgbottom' src='img/ok.png' title="画好地图后点此确认" id='submit'/>
             </div>
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/undo.png' id='undo'/>
+              <img class='imgbottom' src='img/undo.png' title="撤销刚刚画得那一笔" id='undo'/>
             </div>
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/redo.png' id='redo'/>
+              <img class='imgbottom' src='img/redo.png' title="重做之前撤销的那一笔" id='redo'/>
             </div>
           </div>
         </div>
         <div id='post'>
           <div class="row" style="margin-top:20px;">
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/run.png' id='run'/>
-              <img class='imgbottom' src='img/pause.png' id='pause'/>
+              <img class='imgbottom' src='img/run.png' title="运行游戏" id='run'/>
+              <img class='imgbottom' src='img/pause.png' title="暂停游戏" id='pause'/>
             </div>
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/upgrade.png' id='upgrade'/>
+              <img class='imgbottom' src='img/upgrade.png' title="升级在地图中选中的‘炮塔’/‘埃及方碑’" id='upgrade'/>
             </div>
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/sell.png' id='sell'/>
+              <img class='imgbottom' src='img/sell.png' title="出售在地图中选中的‘炮塔’" id='sell'/>
             </div>
           </div>
         </div>
@@ -104,7 +104,7 @@
           <div class="row" style="margin-top:20px;">
             <div class="col-sm-4  vertical-align"></div>
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/restart.png' id='restart'/>
+              <img class='imgbottom' src='img/restart.png' title="再来一局如何？" id='restart'/>
             </div>
             <div class="col-sm-4  vertical-align"></div>
           </div>
@@ -113,7 +113,12 @@
 
       <div class="col-sm-4">
         <div class="container-fluid" style="margin-bottom:5px; padding-left:22px; border: 3px solid #982f2f;
-    border-radius: 5px;">
+    border-radius: 5px;" data-toggle="tooltip" data-placement="down"
+      style='display : block; width : 30px; height:30px'
+      title="游戏主状态版
+money:  你现在拥有的金币数目
+wave:  你当前闯过的怪物波数
+score:  你的当前得分">
           <p id='money' style="margin-bottom: 2px;"></p>
           <p id='wave' style="margin-bottom: 2px;">wave: 0</p>
           <p id='score' style="margin-bottom: 2px;">score: 0</p>
@@ -175,18 +180,56 @@ Range:  Long"/></td>
         </div>
         <div class="container-fluid" style="margin-bottom:5px; border: 3px solid #982f2f; border-radius: 5px;">
           <div class="panel-body" style="padding:0px; padding-left:10px;">
-            <dl  class="dl-horizontal" id ="info" style="margin-bottom:0px;">
+            <dl  class="dl-horizontal" id ="info" style="margin-bottom:0px;" data-toggle="tooltip" data-placement="top"
+              style='display : block; width : 30px; height:30px'
+              title="游戏建筑状态栏
+Level:  建筑等级，最高为3
+Damage:  建筑可以造成的伤害值
+Range:  建筑的射程
+Loading time：  连续发射弹药之间的间隔时间（毫秒）
+Live：  建筑血量，炮塔也有血量，你可以尝试在道路中建造以抵挡进攻
+Upgrade cost：  提升到下一级的花费">
               <dt>Level</dt> <dd> </dd>
               <dt>Damage</dt><dd> </dd>
               <dt>Range</dt><dd> </dd>
-              <dt>Shot delay</dt><dd> </dd>
+              <dt>Loading time</dt><dd> </dd>
               <dt>Live</dt><dd> </dd>
               <dt>Upgrade cost</dt><dd> </dd>
             </dl>
           </div>
         </div>
-        <div class="container-fluid" style=" border: 3px solid #982f2f; border-radius: 5px;">
-          <cite>How about design your map? well, don't forget to link two terminals :)</cite>
+        <div class="container-fluid" style=" border: 3px solid #982f2f; border-radius: 5px;" style="margin-bottom:2px;" data-toggle="tooltip" data-placement="top"
+          style='display : block; width : 30px; height:30px'
+          title="你可能想要知道的一些事
+#1 这是个塔防游戏
+#2 游戏的地图可以由你来自由发挥
+   ·用鼠标在绿色草皮上点击并拖拽可以开辟‘道路’
+   ·道路可以任意形状，任意宽度，只要你连接左上和右下两个端点
+   ·由于作者本人技术有限，请尽量避免在来回涂抹‘道路’过程中留下非常细小的绿色草皮孔洞
+   ·其实上面那个问题用图像腐蚀方法也能解决，只是我比较懒，下次再改吧
+   ·左上有右下的两个角落被我定义为‘禁区’了，不能涂抹请勿见怪
+#3 那些地图中的埃及方碑是啥
+   ·方碑随机生成，大多在端点或角落
+   ·方碑具有生命和攻击力，可被怪物摧毁，也可以花钱重建/升级
+   ·端点的方碑如果被摧毁，以后的怪物就不会再去那个地方光顾咯
+   ·右下角那个有点不一样的方碑是你守护的目标，请努力吧
+#4 怪物
+   ·怪物想要找到并推倒右下角的塔
+   ·怪物会探索你的地图并尽量避免走重复的路
+   ·遇到岔路，怪物们会派遣自己的势力探索比较有‘前途’的方向（当然有随机和权重效果在内）
+   ·怪物肯定不会去找被自己摧毁过的方碑所在的支路（除非你又花钱修复了方碑）
+   ·怪物有抗性！蓝色血条的怪能抵抗范围伤害，但是对机枪或镭射有伤害加成
+   ·遇到宽阔的路面，怪物会变得小心谨慎（移动速度下降）
+#5 炮塔
+   ·详细参看右侧栏建筑列表，鼠标移动上去会有说明
+   ·允许将炮塔建造在道路中间充当挡在埃及方碑前的‘肉盾’
+#6 地图上的花花草草
+   ·除了少数石头和枯树外，你都能把炮塔建造在他们上
+#7 作者
+   ·兔兔备考加油！
+   ·欢迎来我的没人气博客观光（可能需要VPN） http://glassjar-home.appspot.com/
+">
+          <cite>How about design your map? Well, don't forget to link the two terminals :)</cite>
         </div>
       </div>
 
