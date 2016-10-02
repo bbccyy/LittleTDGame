@@ -7,6 +7,8 @@ _TD.loading.push(function(TD){
     this.position = node.position;
     this.node = node;
 
+    this.shield = cfg.shield;  //this feature is added at TD.lang.getRandomMonster() 
+
     this.type = cfg.type;
     this.speed = cfg.speed;
     this.baseSpeed = cfg.speed;

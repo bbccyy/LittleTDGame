@@ -11,7 +11,7 @@ function findPath(table, r, c, outputQueue){  // Dir = [dirC, dirD] or [dirD, di
     for(var d in dir){
       tmpR = dir[d][0]+r;
       tmpC = dir[d][1]+c;
-      if(r<0 || r>=table.rows || c<0 || c>=table.columns
+      if(tmpR<0 || tmpR>=table.rows || tmpC<0 || tmpC>=table.columns
         || table[tmpR][tmpC]==0 || table[tmpR][tmpC]==2) continue;
       if(checkCross(table, tmpR, tmpC, dirC)){   //direction 'Cross'
         outputQueue.push([tmpC, tmpR, dir[d][2]]);   // output should mapping to Column -> x, Row -> y

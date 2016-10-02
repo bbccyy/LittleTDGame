@@ -4,7 +4,7 @@
 // var terminalTriPool = []; // to trim terminal tri
 // var startTriangle = null; // should be up leftmost triangle
 
-// var terminalNodePool = [];  // global variable, [target-terminal,  terminal1, terminal2, ... ]
+var terminalNodePool = [];  // global variable, [target-terminal,  terminal1, terminal2, ... ]
 
 function buildPath(){
   if(startTriangle == null){

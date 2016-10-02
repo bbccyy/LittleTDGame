@@ -57,7 +57,7 @@ _TD.loading.push(function(TD){
           for(d=0; d<dir.length; d++){
             tmpR = dir[d][0]+r;
             tmpC = dir[d][1]+c;
-            if(r<0 || r>=table.rows || c<0 || c>=table.columns
+            if(tmpR<0 || tmpR>=table.rows || tmpC<0 || tmpC>=table.columns
               || table[tmpR][tmpC]==0 || table[tmpR][tmpC]==2) continue;
             if(this.checkCross(table, tmpR, tmpC, TD.cfg.dirC)){   //direction 'Cross'
               outputQueue.push([tmpC, tmpR, dir[d][2]]);   // output should mapping to Column -> x, Row -> y
@@ -185,6 +185,11 @@ _TD.loading.push(function(TD){
         limit--;
         var key = Object.keys(hashEdge)[0];
         var curEdge = hashEdge[key];
+        if(TD.lang.pointEq(curEdge[0], curEdge[1])){
+          //console.log('two same edge points!');
+          delete hashEdge[key];
+          continue;
+        }
         delete hashEdge[key];
         var theOne = [], circleV = null, leftPointPool = [];
         for(var idx=0; idx<pointPool.length; idx++){
@@ -244,7 +249,7 @@ _TD.loading.push(function(TD){
           //console.log("insert line!");
           //drawOneSet(cx, [[Line2start, Line2end]]);
         }
-        //TD.lang.drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]], 'rgb(255, 255, 255)');
+        TD.lang.drawOneSet(cx, [curEdge, [Line1start, Line1end], [Line2start, Line2end]], 'rgb(255, 255, 255)');
         this.processTriangle(curEdge, [Line1start, Line1end], [Line2start, Line2end]);
       }
 
@@ -674,7 +679,7 @@ _TD.loading.push(function(TD){
             e = tri.value[e][1];
           }
         }while(tri.Feature == 'L');
-        //TD.lang.drawArray(cx, path, 'rgb(255,255,102)');
+        TD.lang.drawArray(cx, path, 'rgb(255,255,102)');
         return [path, tri, e];
       },
 
@@ -685,6 +690,8 @@ _TD.loading.push(function(TD){
         if(!TD.lang.isOnLeft(TD.cfg.taRestriction, node.position)){
           TD.terminalNodePool.unshift(node);
           node.Feature = 'TA';
+          node.position[0] -= 15;
+          node.position[1] -= 10;  // move the TA tower a little bit in order to display all of it
           TD.validMap = true;
         }else{
           TD.terminalNodePool.push(node);
@@ -755,10 +762,10 @@ _TD.loading.push(function(TD){
     // path to child just count length (# of triangles)
     this.setWeight = function( node ){
       if(node.Feature == 'T' || node.Feature == 'TJ'){
-        node.weight = 5;
+        node.weight = 10;
         return node.weight;
       }else if(node.Feature == 'TA'){
-        node.weight = 10;
+        node.weight = 15;
         return node.weight;
       }
       for(var idx=0; idx<node.children.length; idx++){

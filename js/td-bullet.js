@@ -62,7 +62,12 @@ _TD.loading.push(function(TD){
 
     this.makeDamage = function(){   // now, makeDamage function can process both justice and evil bullets
       if(this.type == 'bullet_layser'){
-        this.target.live -= this.damage;
+        if(this.target.shield!=undefined && this.target.shield==true){
+          this.target.live -= this.damage*1.5;
+        }
+        else{
+          this.target.live -= this.damage;
+        }
         return;
       }
       var idx, ms, key, monsterPosition;
@@ -72,7 +77,19 @@ _TD.loading.push(function(TD){
           monsterPosition = this.target;
           if(this.type=='bullet_missile') monsterPosition = this.position;
           if(TD.lang.getDistance(monsterPosition, ms.position) <= this.range){
-            ms.live -= this.damage;
+            if(ms.shield==true){
+              if(this.type=='bullet_missile'){
+                ms.live -= this.damage*0.3;
+              }else if(this.type=='bullet_large'){
+                ms.live -= this.damage*0.5;
+              }else if(this.type=='bullet_middle'){
+                ms.live -= this.damage*0.9;
+              }else{
+                ms.live -= this.damage;
+              }
+            }else{
+              ms.live -= this.damage;
+            }
           }
         }
       }else{

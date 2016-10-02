@@ -52,9 +52,13 @@ _TD.loading.push(function(TD){
       cx.strokeStyle = color;
       for(var idx=0; idx<e.length; idx++){
         cx.beginPath();
-        cx.moveTo(e[idx][0][0], e[idx][0][1]);
-        cx.lineTo(e[idx][1][0], e[idx][1][1]);
-        cx.stroke();
+        if(e[idx][1] == undefined || e[idx][0] == undefined){
+          console.log('haha')
+        }else{
+          cx.moveTo(e[idx][0][0], e[idx][0][1]);
+          cx.lineTo(e[idx][1][0], e[idx][1][1]);
+          cx.stroke();
+        }
       }
     },
 
@@ -309,8 +313,23 @@ _TD.loading.push(function(TD){
       var key = 'monster-' + num;
       //var cfg = TD.cfg.Monsters[key];  // find a bug! cfg here will cumulate previous effects
       var cfg = this.copy(TD.cfg.Monsters[key]);
-      cfg.speed += (Math.random()*0.2 - 0.1);
+      if(TD.wave >= 50){
+        cfg.speed += (Math.random()*0.6 - 0.1);
+      }else if(TD.wave >= 40){
+        cfg.speed += (Math.random()*0.5 - 0.1);
+      }else if(TD.wave >= 30){
+        cfg.speed += (Math.random()*0.4 - 0.1);
+      }else if(TD.wave >= 20){
+        cfg.speed += (Math.random()*0.3 - 0.1);
+      }else{
+        cfg.speed += (Math.random()*0.2 - 0.1);
+      }
       cfg.range += parseInt(Math.random()*20 - 10);
+      if(Math.random() > 0.7){
+        cfg['shield'] = true;
+      }else{
+        cfg['shield'] = false;
+      }
       var mst = new TD.monster(TD.root, cfg);
       return mst;
     },
@@ -327,35 +346,40 @@ _TD.loading.push(function(TD){
     levelUp : function(){   // modify monsters' feature to increase difficulty
       if(TD.wave == 0) return;
       var rate = 1;
+      var bonus = 5;
       if(TD.wave < 10){
         rate = 1.2;
       }else if(TD.wave >= 10 && TD.wave < 20){
         rate = 1.15;
+        bonus = 6;
       }else if(TD.wave >= 20 && TD.wave < 30){
         rate = 1.1;
+        bonus = 5;
       }
       else if(TD.wave >= 30 && TD.wave < 40){
-        rate = 1.05;
+        rate = 1.07;
+        bonus = 4;
       }
       else{
-        rate = 1.025;
+        rate = 1.05;
+        bonus = parseInt(TD.wave / 20);
       }
-      if(TD.wave % 20 == 0){
-        rate = 1.5;
-        TD.cfg.maxNumberOfMonsterPerWave += 1;
+      if(TD.wave % 40 == 0){
+        rate = 1.3;
+        TD.maxNumberOfMonsterPerWave += 1;
       }
       if(TD.wave % 10 == 0){
-        TD.cfg.maxNumberOfMonsterPerWave += 1;
+        TD.maxNumberOfMonsterPerWave += 2;
       }
       TD.cfg.monster_1_base_live = parseInt(TD.cfg.monster_1_base_live * rate);
       TD.cfg.monster_2_base_live = parseInt(TD.cfg.monster_2_base_live * rate);
       TD.cfg.monster_3_base_live = parseInt(TD.cfg.monster_3_base_live * rate);
       TD.cfg.monster_4_base_live = parseInt(TD.cfg.monster_4_base_live * rate);
 
-      TD.cfg.monster_1_base_price = parseInt(TD.cfg.monster_1_base_price * rate);
-      TD.cfg.monster_2_base_price = parseInt(TD.cfg.monster_2_base_price * rate);
-      TD.cfg.monster_3_base_price = parseInt(TD.cfg.monster_3_base_price * rate);
-      TD.cfg.monster_4_base_price = parseInt(TD.cfg.monster_4_base_price * rate);
+      TD.cfg.monster_1_base_price = parseInt(TD.cfg.monster_1_base_price + bonus);
+      TD.cfg.monster_2_base_price = parseInt(TD.cfg.monster_2_base_price + bonus);
+      TD.cfg.monster_3_base_price = parseInt(TD.cfg.monster_3_base_price + bonus);
+      TD.cfg.monster_4_base_price = parseInt(TD.cfg.monster_4_base_price + bonus);
     },
 
     getBuilding : function ( p, r ){

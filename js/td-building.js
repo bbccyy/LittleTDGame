@@ -352,8 +352,8 @@ _TD.loading.push(function(TD){
 
     (function(that){
       if(that.tid.Feature=='TA'){
-        that.position[0] -= 15;
-        that.position[1] -= 10;
+        // that.position[0] -= 15;
+        // that.position[1] -= 10;
         that.firePos = [that.position[0],that.position[1]-33];
       }
     })(this);

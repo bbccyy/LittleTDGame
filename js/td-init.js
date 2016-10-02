@@ -5,7 +5,7 @@ _TD.loading.push(function(TD){
   TD.money = 500;
   TD.score = 0;  // score += monster's live / 100
   TD.wave = 0;  // current wave number
-  TD.maxNumberOfMonsterPerWave = 10;
+  TD.maxNumberOfMonsterPerWave = TD.cfg.maxNumberOfMonsterPerWave;
   TD.GameOver = false;  // if final target has been destroied, set GameOver := true
   TD.waitingForNextWave = false;  // check if is between two waves
   TD.pause = false;  // pause the game

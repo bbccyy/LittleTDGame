@@ -54,8 +54,6 @@ _TD.loading.push(function(TD){
 
     TD.maxNumberOfMonsterPerWave = TD.cfg.maxNumberOfMonsterPerWave;
     TD.money = TD.cfg.money;
-    TD.score = 0;
-    TD.wave = 0;
     TD.GameOver = false;
     TD.waitingForNextWave = false;
     TD.pause = false;
@@ -68,11 +66,14 @@ _TD.loading.push(function(TD){
 
     var obj = {
       type : 'game_over',
-      score : null,
+      score : TD.score,
       wave : TD.wave
     };
 
     TD.drawer(obj);
+
+    TD.score = 0;
+    TD.wave = 0;
 
     // addEventListener to the NextLevel buttom
     // onClick, refresh the initial map, run TD.init() again
