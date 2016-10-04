@@ -16,38 +16,38 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
 
 
+<!--
+  <script src="javascript/td.js"></script>
+  <script src="javascript/td-cfg.js"></script>
+  <script src="javascript/td-init.js"></script>
+  <script src="javascript/td-lang.js"></script>
+  <script src="javascript/td-path.js"></script>
+  <script src="javascript/td-monster-strategy.js"></script>
+  <script src="javascript/td-monster.js"></script>
+  <script src="javascript/td-drawer.js"></script>
+  <script src="javascript/td-building.js"></script>
+  <script src="javascript/td-building-controller.js"></script>
+  <script src="javascript/td-bullet.js"></script>
+  <script src="javascript/td-map-generator.js"></script>
+  <script src="javascript/td-buildwave.js"></script>
+  <script src="javascript/td-bloodbar.js"></script>
+  <script src="javascript/td-gameover.js"></script>
+  <script src="javascript/td-beautifier.js"></script>
+  <script src="javascript/td-spritesheet-monster.json"></script>
+  <script src="javascript/td-spritesheet-explode.json"></script>
+  <script src="javascript/td-spritesheet-scene.json"></script>
+  <script src="javascript/td-spritesheet-turret.json"></script>
+  <script src="javascript/td-spritesheet.js"></script>
+-->
 
-  <script src="td.js"></script>
-  <script src="td-cfg.js"></script>
-  <script src="td-init.js"></script>
-  <script src="td-lang.js"></script>
-  <script src="td-path.js"></script>
-  <script src="td-monster-strategy.js"></script>
-  <script src="td-monster.js"></script>
-  <script src="td-drawer.js"></script>
-  <script src="td-building.js"></script>
-  <script src="td-building-controller.js"></script>
-  <script src="td-bullet.js"></script>
-  <script src="td-map-generator.js"></script>
-  <script src="td-buildwave.js"></script>
-  <script src="td-bloodbar.js"></script>
-  <script src="td-gameover.js"></script>
-  <script src="td-beautifier.js"></script>
-  <script src="td-spritesheet-monster.json"></script>
-  <script src="td-spritesheet-explode.json"></script>
-  <script src="td-spritesheet-scene.json"></script>
-  <script src="td-spritesheet-turret.json"></script>
-  <script src="td-spritesheet.js"></script>
-
-
-  <!--   <script src="td_min.js"></script> -->
-  <link rel="stylesheet" href="style.css" />
+  <script src="javascript/td_min.js"></script>
+  <link rel="stylesheet" href="style/style.css" />
 </head>
 <body style="background-color:#e4d8aa;">
-  <img src='zombie.png' id='zb' style='display : none' />
-  <img src='explode.png' id='exp' style='display : none' />
-  <img src='scene.png' id='sce' style='display : none' />
-  <img src='turret.png' id='trt' style='display : none' />
+  <img src='img/zombie.png' id='zb' style='display : none' />
+  <img src='img/explode.png' id='exp' style='display : none' />
+  <img src='img/scene.png' id='sce' style='display : none' />
+  <img src='img/turret.png' id='trt' style='display : none' />
   <img src='img/catnon.png' id='catnon' style='display : none' />
   <img src='img/ok.png'  style='display : none' />
   <img src='img/undo.png' style='display : none' />
@@ -93,7 +93,7 @@
               <img class='imgbottom' src='img/pause.png' title="暂停游戏" id='pause'/>
             </div>
             <div class="col-sm-4  vertical-align">
-              <img class='imgbottom' src='img/upgrade.png' title="升级在地图中选中的‘炮塔’/‘埃及方碑’" id='upgrade'/>
+              <img class='imgbottom' src='img/upgrade.png' title="升级在地图中选中的‘炮塔’/‘埃及尖碑’" id='upgrade'/>
             </div>
             <div class="col-sm-4  vertical-align">
               <img class='imgbottom' src='img/sell.png' title="出售在地图中选中的‘炮塔’" id='sell'/>
@@ -207,26 +207,26 @@ Upgrade cost：  提升到下一级的花费">
    ·道路可以任意形状，任意宽度，只要你连接左上和右下两个端点
    ·由于作者本人技术有限，请尽量避免在来回涂抹‘道路’过程中留下非常细小的绿色草皮孔洞
    ·其实上面那个问题用图像腐蚀方法也能解决，只是我比较懒，下次再改吧
-   ·左上有右下的两个角落被我定义为‘禁区’了，不能涂抹请勿见怪
-#3 那些地图中的埃及方碑是啥
-   ·方碑随机生成，大多在端点或角落
-   ·方碑具有生命和攻击力，可被怪物摧毁，也可以花钱重建/升级
-   ·端点的方碑如果被摧毁，以后的怪物就不会再去那个地方光顾咯
-   ·右下角那个有点不一样的方碑是你守护的目标，请努力吧
+   ·左上和右下的两个角落被我定义为‘禁区’了，不能涂抹请勿见怪
+#3 那些地图中的埃及尖碑是啥
+   ·尖碑随机生成，大多在端点或角落
+   ·尖碑具有生命和攻击力，可被怪物摧毁，也可以花钱重建/升级
+   ·端点的尖碑如果被摧毁，以后的怪物就不会再去那个地方光顾咯
+   ·右下角那个有点不一样的尖碑是你守护的目标，请努力吧
 #4 怪物
    ·怪物想要找到并推倒右下角的塔
    ·怪物会探索你的地图并尽量避免走重复的路
    ·遇到岔路，怪物们会派遣自己的势力探索比较有‘前途’的方向（当然有随机和权重效果在内）
-   ·怪物肯定不会去找被自己摧毁过的方碑所在的支路（除非你又花钱修复了方碑）
+   ·怪物肯定不会去找被自己摧毁过的尖碑所在的支路（除非你又花钱修复了尖碑）
    ·怪物有抗性！蓝色血条的怪能抵抗范围伤害，但是对机枪或镭射有伤害加成
    ·遇到宽阔的路面，怪物会变得小心谨慎（移动速度下降）
 #5 炮塔
    ·详细参看右侧栏建筑列表，鼠标移动上去会有说明
-   ·允许将炮塔建造在道路中间充当挡在埃及方碑前的‘肉盾’
+   ·允许将炮塔建造在道路中间充当挡在埃及尖碑前的‘肉盾’
 #6 地图上的花花草草
    ·除了少数石头和枯树外，你都能把炮塔建造在他们上
 #7 作者
-   ·兔兔备考加油！
+   ·兔兔加油！
    ·欢迎来我的没人气博客观光（可能需要VPN） http://glassjar-home.appspot.com/
 ">
           <cite>How about design your map? Well, don't forget to link the two terminals :)</cite>

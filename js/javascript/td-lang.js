@@ -77,6 +77,57 @@ _TD.loading.push(function(TD){
       }
     },
 
+    refineMap : function( map ){
+      var m = map.length, n = map[0].length;
+      for(var i=0; i<m; i++){
+        for(var j=0; j<n; j++){
+          if(map[i][j]==1){
+            if(map[i-1][j]==0 && map[i+1][j]==0) map[i][j]=0;
+            else if(map[i][j-1]==0 && map[i][j+1]==0) map[i][j]=0;
+          }
+        }
+      }
+    },
+
+    drawOutline1 : function(cx, que){
+      cx.lineWidth = 2;
+      cx.lineCap = 'round';
+      cx.strokeStyle = 'rgba(255, 0, 0, 1)';
+      cx.globalCompositeOperation="source-over";
+      var fg = true;
+      var oldx=0, oldy=0;
+      var point = [];
+
+      for(var idx=0; idx<que.length; idx++){
+        point = que[idx];
+        if (oldx == 0 && oldy == 0) {
+          oldx = point[0];
+          oldy = point[1];
+          continue;
+        }
+        else{
+          if(fg){
+            fg = !fg;
+            cx.beginPath();
+            cx.strokeStyle = 'rgba(0, 255, 0, 1)';
+            cx.moveTo(oldx, oldy);
+            cx.lineTo(point[0], point[1]);
+            cx.stroke();
+          }else{
+            fg = !fg;
+            cx.beginPath();
+            cx.strokeStyle = 'rgba(255, 0, 0, 1)';
+            cx.moveTo(oldx, oldy);
+            cx.lineTo(point[0], point[1]);
+            cx.stroke();
+          }
+        }
+        oldx = point[0];
+        oldy = point[1];
+      }
+      //cx.closePath();
+    },
+
     drawOutline : function(cx, que){
 
       var oldx=0, oldy=0, idx, spriteSheet, spt, point = [], q = [];

@@ -41,14 +41,14 @@ _TD.loading.push(function(TD){
   TD.gSpriteSheets = {};  // used to store SpriteSheetClass entities
   TD.monsterFrame = {};   // monster use its type to search this table, get image name sequence in 4 direction
   TD.monsterTypes = ['monster-1', 'monster-2', 'monster-3', 'monster-4'];
-  TD.monsterSpriteSource = 'zombie.png';
+  TD.monsterSpriteSource = 'img/zombie.png';
   TD.bulletTypes = ['bullet_small', 'bullet_middle', 'bullet_large', 'bullet_missile'];
   TD.explodeFrame = {};   // bullet object use its type here as key to search for its associated bullet frame sequence
-  TD.explodeSpriteSource = 'explode.png';
+  TD.explodeSpriteSource = 'img/explode.png';
   TD.sceneFrame = {};  // any scene including ground, grass, tower. EG. [grass] -> [grass_01.png, grass_02.png ... ]
-  TD.sceneSpriteSource = 'scene.png';
+  TD.sceneSpriteSource = 'img/scene.png';
   TD.turretFrame = {};
-  TD.turretSpriteSource = 'turret.png';
+  TD.turretSpriteSource = 'img/turret.png';
 
   TD.uc = document.getElementById('td-canvas-1'); // middle layer canvas --> draw builids, monsters and bullets
   TD.ucx = TD.uc.getContext('2d');

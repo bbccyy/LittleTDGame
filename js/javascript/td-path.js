@@ -20,6 +20,7 @@ _TD.loading.push(function(TD){
           map[i][j] = (data[idx]==0 && data[idx+1]==0 && data[idx+2]==0 && data[idx+3]==0)? 1 : 0;
         }
       }
+      TD.lang.refineMap(map);
       map[1][1] = 2;
       map[2][1] = 2;
       map.rows = height;
@@ -57,8 +58,8 @@ _TD.loading.push(function(TD){
           for(d=0; d<dir.length; d++){
             tmpR = dir[d][0]+r;
             tmpC = dir[d][1]+c;
-            if(tmpR<0 || tmpR>=table.rows || tmpC<0 || tmpC>=table.columns
-              || table[tmpR][tmpC]==0 || table[tmpR][tmpC]==2) continue;
+            if(r<1 || r>=table.rows-1 || c<1 || c>=table.columns-1
+              || table[tmpR][tmpC]!=1) continue;
             if(this.checkCross(table, tmpR, tmpC, TD.cfg.dirC)){   //direction 'Cross'
               outputQueue.push([tmpC, tmpR, dir[d][2]]);   // output should mapping to Column -> x, Row -> y
               table[tmpR][tmpC] = 2;

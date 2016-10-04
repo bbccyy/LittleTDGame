@@ -818,6 +818,7 @@ _TD.loading.push(function(TD){
         }
     },
 
+		//if modify here, don't forget change TD.gameover as well
 		monster_1_base_live : 125,   // setting base monster live, increase for each wave
     monster_2_base_live : 150,
     monster_3_base_live : 175,
@@ -1121,14 +1122,14 @@ _TD.loading.push(function(TD){
   TD.gSpriteSheets = {};  // used to store SpriteSheetClass entities
   TD.monsterFrame = {};   // monster use its type to search this table, get image name sequence in 4 direction
   TD.monsterTypes = ['monster-1', 'monster-2', 'monster-3', 'monster-4'];
-  TD.monsterSpriteSource = 'zombie.png';
+  TD.monsterSpriteSource = 'img/zombie.png';
   TD.bulletTypes = ['bullet_small', 'bullet_middle', 'bullet_large', 'bullet_missile'];
   TD.explodeFrame = {};   // bullet object use its type here as key to search for its associated bullet frame sequence
-  TD.explodeSpriteSource = 'explode.png';
+  TD.explodeSpriteSource = 'img/explode.png';
   TD.sceneFrame = {};  // any scene including ground, grass, tower. EG. [grass] -> [grass_01.png, grass_02.png ... ]
-  TD.sceneSpriteSource = 'scene.png';
+  TD.sceneSpriteSource = 'img/scene.png';
   TD.turretFrame = {};
-  TD.turretSpriteSource = 'turret.png';
+  TD.turretSpriteSource = 'img/turret.png';
 
   TD.uc = document.getElementById('td-canvas-1'); // middle layer canvas --> draw builids, monsters and bullets
   TD.ucx = TD.uc.getContext('2d');
@@ -1234,6 +1235,18 @@ _TD.loading.push(function(TD){
         }
         cx.lineTo(arr[idx][0][0], arr[idx][0][1]);
         cx.stroke();
+      }
+    },
+
+		refineMap : function( map ){
+      var m = map.length, n = map[0].length;
+      for(var i=0; i<m; i++){
+        for(var j=0; j<n; j++){
+          if(map[i][j]==1){
+            if(map[i-1][j]==0 && map[i+1][j]==0) map[i][j]=0;
+            else if(map[i][j-1]==0 && map[i][j+1]==0) map[i][j]=0;
+          }
+        }
       }
     },
 
@@ -1637,6 +1650,7 @@ _TD.loading.push(function(TD){
           map[i][j] = (data[idx]==0 && data[idx+1]==0 && data[idx+2]==0 && data[idx+3]==0)? 1 : 0;
         }
       }
+			TD.lang.refineMap(map);
       map[1][1] = 2;
       map[2][1] = 2;
       map.rows = height;
@@ -1674,8 +1688,8 @@ _TD.loading.push(function(TD){
           for(d=0; d<dir.length; d++){
             tmpR = dir[d][0]+r;
             tmpC = dir[d][1]+c;
-            if(tmpR<0 || tmpR>=table.rows || tmpC<0 || tmpC>=table.columns
-              || table[tmpR][tmpC]==0 || table[tmpR][tmpC]==2) continue;
+						if(r<1 || r>=table.rows-1 || c<1 || c>=table.columns-1
+              || table[tmpR][tmpC]!=1) continue;
             if(this.checkCross(table, tmpR, tmpC, TD.cfg.dirC)){   //direction 'Cross'
               outputQueue.push([tmpC, tmpR, dir[d][2]]);   // output should mapping to Column -> x, Row -> y
               table[tmpR][tmpC] = 2;
@@ -3205,6 +3219,7 @@ _TD.loading.push(function(TD){
 
     onClick_sell : function(ev){
       if(TD.waitingToChange == null) return;
+			if(TD.waitingToChange.type == 'building-5') return;
       TD.lang.setMoney(TD.money + (TD.waitingToChange.price * 0.5));
       TD.waitingToChange.onClick = false;
       TD.waitingToChange.remove = true;
@@ -3824,6 +3839,16 @@ _TD.loading.push(function(TD){
 
     TD.waitingToBuild = null;
     TD.waitingToChange = null;
+
+		TD.cfg.monster_1_base_live = 125;  //if modify here, don't forget change TD.cfg as well
+    TD.cfg.monster_2_base_live = 150;
+    TD.cfg.monster_3_base_live = 175;
+    TD.cfg.monster_4_base_live = 200;
+
+    TD.cfg.monster_1_base_price = 10;
+    TD.cfg.monster_2_base_price = 12;
+    TD.cfg.monster_3_base_price = 15;
+    TD.cfg.monster_4_base_price = 20;
 
     var obj = {
       type : 'game_over',

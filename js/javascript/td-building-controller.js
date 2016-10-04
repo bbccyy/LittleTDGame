@@ -37,6 +37,7 @@ _TD.loading.push(function(TD){
 
     onClick_sell : function(ev){
       if(TD.waitingToChange == null) return;
+      if(TD.waitingToChange.type == 'building-5') return;
       TD.lang.setMoney(TD.money + (TD.waitingToChange.price * 0.5));
       TD.waitingToChange.onClick = false;
       TD.waitingToChange.remove = true;

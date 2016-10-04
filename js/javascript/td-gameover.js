@@ -64,6 +64,16 @@ _TD.loading.push(function(TD){
     TD.waitingToBuild = null;
     TD.waitingToChange = null;
 
+    TD.cfg.monster_1_base_live = 125;  //if modify here, don't forget change TD.cfg as well
+    TD.cfg.monster_2_base_live = 150;
+    TD.cfg.monster_3_base_live = 175;
+    TD.cfg.monster_4_base_live = 200;
+
+    TD.cfg.monster_1_base_price = 10;
+    TD.cfg.monster_2_base_price = 12;
+    TD.cfg.monster_3_base_price = 15;
+    TD.cfg.monster_4_base_price = 20;
+
     var obj = {
       type : 'game_over',
       score : TD.score,

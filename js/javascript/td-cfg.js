@@ -608,6 +608,7 @@ _TD.loading.push(function(TD){
         }
     },
 
+    //if modify here, don't forget change TD.gameover as well
     monster_1_base_live : 125,   // setting base monster live, increase for each wave
     monster_2_base_live : 150,
     monster_3_base_live : 175,
